@@ -10,6 +10,7 @@ import com.games.games_project.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/reviews")
 public class ReviewController {
     @Autowired
     private ReviewService reviewService;
@@ -28,12 +30,20 @@ public class ReviewController {
     @GetMapping("/games/{gameId}/reviews")
     public PagedReviewsResponseDto<ReviewDetailsDto> getReviewsForGame(
             @PathVariable String gameId,
-            @PageableDefault(page = 1, size = 5) Pageable pageable
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "date,desc") String sort
     ) {
-        int correctedPage = Math.max(pageable.getPageNumber() - 1, 0);
-        Pageable correctedPageable = PageRequest.of(correctedPage, pageable.getPageSize(), pageable.getSort());
-        return reviewService.getReviewsByGameId(gameId, correctedPageable);
+        String[] sortParts = sort.split(",");
+        Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sortBy = Sort.by(direction, sortParts[0]);
+
+        Pageable pageable = PageRequest.of(Math.max(page, 0), size, sortBy);
+
+        return reviewService.getReviewsByGameId(gameId, pageable);
     }
+
 
     @PostMapping("/games/reviewsByAuthor")
     public PagedReviewsResponseDto<UserProfileReviewDto> getReviewsForUser(

@@ -15,7 +15,7 @@ function Autocomplete({language}) {
         }
 
         try {
-            const response = await fetch(`${ ENV.ENVIRONMENT }/games/autocomplete/${value}`);
+            const response = await fetch(`${ ENV.ENVIRONMENT }/games/games/autocomplete/${value}`);
             const data = await response.json();
             setSuggestions(data);
         } catch (error) {

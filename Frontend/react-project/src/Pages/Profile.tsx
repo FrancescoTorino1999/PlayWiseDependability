@@ -261,7 +261,7 @@ function Profile() {
     const fetchPage = (pageNumber: number) => {
         const body = { username: usernameGlobal };
         fetch(
-            `${ENV.ENVIRONMENT}/games/reviewsByAuthor?sort=date,desc&page=${pageNumber}&size=5`,
+            `${ENV.ENVIRONMENT}/games/games/reviewsByAuthor?sort=date,desc&page=${pageNumber}&size=5`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
