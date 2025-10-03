@@ -1,0 +1,97 @@
+.carousel-container {
+    overflow: visible;
+}
+
+.card {
+
+    min-height: 500px;
+    min-width: 300px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-width: calc(100% - (2*var(--margin)));
+    position: relative;
+    height: 600px;
+    transition: transform 0.4s ease-in-out;
+    margin: 30px;
+
+    &:hover {
+        transform: scale(1.05);
+        z-index: 9;
+    }
+
+    img {
+        width: 70%;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .game-card {
+
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        .card-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: absolute;
+            bottom: 20px;
+        }
+        .tag-cont {
+            display: flex;
+            position: relative;
+            flex-direction: row;
+            gap: 20px;
+            align-items: center;
+            width: 100%;
+        }
+        .tag-genre {
+            border-radius: 5px;
+            border: 1px solid var(--clr-primary-400);
+            padding: 5px;
+            color: var(--clr-black);
+            height: 30px;
+            width: 30px;
+            position: relative;
+            margin-left: auto;
+            
+        }
+
+        @for $i from 0 through 10 {
+            .tag-genre-#{$i * 10} {
+                background-color: hsl(($i * 10 / 100) * 120, 100%, 50%);
+            }
+        }
+    }
+
+  
+    
+
+}
+
+.slick-active {
+    .card {
+      z-index: 9;  
+    }
+    
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        min-height: 350px;
+        padding-right: 20px;
+        min-width: unset;
+        margin: unset;
+
+        &:hover {
+            scale: unset;
+        }
+    }
+
+}

@@ -1,0 +1,41 @@
+.review-card {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 4px solid black;
+    padding-block: 30px;
+    padding-inline: 20px;
+
+    .side-th {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 30px;
+
+        .tag-genre {
+            margin-left: auto;
+        }
+    }
+
+    .card-date {
+        text-align: right;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .svg-new {
+        display: block;
+        width: 75px;
+        fill: black;
+    }
+
+}
+
+.review-footer {
+    margin-block: 30px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}

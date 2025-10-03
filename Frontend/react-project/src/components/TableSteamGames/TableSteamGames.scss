@@ -1,0 +1,28 @@
+.table_games {
+
+    margin-top: 50px;
+    min-height: 10px;
+    border-radius: 12px;
+    border: 1px solid black;
+    width: 100%;
+
+}
+
+tr {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}
+
+
+.table-data, th {
+    width: calc(100% / 5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-container {
+    width: 100%;
+}

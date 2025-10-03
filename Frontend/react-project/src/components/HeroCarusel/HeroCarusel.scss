@@ -1,0 +1,25 @@
+.hero-carusel {
+    .hero-banner {
+        margin: auto;
+        overflow: hidden;
+        border-radius: 10px;
+    
+        .slick-slider {
+            width: 100%;
+        }
+    }
+    
+    .carousel-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100% !important;
+    }
+    
+    .carousel-image {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+}

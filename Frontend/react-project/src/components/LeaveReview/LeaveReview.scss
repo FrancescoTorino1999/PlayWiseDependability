@@ -1,0 +1,35 @@
+.text-area-review {
+    width: 100%;
+    min-height: 300px;
+    font-size: var(--fs-body-xl);
+    line-height: var(--lh-body-xl);
+}
+
+.slider-container {
+    width: 100%;
+    margin-top: 10px;
+    background: linear-gradient(to right, red, yellow, green);   
+    margin-bottom: 30px; 
+}
+
+.slider {
+    width: 100%;
+    margin-top: 10px;
+    
+}
+
+.ticks {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.tick {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+}

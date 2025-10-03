@@ -1,0 +1,42 @@
+/* src/components/ProfileReview/ProfileReview.scss */
+
+.profile-review-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-review-header {
+  background-color: #f8f8f8;
+  padding: 1rem;
+  text-align: center;
+
+  .profile-review-game-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .profile-review-game-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .profile-review-game-cover {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.profile-review-body {
+  padding: 1rem;
+
+}
