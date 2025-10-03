@@ -47,7 +47,7 @@ function Carusel({ page, size, sort, title }: CaruselProps) {
 
     useEffect(() => {
             console.log("here")
-            fetch(`${ ENV.ENVIRONMENT }/games/games?page=${page}&size=${size}&sort=${sort}`)
+            fetch(`${ ENV.ENVIRONMENT }/games?page=${page}&size=${size}&sort=${sort}`)
                 .then(response => response.json())
                 .then(data => {
                     setGames(data.content || []);

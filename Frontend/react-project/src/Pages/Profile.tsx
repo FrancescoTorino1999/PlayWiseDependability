@@ -171,7 +171,7 @@ function Profile() {
 
     useEffect(() => {
         if (activeTab === 'stats') {
-            fetch('http://localhost:8080/admin/stats/users-by-gender')
+            fetch('http://localhost:8081/admin/stats/users-by-gender')
                 .then(res => {
                     if (!res.ok) throw new Error('Errore nel fetch delle statistiche');
                     return res.json();
@@ -179,7 +179,7 @@ function Profile() {
                 .then(data => setGenderStats(data))
                 .catch(err => console.error(err));
 
-            fetch('http://localhost:8080/admin/stats/reviews-per-month')
+            fetch('http://localhost:8081/admin/stats/reviews-per-month')
                 .then(res => {
                     if (!res.ok) throw new Error('Errore fetch reviews-per-month');
                     return res.json();
@@ -199,7 +199,7 @@ function Profile() {
                 })
                 .catch(err => console.error(err));
 
-            fetch('http://localhost:8080/admin/stats/games-by-platform')
+            fetch('http://localhost:8081/admin/stats/games-by-platform')
                 .then(res => {
                     if (!res.ok) throw new Error('Errore fetch games-by-platform');
                     return res.json();
@@ -261,7 +261,7 @@ function Profile() {
     const fetchPage = (pageNumber: number) => {
         const body = { username: usernameGlobal };
         fetch(
-            `${ENV.ENVIRONMENT}/games/games/reviewsByAuthor?sort=date,desc&page=${pageNumber}&size=5`,
+            `${ENV.ENVIRONMENT}/games/reviewsByAuthor?sort=date,desc&page=${pageNumber}&size=5`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
