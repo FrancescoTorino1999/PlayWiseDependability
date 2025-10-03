@@ -10,7 +10,7 @@ function TableSteamGames() {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        fetch(`${ ENV.ENVIRONMENT }/games?page=${page}&size=16`)
+        fetch(`${ ENV.ENVIRONMENT }/games/games?page=${page}&size=16`)
             .then(response => response.json())
             .then(data => {
                 setGames(data.content || []); // Evita undefined
