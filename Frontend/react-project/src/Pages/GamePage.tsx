@@ -58,7 +58,7 @@ function GamePage() {
 
 
     useEffect(() => {
-        fetch(`${ ENV.ENVIRONMENT }/games/games/${id}`)
+        fetch(`${ ENV.ENVIRONMENT }/games/${id}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Errore nel caricamento dei dati");

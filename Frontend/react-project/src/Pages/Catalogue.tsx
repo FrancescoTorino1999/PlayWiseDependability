@@ -45,7 +45,7 @@ function Catalogue() {
 
 
     useEffect(() => {
-        fetch(`${ ENV.ENVIRONMENT }/games/getFilters`)
+        fetch(`${ ENV.ENVIRONMENT }/getFilters`)
             .then(response => response.json())
             .then(data => {
                 setFilters(data || []);
@@ -55,7 +55,7 @@ function Catalogue() {
 
     useEffect(() => {
         console.log(selectedFilters)
-        fetch(`${ ENV.ENVIRONMENT }/games/findFilteredGames?page=${page}&size=${size}&sort=${sort}`, {
+        fetch(`${ ENV.ENVIRONMENT }/findFilteredGames?page=${page}&size=${size}&sort=${sort}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ function Catalogue() {
 
     const filter = () => {
         if(page == 1) {
-            fetch(`${ ENV.ENVIRONMENT }/games/findFilteredGames?page=${page}&size=${size}&sort=${sort}`, {
+            fetch(`${ ENV.ENVIRONMENT }/findFilteredGames?page=${page}&size=${size}&sort=${sort}`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
