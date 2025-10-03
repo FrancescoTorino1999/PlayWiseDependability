@@ -1,0 +1,245 @@
+.navbar {
+    height: auto;
+    position: relative;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    padding-inline: var(--margin);
+    padding-block: 20px;
+    justify-content: space-between;
+    width: -webkit-fill-available;
+    box-shadow: 1px;
+    align-items: center;
+    z-index: 999;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a:hover {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.nav-links a.active {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.hamburger-menu {
+    display: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        top: 107px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        position: absolute;
+        top: 146px;
+        left: 0;
+        background-color: var(--clr-primary-10);
+        width: 100%;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        z-index: 50;
+        width: -webkit-fill-available;
+    }
+
+    .nav-links.open {
+        display: flex;
+        max-width: 100%;
+        z-index: 10;
+    }
+
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+.box {
+    height: 300px;
+    width: 300px;
+    background-color: red;
+}
+
+.rounded {
+    border-radius: 50%;
+}
+
+.rounded-blue {
+    background-color: blue;
+}
+
+header {
+    max-width: 100%;
+}
+
+html {
+    height: 100%;
+}
+
+
+
+.login-box {
+    position: fixed;
+    top: 58%;
+    left: 50%;
+    width: 460px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 1);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
+    border-radius: 10px;
+    z-index: 1;
+    border: solid 1px white;
+}
+
+.login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+}
+
+.login-box .user-box {
+    position: relative;
+}
+
+.login-box .user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+select#gender {
+    background: transparent;
+    color: white;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+input#birthDate {
+    background: transparent;
+    color: white;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    /* margin-bottom: 30px; */
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+.login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.login-box .user-box input:focus~label,
+.login-box .user-box input:valid~label,
+.user-box-date label {
+    top: -20px;
+    left: 0;
+    color: var(--clr-primary-10);
+    font-size: 12px;
+}
+
+.user-box:has(#password) {
+    margin-top: 26px;
+}
+
+.login-box form a {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: var(--clr-primary-400);
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px
+}
+
+.side-boxes {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.side-boxes-login {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-lang {
+    background-color: var(--clr-primary-10);
+    color: var(--clr-primary-400);
+}
+
+.feedback {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    opacity: 0.95;
+}
+
+.feedback.success {
+    background-color: #4CAF50; /* verde */
+}
+
+.feedback.error {
+    background-color: #F44336; /* rosso */
+}

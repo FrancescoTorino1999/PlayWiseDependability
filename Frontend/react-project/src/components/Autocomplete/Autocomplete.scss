@@ -1,0 +1,27 @@
+.list-results {
+    text-decoration: none;
+    position: absolute;
+    padding: 0;
+    background-color: white;
+    margin: 0;
+    width: 276px;
+    z-index: 9;
+    li {
+        list-style-type: none;
+        border-bottom: 1px solid black;
+        color: black;
+        height: 30px;
+    }
+}
+
+.input-search {
+    width: 270px;
+    height: 35px;
+}
+
+.search:has(*:focus, *:target) {
+    .list-results {
+        display: block;
+    }
+}
+
