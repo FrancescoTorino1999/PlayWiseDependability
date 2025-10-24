@@ -43,9 +43,7 @@ class UserServiceImplTest {
         nutty.setPassword("pass123");
         nutty.setRole("USER");
 
-        LoginRequestDto req = new LoginRequestDto();
-        req.setUsername("NuttyMan");
-        req.setPassword("pass123");
+        LoginRequestDto req = new LoginRequestDto("NuttyMan", "pass123");
 
         when(userRepository.findByUsername("NuttyMan")).thenReturn(Optional.of(nutty));
 
@@ -55,6 +53,7 @@ class UserServiceImplTest {
         assertEquals("NuttyMan", result.getUsername());
         assertEquals("USER", result.getRole());
     }
+
 
     @Test
     @DisplayName("login - credenziali errate restituisce null")

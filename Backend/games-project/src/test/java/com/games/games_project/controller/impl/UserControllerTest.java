@@ -16,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Date;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,6 +45,10 @@ class UserControllerTest {
                 "NuttyMan",
                 "USER"
         );
+
+        response.setUserId("6807a1904121deaab8a8d");
+        response.setUsername("NuttyMan");
+        response.setRole("USER");
 
         when(userService.login(any(LoginRequestDto.class))).thenReturn(response);
 
@@ -138,10 +144,17 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /users/getUserInfo → restituisce informazioni utente")
     void testGetUserInfo() throws Exception {
-        User user = new User();
-        user.setUsername("NuttyMan");
-        user.setEmail("nuttyman@gmail.com");
-        user.setRole("USER");
+        User user = new User(
+                "6807a1905d04121deaab7dd9",
+                "NuttyMan",
+                "nuttyman@gmail.com",
+                "pass123",
+                "Francesco",
+                "Torino",
+                "Male",
+                "USER",
+                new Date()
+        );
 
         when(userService.getUserInfo("NuttyMan")).thenReturn(user);
 

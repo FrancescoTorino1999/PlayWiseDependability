@@ -15,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.*;
@@ -73,7 +70,13 @@ class GameControllerTest {
     @Test
     @DisplayName("GET /games/autocomplete/{query} → restituisce suggerimenti")
     void testFindSuggestions() throws Exception {
-        GamePreviewDto g1 = new GamePreviewDto("6807a1905d04121deaab7d99", "Grand Theft Auto IV");
+        GamePreviewDto g1 = new GamePreviewDto();
+        g1.setId("6807a1905d04121deaab7d99");
+        g1.setTitle("Grand Theft Auto IV");
+        g1.setCover("//images.igdb.com/igdb/image/upload/t_1080p/co2lbv.jpg");
+        g1.setMetaScore(95.0);
+        g1.setUserScore(8.7);
+
         GamePreviewDto g2 = new GamePreviewDto("6807a1905d04121deaab7da0", "Grand Theft Auto V");
 
         when(gameService.findSuggestion("Grand"))
@@ -92,6 +95,17 @@ class GameControllerTest {
         FilterValuesDto filters = new FilterValuesDto();
         filters.setGenres(new LinkedHashSet<>(List.of("Action", "RPG")));
         filters.setPlatforms(new LinkedHashSet<>(List.of("PC", "PS5")));
+        filters.setDevelopers(new LinkedHashSet<>(List.of("Rockstar North")));
+        filters.setPublishers(new LinkedHashSet<>(List.of("Capcom", "Rockstar Games")));
+        filters.setThemes(new LinkedHashSet<>(List.of("Open world", "Adventure", "Action", "Shooter", "Racing")));
+        filters.setRatings(new LinkedHashSet<>(List.of("M")));
+        filters.setMinReleaseDate("2008-04-29T00:00:00.000+00:00");
+        filters.setMaxReleaseDate("2008-04-29T00:00:00.000+00:00");
+        filters.setMinMetaScore(89.0);
+        filters.setMaxMetaScore(99.0);
+        filters.setMinUserScore(79.0);
+        filters.setMaxUserScore(100.0);
+
 
         when(gameService.getAllFilterValues()).thenReturn(filters);
 
@@ -129,12 +143,38 @@ class GameControllerTest {
     @DisplayName("POST /games/findFilteredGames → restituisce risultati filtrati")
     void testFindFilteredGames() throws Exception {
         GameSearchFiltersDto filters = new GameSearchFiltersDto();
-        filters.setGenres(List.of("Action"));
-        filters.setPlatforms(List.of("PC"));
+
+        filters.setRatings(List.of("M", "18+"));
+        filters.setGenres(List.of("Action", "Adventure"));
+        filters.setDevelopers(List.of("Rockstar Games"));
+        filters.setPublishers(List.of("Take-Two Interactive"));
+        filters.setThemes(List.of("Crime", "Open World"));
+        filters.setPlatforms(List.of("PC", "PS5"));
+        filters.setFromMetaScore(70.0);
+        filters.setToMetaScore(100.0);
+        filters.setFromUserScore(7.0);
+        filters.setToUserScore(10.0);
+        Calendar cal = Calendar.getInstance();
+        cal.set(2010, Calendar.JANUARY, 1);
+        filters.setFromReleaseDate(cal.getTime());
+        cal.set(2025, Calendar.DECEMBER, 31);
+        filters.setToReleaseDate(cal.getTime());
+
+        filters.getRatings();
+        filters.getGenres();
+        filters.getDevelopers();
+        filters.getPublishers();
+        filters.getThemes();
+        filters.getPlatforms();
+        filters.getFromMetaScore();
+        filters.getToMetaScore();
+        filters.getFromUserScore();
+        filters.getToUserScore();
+        filters.getFromReleaseDate();
+        filters.getToReleaseDate();
 
         GamePreviewDto g1 = new GamePreviewDto("6807a1905d04121deaab7d99", "Grand Theft Auto IV");
 
-        // Allinea il nome campo al DTO (usa 'page' o 'currentPage' se diverso)
         PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>(
                 List.of(g1), 0, 1, 1, 1L, true, true);
 

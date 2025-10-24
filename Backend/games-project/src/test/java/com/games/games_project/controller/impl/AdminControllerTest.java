@@ -63,7 +63,9 @@ class AdminControllerTest {
     @DisplayName("GET /admin/stats/users-by-gender → ritorna lista conteggi per genere")
     void testGetUsersByGender() throws Exception {
         GenderCountDto male = new GenderCountDto("M", 3L);
-        GenderCountDto female = new GenderCountDto("F", 5L);
+        GenderCountDto female = new GenderCountDto();
+        female.setGender("F");
+        female.setCount(5L);
         when(userService.getUserCountByGender()).thenReturn(List.of(male, female));
 
         mockMvc.perform(get("/admin/stats/users-by-gender")
