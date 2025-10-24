@@ -66,6 +66,39 @@ class GameServiceImplTest {
         game.setMetaScore(94.0);
         game.setUserScore(92.0);
         game.setReviewCount(33);
+        game.setMetaScoreCount(1200.0);
+        game.setDescription("Stealth action game.");
+        game.setStoryline("Sam Fisher returns for a new mission.");
+        game.setSummary("A top-tier stealth experience.");
+        game.setCover("cover.jpg");
+        game.setVideo("trailer.mp4");
+        game.setDevelopers(List.of("Ubisoft Montreal"));
+        game.setPublishers(List.of("Ubisoft"));
+        game.setThemes(List.of("Stealth", "Espionage"));
+        game.setPlatforms(List.of("PC", "Xbox"));
+        game.setScreenshots(List.of("img1.jpg", "img2.jpg"));
+        Date releaseDate = new Date();
+        game.setReleaseDate(releaseDate);
+
+        assertEquals(id, game.getId());
+        assertEquals("Tom Clancy's Splinter Cell: Chaos Theory", game.getTitle());
+        assertEquals("Action Adventure", game.getGenre());
+        assertEquals("M", game.getRating());
+        assertEquals(94.0, game.getMetaScore());
+        assertEquals(92.0, game.getUserScore());
+        assertEquals(33, game.getReviewCount());
+        assertEquals(1200.0, game.getMetaScoreCount());
+        assertEquals("Stealth action game.", game.getDescription());
+        assertEquals("Sam Fisher returns for a new mission.", game.getStoryline());
+        assertEquals("A top-tier stealth experience.", game.getSummary());
+        assertEquals("cover.jpg", game.getCover());
+        assertEquals("trailer.mp4", game.getVideo());
+        assertEquals(List.of("Ubisoft Montreal"), game.getDevelopers());
+        assertEquals(List.of("Ubisoft"), game.getPublishers());
+        assertEquals(List.of("Stealth", "Espionage"), game.getThemes());
+        assertEquals(List.of("PC", "Xbox"), game.getPlatforms());
+        assertEquals(List.of("img1.jpg", "img2.jpg"), game.getScreenshots());
+        assertEquals(releaseDate, game.getReleaseDate());
 
         when(gameRepository.findById(id)).thenReturn(Optional.of(game));
         when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class)))
@@ -97,8 +130,27 @@ class GameServiceImplTest {
 
         Review r1 = new Review(); r1.setId("rev1"); r1.setAuthor("NikoBellic"); r1.setText("Welcome to Liberty City!");
         Review r2 = new Review(); r2.setId("rev2"); r2.setAuthor("Roman"); r2.setText("Let's go bowling!");
-        Review r3 = new Review(); r3.setId("rev3"); r3.setAuthor("PlayerX"); r3.setText("One of the best Rockstar titles.");
-        Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2, r3));
+        Review r3 = new Review();
+        r3.setId("rev3");
+        r3.setAuthor("PlayerX");
+        r3.setText("One of the best Rockstar titles.");
+        r3.setScore(9);
+        Date now = new Date();
+        r3.setDate(now);
+        ObjectId gameId = new ObjectId("671a9f4e9c7a4a321c7a9e01");
+        ObjectId userId = new ObjectId("671a9f4e9c7a4a321c7a9e02");
+        r3.setGameId(gameId);
+        r3.setUserId(userId);
+        r3.setGameName("Grand Theft Auto IV");
+
+        assertEquals("rev3", r3.getId());
+        assertEquals("PlayerX", r3.getAuthor());
+        assertEquals("One of the best Rockstar titles.", r3.getText());
+        assertEquals(9, r3.getScore());
+        assertEquals(now, r3.getDate());
+        assertEquals(gameId, r3.getGameId());
+        assertEquals(userId, r3.getUserId());
+        assertEquals("Grand Theft Auto IV", r3.getGameName());        Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2, r3));
 
         when(gameRepository.findById(id)).thenReturn(Optional.of(game));
         when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class))).thenReturn(reviewPage);
