@@ -1,0 +1,46 @@
+name: Build & Deploy Docker Images
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Install Frontend dependencies
+        working-directory: ./Frontend/react-project
+        run: npm install
+
+      - name: Build Backend with Maven
+        working-directory: ./Backend/games-project
+        run: mvn clean install -DskipTests
+
+      - name: Make Docker script executable
+        run: chmod +x Docker-info.sh
+
+      - name: Log in to DockerHub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+      - name: Run Docker-info.sh
+        run: ./Docker-info.sh
