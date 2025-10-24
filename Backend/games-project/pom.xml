@@ -49,8 +49,14 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- Reactive Test -->
+
+        <!-- Reactive Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -91,23 +97,40 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>0.8.12</version>
+
                 <executions>
+                    <!-- Attiva il monitoraggio coverage -->
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Genera il report dopo i test -->
                     <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
+
+                <!-- Configurazione opzionale -->
+                <configuration>
+                    <!-- Percorso dove verranno scritti i report -->
+                    <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+
+                    <!-- Esclusioni comuni (es. DTO, Model) -->
+                    <excludes>
+                        <exclude>**/dto/**</exclude>
+                        <exclude>**/model/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
-		</plugins>
+
+        </plugins>
 	</build>
 
 </project>
