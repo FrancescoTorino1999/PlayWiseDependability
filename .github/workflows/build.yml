@@ -33,6 +33,10 @@ jobs:
         working-directory: ./Backend/games-project
         run: mvn clean install -DskipTests
 
+      - name: Lunch Unit Tests for Backend Services with Maven
+        working-directory: ./Backend/games-project
+        run: mvn verify
+
       - name: Make Docker script executable
         run: chmod +x Docker-info.sh
 
