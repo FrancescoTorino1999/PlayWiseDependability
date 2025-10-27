@@ -98,6 +98,7 @@ class UserServiceImplTest {
         reg.setUsername("NuttyMan");
         reg.setPassword("1234");
         reg.setEmail("NuttyMan@gmail.com");
+        reg.setBirthDate(new Date());
 
         when(userRepository.findByEmailAndUsername("NuttyMan@gmail.com", "NuttyMan"))
                 .thenReturn(Optional.of(new User()));

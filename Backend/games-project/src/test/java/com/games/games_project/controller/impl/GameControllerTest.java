@@ -123,8 +123,16 @@ class GameControllerTest {
         GamePreviewDto g1 = new GamePreviewDto("6807a1905d04121deaab7d99", "GTA IV");
         GamePreviewDto g2 = new GamePreviewDto("6807a1905d04121deaab7da0", "GTA V");
 
-        PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>(
-                List.of(g1, g2), 0, 2, 1, 2L, true, true);
+        PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>();
+
+        page.setContent(List.of(g1, g2));
+        page.setPage(0);
+        page.setSize(2);
+        page.setTotalPages(1);
+        page.setTotalElements(2L);
+        page.setFirst(true);
+        page.setLast(true);
+
 
         when(gameService.getGamesPaginated(any(Pageable.class)))
                 .thenReturn(page);
