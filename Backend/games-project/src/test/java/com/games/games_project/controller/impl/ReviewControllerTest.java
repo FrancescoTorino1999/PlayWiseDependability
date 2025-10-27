@@ -1,6 +1,8 @@
-package com.games.games_project.controller;
+package com.games.games_project.controller.impl;
 
+import com.games.games_project.controller.ReviewController;
 import com.games.games_project.dto.*;
+import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.model.User;
 import com.games.games_project.service.GameService;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.bson.types.ObjectId;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +56,15 @@ class ReviewControllerTest {
         r2.setAuthor("User2");
         r2.setText("Molto bello");
 
-        PagedReviewsResponseDto<ReviewDetailsDto> page =
-                new PagedReviewsResponseDto<>(List.of(r1, r2), 0, 5, 1, 2L, true, true);
+        PagedReviewsResponseDto<ReviewDetailsDto> page = new PagedReviewsResponseDto<>();
+
+        page.setContent(List.of(r1, r2));
+        page.setPage(0);
+        page.setSize(5);
+        page.setTotalPages(1);
+        page.setTotalElements(2L);
+        page.setFirst(true);
+        page.setLast(true);
 
         when(reviewService.getReviewsByGameId(eq("6807a1905d04121deaab7d99"), any(Pageable.class)))
                 .thenReturn(page);
@@ -133,6 +144,8 @@ class ReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
+
+
 
     @Test
     @DisplayName("GET /reviews/game/{gameId}/review → restituisce recensione per autore")

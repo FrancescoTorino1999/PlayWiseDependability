@@ -40,10 +40,12 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /users/login → autenticazione riuscita")
     void testLogin_Success() throws Exception {
-        LoginResponseDto response = new LoginResponseDto(
-                "6807a1995d04121deaab8a8d",
-                "NuttyMan",
-                "USER"
+        LoginResponseDto response = new LoginResponseDto();
+
+        response = new LoginResponseDto(
+        "6807a1995d04121deaab8a8d",
+        "NuttyMan",
+        "USER"
         );
 
         response.setUserId("6807a1904121deaab8a8d");

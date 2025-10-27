@@ -1,6 +1,6 @@
 package com.games.games_project.service.impl;
 
-import com.games.games_project.dto.GameDetailsDto;
+import com.games.games_project.dto.*;
 import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.repositories.GameRepository;
@@ -209,5 +209,110 @@ class GameServiceImplTest {
 
         assertTrue(result.isPresent());
         assertNull(result.get().getReleaseDate());
+    }
+
+    @Test
+    @DisplayName("getGamesPaginated - deve restituire una pagina di anteprime giochi corretta")
+    void testGetGamesPaginated() {
+        Pageable pageable = mock(Pageable.class);
+
+        Game g1 = new Game(); g1.setId("id1"); g1.setTitle("GTA IV"); g1.setCover("gta.jpg"); g1.setMetaScore(95.0); g1.setUserScore(8.7);
+        Game g2 = new Game(); g2.setId("id2"); g2.setTitle("Splinter Cell"); g2.setCover("sc.jpg"); g2.setMetaScore(90.0); g2.setUserScore(9.1);
+        List<Game> games = List.of(g1, g2);
+        Page<Game> page = new PageImpl<>(games, pageable, 2);
+
+        when(gameRepository.findAll(pageable)).thenReturn(page);
+
+        var result = gameService.getGamesPaginated(pageable);
+
+        assertEquals(2, result.getContent().size());
+        assertEquals("GTA IV", result.getContent().get(0).getTitle());
+        assertEquals("Splinter Cell", result.getContent().get(1).getTitle());
+        assertEquals(2, result.getTotalElements());
+        assertTrue(result.getContent().stream().allMatch(dto -> dto.getMetaScore() > 0));
+        verify(gameRepository).findAll(pageable);
+    }
+
+    @Test
+    @DisplayName("findSuggestion - valore nullo o vuoto restituisce lista vuota")
+    void testFindSuggestion_NullOrEmpty() {
+        assertTrue(gameService.findSuggestion(null).isEmpty());
+        assertTrue(gameService.findSuggestion("   ").isEmpty());
+        verifyNoInteractions(gameRepository);
+    }
+
+    @Test
+    @DisplayName("findSuggestion - valore valido restituisce massimo 5 suggerimenti")
+    void testFindSuggestion_ValidValue() {
+        // Arrange
+        List<GamePreviewDto> suggestions = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            suggestions.add(new GamePreviewDto("id" + i, "Game " + i));
+        }
+
+        when(gameRepository.findSuggestions(anyString())).thenReturn(suggestions);
+
+        // Act
+        var result = gameService.findSuggestion("Game");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(5, result.size(), "Il risultato deve contenere massimo 5 elementi");
+        assertEquals("Game 1", result.get(0).getTitle());
+        assertEquals("id1", result.get(0).getId());
+        verify(gameRepository, times(1)).findSuggestions("Game");
+    }
+
+
+
+    @Test
+    @DisplayName("getAllFilterValues - deve restituire i valori di filtro dal repository")
+    void testGetAllFilterValues() {
+        FilterValuesDto filters = new FilterValuesDto();
+        filters.setGenres(Set.of("Action", "RPG"));
+        filters.setPlatforms(Set.of("PC", "PlayStation"));
+
+        when(gameRepository.getAllFilterValues()).thenReturn(filters);
+
+        FilterValuesDto result = gameService.getAllFilterValues();
+
+        assertNotNull(result);
+        assertEquals(2, result.getGenres().size());
+        verify(gameRepository).getAllFilterValues();
+    }
+
+    @Test
+    @DisplayName("findFilteredGames - deve restituire una pagina filtrata corretta")
+    void testFindFilteredGames() {
+        Pageable pageable = mock(Pageable.class);
+        GameSearchFiltersDto filters = new GameSearchFiltersDto();
+        Game g1 = new Game(); g1.setId("id1"); g1.setTitle("Filtered Game"); g1.setCover("f.jpg"); g1.setMetaScore(80.0); g1.setUserScore(7.5);
+        Page<Game> page = new PageImpl<>(List.of(g1), pageable, 1);
+
+        when(gameRepository.findGamesByFilters(pageable, filters)).thenReturn(page);
+
+        var result = gameService.findFilteredGames(pageable, filters);
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("Filtered Game", result.getContent().get(0).getTitle());
+        verify(gameRepository).findGamesByFilters(pageable, filters);
+    }
+
+    @Test
+    @DisplayName("getGameCountByPlatform - deve restituire la lista delle piattaforme con conteggio giochi")
+    void testGetGameCountByPlatform() {
+        List<PlatformCountDto> counts = List.of(
+                new PlatformCountDto("PC", 120L),
+                new PlatformCountDto("PlayStation", 80L)
+        );
+
+        when(gameRepository.countGamesByPlatform()).thenReturn(counts);
+
+        var result = gameService.getGameCountByPlatform();
+
+        assertEquals(2, result.size());
+        assertEquals("PC", result.get(0).getPlatform());
+        assertEquals(120L, result.get(0).getCount());
+        verify(gameRepository).countGamesByPlatform();
     }
 }

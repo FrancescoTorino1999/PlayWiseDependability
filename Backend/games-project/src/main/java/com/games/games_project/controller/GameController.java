@@ -44,8 +44,7 @@ public class GameController {
             @RequestParam(defaultValue = "userScore,desc") String sort
     ) {
         String[] sortParts = sort.split(",");
-        Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc")
-                ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sortBy = Sort.by(direction, sortParts[0]);
 
         Pageable pageable = PageRequest.of(page, size, sortBy);

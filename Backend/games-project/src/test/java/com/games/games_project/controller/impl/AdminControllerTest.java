@@ -44,7 +44,11 @@ class AdminControllerTest {
     @Test
     @DisplayName("GET /admin/stats/reviews-per-month → ritorna lista di recensioni per mese")
     void testGetReviewsPerMonth() throws Exception {
-        ReviewsMonthlyCountDto dto1 = new ReviewsMonthlyCountDto(2024, 120L, 9);
+        ReviewsMonthlyCountDto dto1 = new ReviewsMonthlyCountDto();
+
+        dto1.setYear(2024);
+        dto1.setMonth(9);
+        dto1.setCount(120L);
         ReviewsMonthlyCountDto dto2 = new ReviewsMonthlyCountDto(2024, 150L, 10);
         when(reviewService.getMonthlyReviewCount()).thenReturn(List.of(dto1, dto2));
 
@@ -78,7 +82,10 @@ class AdminControllerTest {
     @Test
     @DisplayName("GET /admin/stats/games-by-platform → ritorna conteggio giochi per piattaforma")
     void testGetGamesByPlatform() throws Exception {
-        PlatformCountDto pc = new PlatformCountDto("PC", 450L);
+        PlatformCountDto pc = new PlatformCountDto();
+
+        pc.setPlatform("PC");
+        pc.setCount(450L);
         PlatformCountDto ps5 = new PlatformCountDto("PlayStation 5", 320L);
         when(gameService.getGameCountByPlatform()).thenReturn(List.of(pc, ps5));
 
