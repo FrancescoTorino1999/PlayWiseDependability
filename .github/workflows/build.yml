@@ -37,14 +37,46 @@ jobs:
         working-directory: ./Backend/games-project
         run: mvn verify
 
+      - name: GitGuardian Secrets Scan
+        uses: GitGuardian/ggshield-action@v1
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+        with:
+          args: scan repo .
+
+      - name: Snyk Security Scan (Backend)
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+          command: test
+          project-directory: ./Backend/games-project
+
+      - name: Snyk Security Scan (Frontend)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+          command: test
+          project-directory: ./Frontend/react-project
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=playwise
+            -Dsonar.projectKey=PlayWiseDependability
+            -Dsonar.sources=./Backend/games-project/src,./Frontend/react-project/src
+            -Dsonar.java.binaries=./Backend/games-project/target
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sourceEncoding=UTF-8
+
       - name: Make Docker script executable
         run: chmod +x Docker-info.sh
 
       - name: Log in to DockerHub
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-
-      - name: Run Docker-info.sh
-        run: ./Docker-info.sh
