@@ -45,7 +45,6 @@ jobs:
           args: secret scan path .
 
 
-
       - name: Snyk Security Scan (Backend)
         uses: snyk/actions/maven@master
         env:
