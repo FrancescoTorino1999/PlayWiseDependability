@@ -12,7 +12,7 @@ services:
       - "5010:5010"
     restart: on-failure
     environment:
-      - MONGODB_URI=${MONGO_URI}
+      - MONGODB_URI=${MONGODB_URI}
       - SPRING_PROFILES_ACTIVE=prod
     networks:
       - games-network
