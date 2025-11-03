@@ -41,17 +41,21 @@ jobs:
 
       - name: Snyk Security Scan (Backend)
         run: |
+          npm install -g snyk
           cd ./Backend/games-project
           snyk test --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+
       - name: Snyk Security Scan (Frontend)
         run: |
+          npm install -g snyk
           cd ./Frontend/react-project
           snyk test --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
