@@ -40,22 +40,18 @@ jobs:
 
 
       - name: Snyk Security Scan (Backend)
-        uses: snyk/actions/maven@master
+        run: |
+          cd ./Backend/games-project
+          snyk test --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: test --severity-threshold=medium
-        working-directory: ./Backend/games-project
-
 
       - name: Snyk Security Scan (Frontend)
-        uses: snyk/actions/node@master
+        run: |
+          cd ./Frontend/react-project
+          snyk test --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: test --severity-threshold=medium
-        working-directory: ./Frontend/react-project
-
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
