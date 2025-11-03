@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-
   games-service:
     build:
       context: ./Backend/games-project
@@ -12,8 +11,13 @@ services:
       - "8081:8081"
       - "5010:5010"
     restart: on-failure
+    environment:
+      - MONGODB_URI=${MONGO_URI}
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - games-network
+    depends_on:
+      - frontend
 
   frontend:
     build:
