@@ -42,7 +42,8 @@ jobs:
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
         with:
-          args: scan path . --exclude src/test
+          args: secret scan path . --exclude src/test --exclude target --exclude node_modules
+
 
 
       - name: Snyk Security Scan (Backend)
