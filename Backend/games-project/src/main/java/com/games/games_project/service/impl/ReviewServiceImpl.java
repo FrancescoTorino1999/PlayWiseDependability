@@ -39,7 +39,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         Page<Review> reviewPage = reviewRepository.findByGameId(gameObjectId, pageable);
 
-        // Mappa le recensioni a ReviewDetailsDto
         List<ReviewDetailsDto> reviewDtos = reviewPage.getContent().stream().map(review -> {
             ReviewDetailsDto dto = new ReviewDetailsDto();
             dto.setId(review.getId());
@@ -51,7 +50,6 @@ public class ReviewServiceImpl implements ReviewService {
             return dto;
         }).collect(Collectors.toList());
 
-        // Crea e restituisce un PagedReviewsResponseDto con le recensioni mappate
         return new PagedReviewsResponseDto<>(
                 reviewDtos,
                 reviewPage.getNumber(),
@@ -66,28 +64,23 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Boolean addReview(Review review) {
-        // Controllo se l'autore ha già recensito questo gioco
         Optional<Review> existing = reviewRepository.findByGameIdAndAuthor(review.getGameId(), review.getAuthor());
         if (existing.isPresent()) {
             throw new RuntimeException("Review already exists");
         }
 
-        //Salva la recensione
         reviewRepository.save(review);
 
-        //Recupera le Info del Gioco
         ObjectId gameId = review.getGameId();
         Game game = gameRepository.findById(String.valueOf(gameId))
                 .orElseThrow(() -> new RuntimeException("Game not found!"));
 
-        //Aggiorna punteggio e numero recensioni
         int numReviews = game.getReviewCount();
         double currentAvg = game.getUserScore();
         double newAvg = Math.round(((currentAvg * numReviews) + review.getScore()) / (numReviews + 1));
         game.setUserScore(newAvg);
         game.setReviewCount(numReviews + 1);
 
-        //Salva modifiche
         gameRepository.save(game);
 
         return Boolean.TRUE;
@@ -103,18 +96,15 @@ public class ReviewServiceImpl implements ReviewService {
             double oldScore = existingReview.get().getScore();
             double newScore = review.getScore();
 
-            //Aggiorna Recensione
             updatedReview.setText(review.getText());
             updatedReview.setScore(review.getScore());
             updatedReview.setDate(review.getDate());
             reviewRepository.save(updatedReview);
 
-            //Trova Info del Gioco
             ObjectId gameId = updatedReview.getGameId();
             Game game = gameRepository.findById(String.valueOf(gameId))
                     .orElseThrow(() -> new RuntimeException("Game not found!"));
 
-            //Aggiorna Score e numero Recensioni
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
             double newAvg = Math.round(((currentAvg * numReviews) - oldScore + newScore) / numReviews);
@@ -130,18 +120,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Boolean deleteReview(Review review) {
-        // Recupera la review
         Optional<Review> reviewOpt = reviewRepository.findById(review.getId());
         if (reviewOpt.isPresent()) {
             Review reviewToDelete = reviewOpt.get();
             double scoreToDelete = reviewToDelete.getScore();
 
-            // Trova info gioco associato
             ObjectId gameId = reviewToDelete.getGameId();
             Game game = gameRepository.findById(String.valueOf(gameId))
                     .orElseThrow(() -> new RuntimeException("Game not found!"));
 
-            // Aggiorna il punteggio medio e il numero di recensioni
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
 
@@ -154,10 +141,8 @@ public class ReviewServiceImpl implements ReviewService {
                 game.setReviewCount(numReviews - 1);
             }
 
-            // Salva il gioco aggiornato
             gameRepository.save(game);
 
-            // Cancella la review
             reviewRepository.deleteById(review.getId());
             return Boolean.TRUE;
         }
@@ -170,7 +155,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         Page<Review> reviewPage = reviewRepository.findByAuthor(author, pageable);
 
-        // Mappa le recensioni a UserProfileReviewDto
         List<UserProfileReviewDto> reviewDtos = reviewPage.getContent().stream().map(review -> {
             Optional<Game> reviewedGame = gameRepository.findById(String.valueOf(review.getGameId()));
             UserProfileReviewDto dto = new UserProfileReviewDto();
@@ -190,7 +174,6 @@ public class ReviewServiceImpl implements ReviewService {
             return dto;
         }).collect(Collectors.toList());
 
-        // Crea e restituisce un PagedReviewsResponseDto con le recensioni mappate
         return new PagedReviewsResponseDto<>(
                 reviewDtos,
                 reviewPage.getNumber(),

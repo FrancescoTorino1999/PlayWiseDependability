@@ -207,7 +207,7 @@ class ReviewControllerTest {
         mockMvc.perform(get("/reviews/games/1/reviews")
                         .param("page", "0")
                         .param("size", "5")
-                        .param("sort", "date")  // Nessuna direzione
+                        .param("sort", "date")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].author").value("UserX"));
@@ -246,7 +246,6 @@ class ReviewControllerTest {
     @Test
     @DisplayName("GET /reviews/games/{gameId}/reviews → verifica Sort.Direction ASC e DESC")
     void testGetReviewsForGame_VerifySortDirection() throws Exception {
-        // ASC
         PagedReviewsResponseDto<ReviewDetailsDto> pageAsc = new PagedReviewsResponseDto<>();
         pageAsc.setContent(List.of(new ReviewDetailsDto()));
         when(reviewService.getReviewsByGameId(eq("1"), any(Pageable.class))).thenReturn(pageAsc);
@@ -261,7 +260,6 @@ class ReviewControllerTest {
         Pageable pageableAsc = captorAsc.getValue();
         assertEquals(Sort.Direction.ASC, pageableAsc.getSort().getOrderFor("date").getDirection());
 
-        // DESC
         PagedReviewsResponseDto<ReviewDetailsDto> pageDesc = new PagedReviewsResponseDto<>();
         pageDesc.setContent(List.of(new ReviewDetailsDto()));
         when(reviewService.getReviewsByGameId(eq("2"), any(Pageable.class))).thenReturn(pageDesc);

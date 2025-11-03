@@ -30,7 +30,6 @@ class UserServiceImplTest {
     @BeforeEach
     void setup() { MockitoAnnotations.openMocks(this); }
 
-    // ------------------------ LOGIN ------------------------
 
     @Test
     @DisplayName("login - utente valido")
@@ -86,8 +85,6 @@ class UserServiceImplTest {
         LoginRequestDto req2 = new LoginRequestDto("user", null);
         assertNull(userService.login(req2));
     }
-
-    // ------------------------ REGISTER ------------------------
 
     @Test
     @DisplayName("register - nuovo utente valido")
@@ -148,8 +145,6 @@ class UserServiceImplTest {
         assertFalse(userService.register(r3));
     }
 
-    // ------------------------ GET USER INFO ------------------------
-
     @Test
     @DisplayName("getUserInfo - utente esistente")
     void testGetUserInfo_Existing() {
@@ -172,8 +167,6 @@ class UserServiceImplTest {
         assertNotNull(result);
         assertNull(result.getUsername());
     }
-
-    // ------------------------ UPDATE USER ------------------------
 
     @Test
     @DisplayName("updateUser - aggiorna dati utente")
@@ -204,8 +197,6 @@ class UserServiceImplTest {
         user.setUsername("ghost");
         assertFalse(userService.updateUser(user));
     }
-
-    // ------------------------ DELETE USER ------------------------
 
     @Test
     @DisplayName("deleteUser - aggiorna giochi e cancella recensioni")
@@ -280,8 +271,6 @@ class UserServiceImplTest {
         assertEquals(0, singleGame.getReviewCount());
         verify(reviewRepository).deleteById("rev1");
     }
-
-    // ------------------------ GENDER COUNT ------------------------
 
     @Test
     @DisplayName("getUserCountByGender - conteggio corretto")

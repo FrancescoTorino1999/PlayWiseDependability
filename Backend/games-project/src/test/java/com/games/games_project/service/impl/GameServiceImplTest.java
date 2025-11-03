@@ -48,7 +48,7 @@ class GameServiceImplTest {
     @Test
     @DisplayName("getGameDetailsById - ID inesistente restituisce Optional vuoto")
     void testGetGameDetailsById_GameNotFound() {
-        String id = "6807a1905d04121deaab7d99"; // GTA IV
+        String id = "6807a1905d04121deaab7d99";
         when(gameRepository.findById(id)).thenReturn(Optional.empty());
         Optional<GameDetailsDto> result = gameService.getGameDetailsById(id);
         assertTrue(result.isEmpty());
@@ -189,7 +189,7 @@ class GameServiceImplTest {
         Optional<GameDetailsDto> result = gameService.getGameDetailsById(id);
 
         assertTrue(result.isPresent());
-        assertEquals(8, result.get().getLatestReviews().size()); // repository mock returns 8
+        assertEquals(8, result.get().getLatestReviews().size());
     }
 
     @Test
@@ -244,7 +244,6 @@ class GameServiceImplTest {
     @Test
     @DisplayName("findSuggestion - valore valido restituisce massimo 5 suggerimenti")
     void testFindSuggestion_ValidValue() {
-        // Arrange
         List<GamePreviewDto> suggestions = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
             suggestions.add(new GamePreviewDto("id" + i, "Game " + i));
@@ -252,10 +251,8 @@ class GameServiceImplTest {
 
         when(gameRepository.findSuggestions(anyString())).thenReturn(suggestions);
 
-        // Act
         var result = gameService.findSuggestion("Game");
 
-        // Assert
         assertNotNull(result);
         assertEquals(5, result.size(), "Il risultato deve contenere massimo 5 elementi");
         assertEquals("Game 1", result.get(0).getTitle());
