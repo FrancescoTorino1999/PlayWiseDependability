@@ -6,17 +6,20 @@ import com.games.games_project.service.GameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -138,4 +141,76 @@ class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].title").value("A Game"));
     }
+
+    @Test
+    @DisplayName("GET /games/games → gestisce sort senza direzione (default DESC)")
+    void testGetGamesPage_SortWithoutDirection() throws Exception {
+        GamePreviewDto g1 = new GamePreviewDto("1", "X Game");
+        GamePreviewDto g2 = new GamePreviewDto("2", "Y Game");
+
+        PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>(
+                List.of(g1, g2), 0, 2, 1, 2L, true, true);
+
+        when(gameService.getGamesPaginated(any(Pageable.class)))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/games/games")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sort", "title") // Nessuna direzione -> default DESC
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].title").value("X Game"));
+
+        // Verifica che il service sia stato chiamato
+        Mockito.verify(gameService).getGamesPaginated(any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("GET /games/games → gestisce sort con 'ASC' maiuscolo")
+    void testGetGamesPage_SortAscUppercase() throws Exception {
+        GamePreviewDto g1 = new GamePreviewDto("1", "C Game");
+        GamePreviewDto g2 = new GamePreviewDto("2", "D Game");
+
+        PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>(
+                List.of(g1, g2), 0, 2, 1, 2L, true, true);
+
+        when(gameService.getGamesPaginated(any(Pageable.class)))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/games/games")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sort", "title,ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].title").value("C Game"));
+    }
+
+    @Test
+    @DisplayName("GET /games/games → passa Pageable con direzione ASC")
+    void testGetGamesPage_SortAsc_VerifyDirection() throws Exception {
+        GamePreviewDto g1 = new GamePreviewDto("1", "A");
+        GamePreviewDto g2 = new GamePreviewDto("2", "B");
+
+        PagedGamesResponseDto<GamePreviewDto> page =
+                new PagedGamesResponseDto<>(List.of(g1, g2), 0, 2, 1, 2L, true, true);
+        when(gameService.getGamesPaginated(any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/games/games")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sort", "title,asc")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        // 🔎 Cattura il Pageable effettivamente passato
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        Mockito.verify(gameService).getGamesPaginated(captor.capture());
+        Pageable pageable = captor.getValue();
+
+        assertEquals(Sort.Direction.ASC,
+                pageable.getSort().getOrderFor("title").getDirection());
+    }
+
 }

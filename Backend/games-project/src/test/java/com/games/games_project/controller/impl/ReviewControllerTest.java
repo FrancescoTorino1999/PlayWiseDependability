@@ -9,18 +9,21 @@ import com.games.games_project.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -188,5 +191,89 @@ class ReviewControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].author").value("Alpha"));
+    }
+
+    @Test
+    @DisplayName("GET /reviews/games/{gameId}/reviews → gestisce sort senza direzione (default DESC)")
+    void testGetReviewsForGame_NoDirection_DefaultDesc() throws Exception {
+        ReviewDetailsDto r = new ReviewDetailsDto();
+        r.setAuthor("UserX");
+        r.setText("Recensione X");
+
+        PagedReviewsResponseDto<ReviewDetailsDto> page =
+                new PagedReviewsResponseDto<>(List.of(r), 0, 5, 1, 1L, true, true);
+        when(reviewService.getReviewsByGameId(eq("1"), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/reviews/games/1/reviews")
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("sort", "date")  // Nessuna direzione
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].author").value("UserX"));
+
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        Mockito.verify(reviewService).getReviewsByGameId(eq("1"), captor.capture());
+        Pageable pageable = captor.getValue();
+        assertEquals(Sort.Direction.DESC, pageable.getSort().getOrderFor("date").getDirection());
+    }
+
+    @Test
+    @DisplayName("GET /reviews/games/{gameId}/reviews → gestisce sort con 'ASC' maiuscolo")
+    void testGetReviewsForGame_SortAscUppercase() throws Exception {
+        ReviewDetailsDto r = new ReviewDetailsDto();
+        r.setAuthor("Upper");
+        r.setText("Maiuscolo ASC");
+
+        PagedReviewsResponseDto<ReviewDetailsDto> page =
+                new PagedReviewsResponseDto<>(List.of(r), 0, 5, 1, 1L, true, true);
+        when(reviewService.getReviewsByGameId(eq("2"), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/reviews/games/2/reviews")
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("sort", "date,ASC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].author").value("Upper"));
+
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        Mockito.verify(reviewService).getReviewsByGameId(eq("2"), captor.capture());
+        Pageable pageable = captor.getValue();
+        assertEquals(Sort.Direction.ASC, pageable.getSort().getOrderFor("date").getDirection());
+    }
+
+    @Test
+    @DisplayName("GET /reviews/games/{gameId}/reviews → verifica Sort.Direction ASC e DESC")
+    void testGetReviewsForGame_VerifySortDirection() throws Exception {
+        // ASC
+        PagedReviewsResponseDto<ReviewDetailsDto> pageAsc = new PagedReviewsResponseDto<>();
+        pageAsc.setContent(List.of(new ReviewDetailsDto()));
+        when(reviewService.getReviewsByGameId(eq("1"), any(Pageable.class))).thenReturn(pageAsc);
+
+        mockMvc.perform(get("/reviews/games/1/reviews")
+                        .param("sort", "date,asc")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Pageable> captorAsc = ArgumentCaptor.forClass(Pageable.class);
+        Mockito.verify(reviewService).getReviewsByGameId(eq("1"), captorAsc.capture());
+        Pageable pageableAsc = captorAsc.getValue();
+        assertEquals(Sort.Direction.ASC, pageableAsc.getSort().getOrderFor("date").getDirection());
+
+        // DESC
+        PagedReviewsResponseDto<ReviewDetailsDto> pageDesc = new PagedReviewsResponseDto<>();
+        pageDesc.setContent(List.of(new ReviewDetailsDto()));
+        when(reviewService.getReviewsByGameId(eq("2"), any(Pageable.class))).thenReturn(pageDesc);
+
+        mockMvc.perform(get("/reviews/games/2/reviews")
+                        .param("sort", "date,desc")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Pageable> captorDesc = ArgumentCaptor.forClass(Pageable.class);
+        Mockito.verify(reviewService).getReviewsByGameId(eq("2"), captorDesc.capture());
+        Pageable pageableDesc = captorDesc.getValue();
+        assertEquals(Sort.Direction.DESC, pageableDesc.getSort().getOrderFor("date").getDirection());
     }
 }

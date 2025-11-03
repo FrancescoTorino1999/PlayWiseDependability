@@ -88,3 +88,6 @@ jobs:
 
       - name: Run Docker-info.sh
         run: ./Docker-info.sh
+            - name: Run PIT Mutation Testing
+        working-directory: ./Backend/games-project
+        run: mvn org.pitest:pitest-maven:mutationCoverage -DwithHistory

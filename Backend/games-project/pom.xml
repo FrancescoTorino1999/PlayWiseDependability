@@ -26,7 +26,6 @@
 	</properties>
 
 	<dependencies>
-		<!-- MongoDB Reactive -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
@@ -36,13 +35,11 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
-		<!-- WebFlux (reattivo, senza servlet) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
-		<!-- Devtools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -56,7 +53,6 @@
         </dependency>
 
 
-        <!-- Reactive Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -87,17 +83,15 @@
         </dependency>
 
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.15.3</version> <!-- supporta Java 25 -->
-            <scope>test</scope>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.37</version>
         </dependency>
-
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-agent</artifactId>
-            <version>1.15.3</version>
-            <scope>test</scope>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.37</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -125,33 +119,28 @@
                 <artifactId>pitest-maven</artifactId>
                 <version>1.15.2</version>
                 <configuration>
-                    <!-- Pacchetti su cui applicare il mutation testing -->
                     <targetClasses>
                         <param>com.games.*</param>
                     </targetClasses>
 
-                    <!-- Classi di test da eseguire -->
                     <targetTests>
                         <param>com.games.*Test</param>
                     </targetTests>
 
-                    <!-- Directory di output dei report -->
                     <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
 
-                    <!-- Timeout per evitare blocchi -->
                     <timeoutFactor>1.25</timeoutFactor>
 
-                    <!-- Evita test su librerie esterne -->
                     <excludedClasses>
                         <param>com.games.dto.*</param>
                         <param>com.games.model.*</param>
                     </excludedClasses>
 
-                    <!-- Include solo mutazioni significative -->
                     <mutationThreshold>40</mutationThreshold>
 
                 </configuration>
             </plugin>
+           
 
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -159,35 +148,40 @@
                 <version>0.8.12</version>
 
                 <executions>
-                    <!-- Attiva il monitoraggio coverage -->
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/CorsConfig.class</exclude>
+                                <exclude>**/*Config.class</exclude>
+                                <exclude>**/config/**/*</exclude>
+
+                                <exclude>**/GamesProjectApplication.class</exclude>
+
+                                <exclude>**/constants/**/*</exclude>
+
+                                <exclude>**/dto/**/*</exclude>
+                                <exclude>**/model/**/*</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
 
-                    <!-- Genera il report dopo i test -->
                     <execution>
                         <id>report</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
-
-                <!-- Configurazione opzionale -->
-                <configuration>
-                    <!-- Percorso dove verranno scritti i report -->
-                    <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
-
-                    <!-- Esclusioni comuni (es. DTO, Model) -->
-                    <excludes>
-                        <exclude>**/dto/**</exclude>
-                        <exclude>**/model/**</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

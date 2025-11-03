@@ -370,4 +370,33 @@ class ReviewServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    @DisplayName("getMonthlyReviewCount - restituisce lista corretta (year,count,month)")
+    void testGetMonthlyReviewCount() {
+        // Mock dati: Gennaio 2025: 12 review, Febbraio 2025: 18 review
+        List<ReviewsMonthlyCountDto> mockCounts = List.of(
+                new ReviewsMonthlyCountDto(2025, 12L, 1),
+                new ReviewsMonthlyCountDto(2025, 18L, 2)
+        );
+
+        when(reviewRepository.countReviewsPerMonth()).thenReturn(mockCounts);
+
+        List<ReviewsMonthlyCountDto> result = reviewService.getMonthlyReviewCount();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        assertEquals(2025, result.get(0).getYear());
+        assertEquals(12L, result.get(0).getCount());
+        assertEquals(1, result.get(0).getMonth());
+
+        assertEquals(2025, result.get(1).getYear());
+        assertEquals(18L, result.get(1).getCount());
+        assertEquals(2, result.get(1).getMonth());
+
+        verify(reviewRepository, times(1)).countReviewsPerMonth();
+    }
+
+
+
 }
