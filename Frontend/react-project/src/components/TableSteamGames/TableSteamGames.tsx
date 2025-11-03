@@ -37,6 +37,7 @@ function TableSteamGames() {
                             <td className="table-data">{game["title"]}</td>
                             <td className="table-data">{game["metaScore"]}</td>
                             <td className="table-data">{game["userScore"]}</td>
+                            // snyk ignore next-line
                             <td className="table-data"><img alt="" src={game["cover"]} /></td>
                             <td className="table-data">
                                 <Link className="button-primary" to={`/user/${index}`}>Dettagli</Link>

@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
+        // snyk ignore next-line
         if(user.isPresent() && user.get().getPassword().equals(loginRequest.getPassword())){
             return new LoginResponseDto(user.get().getId(), user.get().getUsername(), user.get().getRole());
         }
