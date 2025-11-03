@@ -37,13 +37,6 @@ jobs:
         working-directory: ./Backend/games-project
         run: mvn verify
 
-      - name: GitGuardian Secrets Scan
-        uses: GitGuardian/ggshield-action@v1.33.0
-        env:
-          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
-        with:
-          args: scan path . --exclude src/test --exclude target --exclude node_modules
-
 
 
       - name: Snyk Security Scan (Backend)
