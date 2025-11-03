@@ -105,7 +105,7 @@ class UserControllerTest {
     @DisplayName("POST /users/register → registrazione fallita (409 Conflict)")
     void testRegister_Fail() throws Exception {
         when(userService.register(any(RegistrationRequestDto.class))).thenReturn(false);
-
+        //ggignore
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""

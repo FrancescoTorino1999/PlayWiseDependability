@@ -81,18 +81,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean deleteUser(User user) {
-        // Recupera tutte le review dell'utente
         Page<Review> reviewsPage = reviewRepository.findByAuthor(user.getUsername(), Pageable.unpaged());
         List<Review> reviews = reviewsPage.getContent();
 
-        // Elimina Tutte le Review dell`utente e aggiorna i punteggi dei giochi
         for (Review review : reviews) {
-            // Recupera il gioco associato alla review
             ObjectId gameId = review.getGameId();
             Game game = gameRepository.findById(String.valueOf(gameId))
                     .orElseThrow(() -> new RuntimeException("Game not Found!"));
 
-            // Aggiorna Score e Numero Recensioni
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
             double reviewScore = review.getScore();
@@ -107,11 +103,9 @@ public class UserServiceImpl implements UserService {
             }
             gameRepository.save(game);
 
-            // Elimina la review
             reviewRepository.deleteById(review.getId());
         }
 
-        // Elimina l'utente
         userRepository.deleteByUsername(user.getUsername());
 
         return Boolean.TRUE;

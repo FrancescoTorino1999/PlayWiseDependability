@@ -162,7 +162,6 @@ class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].title").value("X Game"));
 
-        // Verifica che il service sia stato chiamato
         Mockito.verify(gameService).getGamesPaginated(any(Pageable.class));
     }
 
@@ -204,7 +203,6 @@ class GameControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // 🔎 Cattura il Pageable effettivamente passato
         ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
         Mockito.verify(gameService).getGamesPaginated(captor.capture());
         Pageable pageable = captor.getValue();

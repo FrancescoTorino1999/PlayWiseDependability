@@ -54,7 +54,6 @@ public class GameServiceImpl implements GameService {
             dto.setReviewCount(game.getReviewCount());
             dto.setScreenshots(game.getScreenshots());
 
-            // Recupera le 5 recensioni più recenti
             Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("date")));
             Page<Review> recentReviews = reviewRepository.findByGameId(new ObjectId(id), pageable);
 
@@ -104,7 +103,7 @@ public class GameServiceImpl implements GameService {
             return List.of();
         }
         return gameRepository.findSuggestions(value).stream()
-                .limit(5) // Limita a 5 risultati
+                .limit(5)
                 .map(game -> new GamePreviewDto(game.getId(), game.getTitle()))
                 .toList();
     }

@@ -8,12 +8,12 @@ public class RatingComparator implements Comparator<String> {
     private static final Map<String, Integer> ratingPriority = new HashMap<>();
 
     static {
-        ratingPriority.put("AO", 1);    // Adults Only
-        ratingPriority.put("M", 2);     // Mature
-        ratingPriority.put("T", 3);     // Teen
-        ratingPriority.put("E10+", 4);  // Everyone 10+
-        ratingPriority.put("E", 5);     // Everyone
-        ratingPriority.put("K-A", 6);   // Kids-To-Adults
+        ratingPriority.put("AO", 1);
+        ratingPriority.put("M", 2);
+        ratingPriority.put("T", 3);
+        ratingPriority.put("E10+", 4);
+        ratingPriority.put("E", 5);
+        ratingPriority.put("K-A", 6);
     }
 
     @Override

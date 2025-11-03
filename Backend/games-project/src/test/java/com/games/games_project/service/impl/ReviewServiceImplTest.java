@@ -373,7 +373,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("getMonthlyReviewCount - restituisce lista corretta (year,count,month)")
     void testGetMonthlyReviewCount() {
-        // Mock dati: Gennaio 2025: 12 review, Febbraio 2025: 18 review
         List<ReviewsMonthlyCountDto> mockCounts = List.of(
                 new ReviewsMonthlyCountDto(2025, 12L, 1),
                 new ReviewsMonthlyCountDto(2025, 18L, 2)
