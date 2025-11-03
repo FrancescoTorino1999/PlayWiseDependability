@@ -38,11 +38,11 @@ jobs:
         run: mvn verify
 
       - name: GitGuardian Secrets Scan
-        uses: GitGuardian/ggshield-action@v1
+        uses: GitGuardian/ggshield-action@v1.33.0
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
         with:
-          args: secret scan path . --exclude src/test --exclude target --exclude node_modules
+          args: scan path . --exclude src/test --exclude target --exclude node_modules
 
 
 
