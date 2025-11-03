@@ -68,13 +68,39 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<dependency>
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.15.3</version> <!-- supporta Java 25 -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>1.15.3</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 	<dependencyManagement>
 		<dependencies>
@@ -94,6 +120,39 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.2</version>
+                <configuration>
+                    <!-- Pacchetti su cui applicare il mutation testing -->
+                    <targetClasses>
+                        <param>com.games.*</param>
+                    </targetClasses>
+
+                    <!-- Classi di test da eseguire -->
+                    <targetTests>
+                        <param>com.games.*Test</param>
+                    </targetTests>
+
+                    <!-- Directory di output dei report -->
+                    <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
+
+                    <!-- Timeout per evitare blocchi -->
+                    <timeoutFactor>1.25</timeoutFactor>
+
+                    <!-- Evita test su librerie esterne -->
+                    <excludedClasses>
+                        <param>com.games.dto.*</param>
+                        <param>com.games.model.*</param>
+                    </excludedClasses>
+
+                    <!-- Include solo mutazioni significative -->
+                    <mutationThreshold>40</mutationThreshold>
+
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -127,6 +186,14 @@
                         <exclude>**/dto/**</exclude>
                         <exclude>**/model/**</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>-Dnet.bytebuddy.experimental=true</argLine>
                 </configuration>
             </plugin>
 

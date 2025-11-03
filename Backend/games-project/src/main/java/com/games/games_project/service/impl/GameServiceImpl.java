@@ -109,35 +109,7 @@ public class GameServiceImpl implements GameService {
                 .toList();
     }
 
-    @Override
-    public FilterValuesDto getAllFilterValues() {
-        return gameRepository.getAllFilterValues();
-    }
 
-    @Override
-    public PagedGamesResponseDto<GamePreviewDto> findFilteredGames(Pageable correctedPageable, GameSearchFiltersDto filter) {
-        Page<Game> gamePage = gameRepository.findGamesByFilters(correctedPageable, filter);
-
-        List<GamePreviewDto> dtos = gamePage.getContent().stream().map(game -> {
-            GamePreviewDto dto = new GamePreviewDto();
-            dto.setId(game.getId());
-            dto.setTitle(game.getTitle());
-            dto.setCover(game.getCover());
-            dto.setMetaScore(game.getMetaScore());
-            dto.setUserScore(game.getUserScore());
-            return dto;
-        }).toList();
-
-        return new PagedGamesResponseDto<>(
-                dtos,
-                gamePage.getNumber(),
-                gamePage.getSize(),
-                gamePage.getTotalPages(),
-                gamePage.getTotalElements(),
-                gamePage.isFirst(),
-                gamePage.isLast()
-        );
-    }
 
     @Override
     public List<PlatformCountDto> getGameCountByPlatform() {

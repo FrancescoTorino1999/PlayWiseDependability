@@ -2,7 +2,6 @@ package com.games.games_project.controller.impl;
 
 import com.games.games_project.controller.ReviewController;
 import com.games.games_project.dto.*;
-import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.model.User;
 import com.games.games_project.service.GameService;
@@ -18,8 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.bson.types.ObjectId;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +54,6 @@ class ReviewControllerTest {
         r2.setText("Molto bello");
 
         PagedReviewsResponseDto<ReviewDetailsDto> page = new PagedReviewsResponseDto<>();
-
         page.setContent(List.of(r1, r2));
         page.setPage(0);
         page.setSize(5);
@@ -105,10 +101,6 @@ class ReviewControllerTest {
     @Test
     @DisplayName("POST /reviews/addReview → aggiunge una recensione con successo")
     void testAddReview() throws Exception {
-        Review review = new Review();
-        review.setAuthor("NuttyMan");
-        review.setText("Bellissimo titolo!");
-
         when(reviewService.addReview(any(Review.class))).thenReturn(true);
 
         mockMvc.perform(post("/reviews/addReview")
@@ -145,8 +137,6 @@ class ReviewControllerTest {
                 .andExpect(content().string("true"));
     }
 
-
-
     @Test
     @DisplayName("GET /reviews/game/{gameId}/review → restituisce recensione per autore")
     void testGetGameReviewByAuthor_Found() throws Exception {
@@ -176,6 +166,27 @@ class ReviewControllerTest {
                         .param("author", "UserX")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("")); // null → risposta vuota
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    @DisplayName("GET /reviews/games/{gameId}/reviews → gestisce sort ascendente")
+    void testGetReviewsForGame_SortAsc() throws Exception {
+        ReviewDetailsDto r = new ReviewDetailsDto();
+        r.setAuthor("Alpha");
+        r.setText("Recensione A");
+
+        PagedReviewsResponseDto<ReviewDetailsDto> page = new PagedReviewsResponseDto<>(List.of(r), 0, 5, 1, 1L, true, true);
+
+        when(reviewService.getReviewsByGameId(eq("1"), any(Pageable.class)))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/reviews/games/1/reviews")
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("sort", "date,asc")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].author").value("Alpha"));
     }
 }

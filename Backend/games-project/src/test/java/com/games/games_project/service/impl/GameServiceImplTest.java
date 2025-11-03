@@ -265,38 +265,7 @@ class GameServiceImplTest {
 
 
 
-    @Test
-    @DisplayName("getAllFilterValues - deve restituire i valori di filtro dal repository")
-    void testGetAllFilterValues() {
-        FilterValuesDto filters = new FilterValuesDto();
-        filters.setGenres(Set.of("Action", "RPG"));
-        filters.setPlatforms(Set.of("PC", "PlayStation"));
 
-        when(gameRepository.getAllFilterValues()).thenReturn(filters);
-
-        FilterValuesDto result = gameService.getAllFilterValues();
-
-        assertNotNull(result);
-        assertEquals(2, result.getGenres().size());
-        verify(gameRepository).getAllFilterValues();
-    }
-
-    @Test
-    @DisplayName("findFilteredGames - deve restituire una pagina filtrata corretta")
-    void testFindFilteredGames() {
-        Pageable pageable = mock(Pageable.class);
-        GameSearchFiltersDto filters = new GameSearchFiltersDto();
-        Game g1 = new Game(); g1.setId("id1"); g1.setTitle("Filtered Game"); g1.setCover("f.jpg"); g1.setMetaScore(80.0); g1.setUserScore(7.5);
-        Page<Game> page = new PageImpl<>(List.of(g1), pageable, 1);
-
-        when(gameRepository.findGamesByFilters(pageable, filters)).thenReturn(page);
-
-        var result = gameService.findFilteredGames(pageable, filters);
-
-        assertEquals(1, result.getContent().size());
-        assertEquals("Filtered Game", result.getContent().get(0).getTitle());
-        verify(gameRepository).findGamesByFilters(pageable, filters);
-    }
 
     @Test
     @DisplayName("getGameCountByPlatform - deve restituire la lista delle piattaforme con conteggio giochi")

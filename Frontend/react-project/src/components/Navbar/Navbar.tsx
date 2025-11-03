@@ -182,9 +182,6 @@ function Navbar() {
                 {path.label}
               </Link>
             ))}
-            <Link className='link-navbar font-body-l' to = {"/catalogue"}>
-              {language == CONSTANTS.lang_it ? CONSTANTS.IT.ALLPAGES.CATALOGUE : CONSTANTS.EN.ALLPAGES.CATALOGUE}
-            </Link>
             <Autocomplete language = {language}></Autocomplete>
             <select id="lang" className = "select-lang" onChange={handleLang}>
               <option value={CONSTANTS.lang_it}>ITALIANO</option>

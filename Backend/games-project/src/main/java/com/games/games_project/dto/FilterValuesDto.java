@@ -1,14 +1,15 @@
 package com.games.games_project.dto;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 public class FilterValuesDto {
-    private Set<String> ratings;
-    private Set<String> genres;
-    private Set<String> developers;
-    private Set<String> publishers;
-    private Set<String> themes;
-    private Set<String> platforms;
+    private Set<String> ratings = new TreeSet<>();
+    private Set<String> genres = new TreeSet<>();
+    private Set<String> developers = new TreeSet<>();
+    private Set<String> publishers = new TreeSet<>();
+    private Set<String> themes = new TreeSet<>();
+    private Set<String> platforms = new TreeSet<>();
     private String minReleaseDate;
     private String maxReleaseDate;
     private Double minMetaScore;
@@ -16,15 +17,12 @@ public class FilterValuesDto {
     private Double minUserScore;
     private Double maxUserScore;
 
-    public FilterValuesDto() {
-    }
-
     public Set<String> getRatings() {
         return ratings;
     }
 
     public void setRatings(Set<String> ratings) {
-        this.ratings = ratings;
+        this.ratings = ratings != null ? ratings : new TreeSet<>();
     }
 
     public Set<String> getGenres() {
@@ -32,7 +30,7 @@ public class FilterValuesDto {
     }
 
     public void setGenres(Set<String> genres) {
-        this.genres = genres;
+        this.genres = genres != null ? genres : new TreeSet<>();
     }
 
     public Set<String> getDevelopers() {
@@ -40,7 +38,7 @@ public class FilterValuesDto {
     }
 
     public void setDevelopers(Set<String> developers) {
-        this.developers = developers;
+        this.developers = developers != null ? developers : new TreeSet<>();
     }
 
     public Set<String> getPublishers() {
@@ -48,7 +46,7 @@ public class FilterValuesDto {
     }
 
     public void setPublishers(Set<String> publishers) {
-        this.publishers = publishers;
+        this.publishers = publishers != null ? publishers : new TreeSet<>();
     }
 
     public Set<String> getThemes() {
@@ -56,7 +54,7 @@ public class FilterValuesDto {
     }
 
     public void setThemes(Set<String> themes) {
-        this.themes = themes;
+        this.themes = themes != null ? themes : new TreeSet<>();
     }
 
     public Set<String> getPlatforms() {
@@ -64,7 +62,7 @@ public class FilterValuesDto {
     }
 
     public void setPlatforms(Set<String> platforms) {
-        this.platforms = platforms;
+        this.platforms = platforms != null ? platforms : new TreeSet<>();
     }
 
     public String getMinReleaseDate() {

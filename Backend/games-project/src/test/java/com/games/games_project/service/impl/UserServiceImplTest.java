@@ -8,15 +8,11 @@ import com.games.games_project.repositories.GameRepository;
 import com.games.games_project.repositories.ReviewRepository;
 import com.games.games_project.repositories.UserRepository;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -34,8 +30,10 @@ class UserServiceImplTest {
     @BeforeEach
     void setup() { MockitoAnnotations.openMocks(this); }
 
+    // ------------------------ LOGIN ------------------------
+
     @Test
-    @DisplayName("login - utente NuttyMan con credenziali corrette")
+    @DisplayName("login - utente valido")
     void testLogin_Success() {
         User nutty = new User();
         nutty.setId("6807a1995d04121deaab8a8d");
@@ -52,19 +50,17 @@ class UserServiceImplTest {
         assertNotNull(result);
         assertEquals("NuttyMan", result.getUsername());
         assertEquals("USER", result.getRole());
+        assertEquals("6807a1995d04121deaab8a8d", result.getUserId());
     }
 
-
     @Test
-    @DisplayName("login - credenziali errate restituisce null")
+    @DisplayName("login - credenziali errate")
     void testLogin_WrongPassword() {
         User user = new User();
         user.setUsername("NuttyMan");
         user.setPassword("rightPass");
 
-        LoginRequestDto req = new LoginRequestDto();
-        req.setUsername("NuttyMan");
-        req.setPassword("wrongPass");
+        LoginRequestDto req = new LoginRequestDto("NuttyMan", "wrongPass");
 
         when(userRepository.findByUsername("NuttyMan")).thenReturn(Optional.of(user));
 
@@ -72,7 +68,29 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("register - nuovo utente inserito correttamente")
+    @DisplayName("login - utente non trovato")
+    void testLogin_UserNotFound() {
+        when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
+        LoginRequestDto req = new LoginRequestDto("ghost", "1234");
+        assertNull(userService.login(req));
+    }
+
+    @Test
+    @DisplayName("login - request nulla o campi null")
+    void testLogin_NullCases() {
+        assertNull(userService.login(null));
+
+        LoginRequestDto req1 = new LoginRequestDto(null, "1234");
+        assertNull(userService.login(req1));
+
+        LoginRequestDto req2 = new LoginRequestDto("user", null);
+        assertNull(userService.login(req2));
+    }
+
+    // ------------------------ REGISTER ------------------------
+
+    @Test
+    @DisplayName("register - nuovo utente valido")
     void testRegister_Success() {
         RegistrationRequestDto reg = new RegistrationRequestDto();
         reg.setUsername("NewUser");
@@ -88,11 +106,14 @@ class UserServiceImplTest {
         Boolean result = userService.register(reg);
 
         assertTrue(result);
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).save(argThat(u ->
+                u.getUsername().equals("NewUser") &&
+                        u.getEmail().equals("newuser@gmail.com") &&
+                        u.getRole().equals("USER")));
     }
 
     @Test
-    @DisplayName("register - utente già esistente restituisce false")
+    @DisplayName("register - utente già esistente")
     void testRegister_AlreadyExists() {
         RegistrationRequestDto reg = new RegistrationRequestDto();
         reg.setUsername("NuttyMan");
@@ -107,7 +128,30 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("getUserInfo - utente esistente restituito")
+    @DisplayName("register - request nulla o campi null")
+    void testRegister_NullCases() {
+        assertFalse(userService.register(null));
+
+        RegistrationRequestDto r1 = new RegistrationRequestDto();
+        r1.setPassword("123");
+        r1.setEmail("e");
+        assertFalse(userService.register(r1));
+
+        RegistrationRequestDto r2 = new RegistrationRequestDto();
+        r2.setUsername("u");
+        r2.setEmail("e");
+        assertFalse(userService.register(r2));
+
+        RegistrationRequestDto r3 = new RegistrationRequestDto();
+        r3.setUsername("u");
+        r3.setPassword("p");
+        assertFalse(userService.register(r3));
+    }
+
+    // ------------------------ GET USER INFO ------------------------
+
+    @Test
+    @DisplayName("getUserInfo - utente esistente")
     void testGetUserInfo_Existing() {
         User user = new User();
         user.setUsername("8tonystark8");
@@ -118,18 +162,29 @@ class UserServiceImplTest {
         User result = userService.getUserInfo("8tonystark8");
 
         assertEquals("8tonystark8@gmail.com", result.getEmail());
+        assertEquals("8tonystark8", result.getUsername());
     }
 
     @Test
-    @DisplayName("updateUser - aggiorna dati utente esistente")
+    @DisplayName("getUserInfo - username vuoto")
+    void testGetUserInfo_Empty() {
+        User result = userService.getUserInfo("");
+        assertNotNull(result);
+        assertNull(result.getUsername());
+    }
+
+    // ------------------------ UPDATE USER ------------------------
+
+    @Test
+    @DisplayName("updateUser - aggiorna dati utente")
     void testUpdateUser_Success() {
         User existing = new User();
         existing.setUsername("chix");
-        existing.setEmail("chix@gmail.com");
+        existing.setEmail("old@gmail.com");
 
         User update = new User();
         update.setUsername("chix");
-        update.setEmail("newchix@gmail.com");
+        update.setEmail("new@gmail.com");
         update.setName("Allegra");
 
         when(userRepository.findByUsername("chix")).thenReturn(Optional.of(existing));
@@ -137,20 +192,23 @@ class UserServiceImplTest {
         Boolean result = userService.updateUser(update);
 
         assertTrue(result);
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).save(argThat(u ->
+                u.getEmail().equals("new@gmail.com") && u.getName().equals("Allegra")));
     }
 
     @Test
-    @DisplayName("updateUser - utente non esistente → false")
+    @DisplayName("updateUser - utente non trovato")
     void testUpdateUser_NotFound() {
-        when(userRepository.findByUsername("fakeUser")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
         User user = new User();
-        user.setUsername("fakeUser");
+        user.setUsername("ghost");
         assertFalse(userService.updateUser(user));
     }
 
+    // ------------------------ DELETE USER ------------------------
+
     @Test
-    @DisplayName("deleteUser - cancella NuttyMan e aggiorna giochi")
+    @DisplayName("deleteUser - aggiorna giochi e cancella recensioni")
     void testDeleteUser_Success() {
         User nutty = new User();
         nutty.setUsername("NuttyMan");
@@ -159,13 +217,13 @@ class UserServiceImplTest {
         r1.setId("rev1");
         r1.setAuthor("NuttyMan");
         r1.setScore(8);
-        r1.setGameId(new ObjectId("6807a1905d04121deaab7da0")); // GTA V
+        r1.setGameId(new ObjectId("6807a1905d04121deaab7da0"));
 
         Review r2 = new Review();
         r2.setId("rev2");
         r2.setAuthor("NuttyMan");
         r2.setScore(7);
-        r2.setGameId(new ObjectId("6807a1905d04121deaab7da6")); // BioShock
+        r2.setGameId(new ObjectId("6807a1905d04121deaab7da6"));
 
         Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2));
 
@@ -194,7 +252,39 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("getUserCountByGender - ritorna conteggio corretto")
+    @DisplayName("deleteUser - gioco con una sola recensione")
+    void testDeleteUser_SingleReview() {
+        User user = new User();
+        user.setUsername("SoloUser");
+
+        Review review = new Review();
+        review.setId("rev1");
+        review.setAuthor("SoloUser");
+        review.setScore(9);
+        review.setGameId(new ObjectId("6807a1905d04121deaab7da1"));
+
+        Game singleGame = new Game();
+        singleGame.setId("6807a1905d04121deaab7da1");
+        singleGame.setUserScore(9.0);
+        singleGame.setReviewCount(1);
+
+        Page<Review> reviewPage = new PageImpl<>(List.of(review));
+
+        when(reviewRepository.findByAuthor(eq("SoloUser"), any(Pageable.class))).thenReturn(reviewPage);
+        when(gameRepository.findById("6807a1905d04121deaab7da1")).thenReturn(Optional.of(singleGame));
+
+        Boolean result = userService.deleteUser(user);
+
+        assertTrue(result);
+        assertEquals(0.0, singleGame.getUserScore());
+        assertEquals(0, singleGame.getReviewCount());
+        verify(reviewRepository).deleteById("rev1");
+    }
+
+    // ------------------------ GENDER COUNT ------------------------
+
+    @Test
+    @DisplayName("getUserCountByGender - conteggio corretto")
     void testGetUserCountByGender() {
         GenderCountDto male = new GenderCountDto("M", 1L);
         GenderCountDto female = new GenderCountDto("F", 5L);
@@ -203,7 +293,105 @@ class UserServiceImplTest {
         List<GenderCountDto> result = userService.getUserCountByGender();
 
         assertEquals(2, result.size());
+        assertEquals("M", result.get(0).getGender());
+        assertEquals(1L, result.get(0).getCount());
         assertEquals("F", result.get(1).getGender());
         assertEquals(5L, result.get(1).getCount());
     }
+
+    @Test
+    @DisplayName("updateUser - tutti i campi valorizzati → aggiorna tutto")
+    void testUpdateUser_AllFieldsFilled() {
+        User existing = new User();
+        existing.setUsername("oldUser");
+        existing.setEmail("old@mail.com");
+        existing.setName("Old");
+        existing.setSurname("User");
+        existing.setPassword("oldPass");
+
+        User update = new User();
+        update.setUsername("oldUser");
+        update.setEmail("new@mail.com");
+        update.setName("NewName");
+        update.setSurname("NewSurname");
+        update.setPassword("newPass");
+
+        when(userRepository.findByUsername("oldUser")).thenReturn(Optional.of(existing));
+
+        Boolean result = userService.updateUser(update);
+
+        assertTrue(result);
+        verify(userRepository).save(argThat(saved ->
+                saved.getUsername().equals("oldUser") &&
+                        saved.getEmail().equals("new@mail.com") &&
+                        saved.getName().equals("NewName") &&
+                        saved.getSurname().equals("NewSurname") &&
+                        saved.getPassword().equals("newPass")
+        ));
+    }
+
+    @Test
+    @DisplayName("updateUser - tutti i campi null o vuoti → nessun aggiornamento")
+    void testUpdateUser_AllFieldsNullOrEmpty() {
+        User existing = new User();
+        existing.setUsername("oldUser");
+        existing.setEmail("old@mail.com");
+        existing.setName("Old");
+        existing.setSurname("User");
+        existing.setPassword("pass123");
+
+        User update = new User();
+        update.setUsername("oldUser");
+        update.setEmail("");
+        update.setName(" ");
+        update.setSurname(null);
+        update.setPassword(null);
+
+        when(userRepository.findByUsername("oldUser")).thenReturn(Optional.of(existing));
+
+        Boolean result = userService.updateUser(update);
+
+        assertTrue(result);
+        verify(userRepository).save(argThat(saved ->
+                saved.getUsername().equals("oldUser") &&
+                        saved.getEmail().equals("old@mail.com") &&
+                        saved.getName().equals("Old") &&
+                        saved.getSurname().equals("User") &&
+                        saved.getPassword().equals("pass123")
+        ));
+    }
+
+    @Test
+    @DisplayName("updateUser - ogni campo testato con combinazioni miste true/false")
+    void testUpdateUser_MixedConditions() {
+        User existing = new User();
+        existing.setUsername("baseUser");
+        existing.setEmail("old@mail.com");
+        existing.setName("OldName");
+        existing.setSurname("OldSurname");
+        existing.setPassword("oldPass");
+
+        User update = new User();
+        update.setUsername("baseUser");
+        update.setEmail(" ");
+        update.setName("NewName");
+        update.setSurname(null);
+        update.setPassword("newPass");
+
+        when(userRepository.findByUsername("baseUser")).thenReturn(Optional.of(existing));
+
+        Boolean result = userService.updateUser(update);
+
+        assertTrue(result);
+        verify(userRepository).save(argThat(saved ->
+                saved.getUsername().equals("baseUser") &&
+                        saved.getEmail().equals("old@mail.com") &&
+                        saved.getName().equals("NewName") &&
+                        saved.getSurname().equals("OldSurname") &&
+                        saved.getPassword().equals("newPass")
+        ));
+    }
+
+
+
 }

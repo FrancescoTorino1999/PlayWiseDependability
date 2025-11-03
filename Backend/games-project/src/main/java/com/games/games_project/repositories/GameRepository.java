@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Set;
 
-public interface GameRepository extends MongoRepository<Game, String>, GameRepositoryCustom {
+public interface GameRepository extends MongoRepository<Game, String> {
     Page<Game> findAll(Pageable pageable);
 
     @Query(value = "{ 'title': { $regex: ?0, $options: 'i' } }", fields = "{ 'id': 1, 'title': 1 }")

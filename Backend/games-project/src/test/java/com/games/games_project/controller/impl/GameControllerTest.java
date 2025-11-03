@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -89,33 +88,6 @@ class GameControllerTest {
                 .andExpect(jsonPath("$[1].title").value("Grand Theft Auto V"));
     }
 
-    @Test
-    @DisplayName("GET /games/getFilters → restituisce tutti i filtri disponibili (ordine irrilevante)")
-    void testGetFilters() throws Exception {
-        FilterValuesDto filters = new FilterValuesDto();
-        filters.setGenres(new LinkedHashSet<>(List.of("Action", "RPG")));
-        filters.setPlatforms(new LinkedHashSet<>(List.of("PC", "PS5")));
-        filters.setDevelopers(new LinkedHashSet<>(List.of("Rockstar North")));
-        filters.setPublishers(new LinkedHashSet<>(List.of("Capcom", "Rockstar Games")));
-        filters.setThemes(new LinkedHashSet<>(List.of("Open world", "Adventure", "Action", "Shooter", "Racing")));
-        filters.setRatings(new LinkedHashSet<>(List.of("M")));
-        filters.setMinReleaseDate("2008-04-29T00:00:00.000+00:00");
-        filters.setMaxReleaseDate("2008-04-29T00:00:00.000+00:00");
-        filters.setMinMetaScore(89.0);
-        filters.setMaxMetaScore(99.0);
-        filters.setMinUserScore(79.0);
-        filters.setMaxUserScore(100.0);
-
-
-        when(gameService.getAllFilterValues()).thenReturn(filters);
-
-        mockMvc.perform(get("/games/getFilters")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                // Ignora l’ordine, verifica solo la presenza
-                .andExpect(jsonPath("$.genres[*]", containsInAnyOrder("Action", "RPG")))
-                .andExpect(jsonPath("$.platforms[*]", containsInAnyOrder("PC", "PS5")));
-    }
 
     @Test
     @DisplayName("GET /games/games → restituisce pagina di giochi ordinata per userScore")
@@ -124,7 +96,6 @@ class GameControllerTest {
         GamePreviewDto g2 = new GamePreviewDto("6807a1905d04121deaab7da0", "GTA V");
 
         PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>();
-
         page.setContent(List.of(g1, g2));
         page.setPage(0);
         page.setSize(2);
@@ -132,7 +103,6 @@ class GameControllerTest {
         page.setTotalElements(2L);
         page.setFirst(true);
         page.setLast(true);
-
 
         when(gameService.getGamesPaginated(any(Pageable.class)))
                 .thenReturn(page);
@@ -147,60 +117,25 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.totalElements").value(2));
     }
 
+
     @Test
-    @DisplayName("POST /games/findFilteredGames → restituisce risultati filtrati")
-    void testFindFilteredGames() throws Exception {
-        GameSearchFiltersDto filters = new GameSearchFiltersDto();
-
-        filters.setRatings(List.of("M", "18+"));
-        filters.setGenres(List.of("Action", "Adventure"));
-        filters.setDevelopers(List.of("Rockstar Games"));
-        filters.setPublishers(List.of("Take-Two Interactive"));
-        filters.setThemes(List.of("Crime", "Open World"));
-        filters.setPlatforms(List.of("PC", "PS5"));
-        filters.setFromMetaScore(70.0);
-        filters.setToMetaScore(100.0);
-        filters.setFromUserScore(7.0);
-        filters.setToUserScore(10.0);
-        Calendar cal = Calendar.getInstance();
-        cal.set(2010, Calendar.JANUARY, 1);
-        filters.setFromReleaseDate(cal.getTime());
-        cal.set(2025, Calendar.DECEMBER, 31);
-        filters.setToReleaseDate(cal.getTime());
-
-        filters.getRatings();
-        filters.getGenres();
-        filters.getDevelopers();
-        filters.getPublishers();
-        filters.getThemes();
-        filters.getPlatforms();
-        filters.getFromMetaScore();
-        filters.getToMetaScore();
-        filters.getFromUserScore();
-        filters.getToUserScore();
-        filters.getFromReleaseDate();
-        filters.getToReleaseDate();
-
-        GamePreviewDto g1 = new GamePreviewDto("6807a1905d04121deaab7d99", "Grand Theft Auto IV");
+    @DisplayName("GET /games/games → gestisce sort ascendente correttamente")
+    void testGetGamesPage_SortAsc() throws Exception {
+        GamePreviewDto g1 = new GamePreviewDto("1", "A Game");
+        GamePreviewDto g2 = new GamePreviewDto("2", "B Game");
 
         PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>(
-                List.of(g1), 0, 1, 1, 1L, true, true);
+                List.of(g1, g2), 0, 2, 1, 2L, true, true);
 
-        when(gameService.findFilteredGames(any(Pageable.class), any(GameSearchFiltersDto.class)))
+        when(gameService.getGamesPaginated(any(Pageable.class)))
                 .thenReturn(page);
 
-        mockMvc.perform(post("/games/findFilteredGames")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                        {
-                          "genres": ["Action"],
-                          "platforms": ["PC"]
-                        }
-                        """)
+        mockMvc.perform(get("/games/games")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sort", "title,asc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].title").value("Grand Theft Auto IV"))
-                // allineato al DTO reale (usa .page o .pageNumber in base alla classe)
-                .andExpect(jsonPath("$.page").value(0));
+                .andExpect(jsonPath("$.content[0].title").value("A Game"));
     }
 }

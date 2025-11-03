@@ -1,6 +1,7 @@
 package com.games.games_project.service.impl;
 
 import com.games.games_project.dto.ReviewDetailsDto;
+import com.games.games_project.dto.ReviewsMonthlyCountDto;
 import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.repositories.GameRepository;
@@ -36,11 +37,9 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("getReviewsByUsername - utente con recensioni su più giochi")
     void testGetReviewsByUsername_WithReviews() {
-        // ARRANGE
         String author = "PlayerZ";
         Pageable pageable = PageRequest.of(0, 5);
 
-        // Review 1
         Review r1 = new Review();
         r1.setId("rev1");
         r1.setAuthor(author);
@@ -49,7 +48,6 @@ class ReviewServiceImplTest {
         r1.setDate(new java.util.Date());
         r1.setGameId(new ObjectId("671a9f4e9c7a4a321c7a9e11"));
 
-        // Review 2
         Review r2 = new Review();
         r2.setId("rev2");
         r2.setAuthor(author);
@@ -60,7 +58,6 @@ class ReviewServiceImplTest {
 
         Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2), pageable, 2);
 
-        // Giochi associati
         Game g1 = new Game();
         g1.setId("671a9f4e9c7a4a321c7a9e11");
         g1.setTitle("Horizon Zero Dawn");
@@ -75,10 +72,8 @@ class ReviewServiceImplTest {
         when(gameRepository.findById("671a9f4e9c7a4a321c7a9e11")).thenReturn(Optional.of(g1));
         when(gameRepository.findById("671a9f4e9c7a4a321c7a9e12")).thenReturn(Optional.of(g2));
 
-        // ACT
         var result = reviewService.getReviewsByUsername(author, pageable);
 
-        // ASSERT
         assertNotNull(result);
         assertEquals(2, result.getContent().size());
         assertEquals("PlayerZ", result.getContent().get(0).getAuthor());
@@ -92,17 +87,14 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("getReviewsByUsername - utente senza recensioni restituisce pagina vuota")
     void testGetReviewsByUsername_NoReviews() {
-        // ARRANGE
         String author = "EmptyUser";
         Pageable pageable = PageRequest.of(0, 5);
         Page<Review> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
         when(reviewRepository.findByAuthor(eq(author), eq(pageable))).thenReturn(emptyPage);
 
-        // ACT
         var result = reviewService.getReviewsByUsername(author, pageable);
 
-        // ASSERT
         assertNotNull(result);
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
@@ -113,7 +105,6 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("getReviewsByUsername - review con gioco non trovato non deve causare errore")
     void testGetReviewsByUsername_GameNotFound() {
-        // ARRANGE
         String author = "MysteryPlayer";
         Pageable pageable = PageRequest.of(0, 5);
 
@@ -130,10 +121,8 @@ class ReviewServiceImplTest {
         when(reviewRepository.findByAuthor(eq(author), eq(pageable))).thenReturn(reviewPage);
         when(gameRepository.findById("671a9f4e9c7a4a321c7a9e99")).thenReturn(Optional.empty());
 
-        // ACT
         var result = reviewService.getReviewsByUsername(author, pageable);
 
-        // ASSERT
         assertEquals(1, result.getContent().size());
         assertNull(result.getContent().get(0).getGameTitle());
         assertNull(result.getContent().get(0).getGameCover());
@@ -141,15 +130,12 @@ class ReviewServiceImplTest {
         verify(gameRepository).findById("671a9f4e9c7a4a321c7a9e99");
     }
 
-
     @Test
     @DisplayName("modifyReview - aggiorna recensione esistente e ricalcola media correttamente")
     void testModifyReview_UpdateExistingReview() {
-        // ARRANGE
         String reviewId = "rev001";
         ObjectId gameId = new ObjectId("671a9f4e9c7a4a321c7a9e01");
 
-        // Review esistente nel DB
         Review existing = new Review();
         existing.setId(reviewId);
         existing.setGameId(gameId);
@@ -157,7 +143,6 @@ class ReviewServiceImplTest {
         existing.setScore(7);
         existing.setDate(new java.util.Date());
 
-        // Nuova review modificata
         Review modified = new Review();
         modified.setId(reviewId);
         modified.setGameId(gameId);
@@ -165,7 +150,6 @@ class ReviewServiceImplTest {
         modified.setScore(9);
         modified.setDate(new java.util.Date());
 
-        // Gioco associato
         Game game = new Game();
         game.setId(gameId.toHexString());
         game.setTitle("Elden Ring");
@@ -175,16 +159,14 @@ class ReviewServiceImplTest {
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existing));
         when(gameRepository.findById(gameId.toHexString())).thenReturn(Optional.of(game));
 
-        // ACT
         Boolean result = reviewService.modifyReview(modified);
 
-        // ASSERT
-        assertTrue(result, "La modifica deve restituire TRUE");
-        verify(reviewRepository, times(1)).save(argThat(r ->
+        assertTrue(result);
+        verify(reviewRepository).save(argThat(r ->
                 r.getText().equals("Recensione aggiornata") &&
                         r.getScore() == 9
         ));
-        verify(gameRepository, times(1)).save(argThat(g ->
+        verify(gameRepository).save(argThat(g ->
                 g.getUserScore() == Math.round(((8.0 * 100) - 7 + 9) / 100)
         ));
     }
@@ -192,22 +174,18 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("modifyReview - review non trovata restituisce FALSE")
     void testModifyReview_NotFound() {
-        // ARRANGE
         Review modified = new Review();
         modified.setId("revMissing");
         modified.setScore(8);
 
         when(reviewRepository.findById("revMissing")).thenReturn(Optional.empty());
 
-        // ACT
         Boolean result = reviewService.modifyReview(modified);
 
-        // ASSERT
-        assertFalse(result, "Se la review non esiste deve restituire FALSE");
+        assertFalse(result);
         verify(reviewRepository, never()).save(any());
         verify(gameRepository, never()).save(any());
     }
-
 
     @Test
     @DisplayName("getReviewsByGameId - GTA V restituisce recensioni corrette")
@@ -239,8 +217,8 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("addReview - nuova review su Baldur’s Gate 3 aggiorna correttamente i punteggi")
-    void testAddReview_BaldursGate3() {
+    @DisplayName("addReview - nuova review aggiorna correttamente i punteggi")
+    void testAddReview_Success() {
         Review review = new Review();
         review.setGameId(new ObjectId("6807a1905d04121deaab7daa"));
         review.setAuthor("RPGFan");
@@ -264,8 +242,40 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("deleteReview - cancella recensione da BioShock e aggiorna media")
-    void testDeleteReview_BioShock() {
+    @DisplayName("addReview - review già presente genera eccezione")
+    void testAddReview_AlreadyExists() {
+        Review review = new Review();
+        review.setGameId(new ObjectId("6807a1905d04121deaab7daa"));
+        review.setAuthor("RPGFan");
+        review.setScore(9);
+
+        when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), anyString()))
+                .thenReturn(Optional.of(new Review()));
+
+        assertThrows(RuntimeException.class, () -> reviewService.addReview(review));
+        verify(reviewRepository, never()).save(any());
+        verify(gameRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("addReview - gioco non trovato genera eccezione")
+    void testAddReview_GameNotFound() {
+        Review review = new Review();
+        review.setGameId(new ObjectId("6807a1905d04121deaab7daa"));
+        review.setAuthor("NewUser");
+        review.setScore(8);
+
+        when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), anyString()))
+                .thenReturn(Optional.empty());
+        when(gameRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> reviewService.addReview(review));
+        verify(reviewRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("deleteReview - cancella recensione e aggiorna media")
+    void testDeleteReview_Normal() {
         Review review = new Review();
         review.setId("revBio");
         review.setScore(8);
@@ -288,8 +298,49 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("getGameReviewByAuthor - review presente su Half-Life")
-    void testGetGameReviewByAuthor_HalfLife() {
+    @DisplayName("deleteReview - review unica azzera punteggio e count")
+    void testDeleteReview_SingleReview() {
+        Review review = new Review();
+        review.setId("revUnique");
+        review.setScore(8);
+        review.setGameId(new ObjectId("6807a1905d04121deaab7da7"));
+
+        Game game = new Game();
+        game.setId("6807a1905d04121deaab7da7");
+        game.setTitle("Solo Game");
+        game.setUserScore(8.0);
+        game.setReviewCount(1);
+
+        when(reviewRepository.findById("revUnique")).thenReturn(Optional.of(review));
+        when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
+
+        Boolean result = reviewService.deleteReview(review);
+
+        assertTrue(result);
+        assertEquals(0.0, game.getUserScore());
+        assertEquals(0, game.getReviewCount());
+        verify(reviewRepository).deleteById("revUnique");
+        verify(gameRepository).save(any(Game.class));
+    }
+
+    @Test
+    @DisplayName("deleteReview - review non trovata restituisce FALSE")
+    void testDeleteReview_NotFound() {
+        Review review = new Review();
+        review.setId("revMissing");
+
+        when(reviewRepository.findById("revMissing")).thenReturn(Optional.empty());
+
+        Boolean result = reviewService.deleteReview(review);
+
+        assertFalse(result);
+        verify(reviewRepository, never()).deleteById(anyString());
+        verify(gameRepository, never()).save(any(Game.class));
+    }
+
+    @Test
+    @DisplayName("getGameReviewByAuthor - review presente")
+    void testGetGameReviewByAuthor_Present() {
         String gameId = "6807a1905d04121deaab7db1";
 
         Review review = new Review();
@@ -297,7 +348,7 @@ class ReviewServiceImplTest {
         review.setGameId(new ObjectId(gameId));
         review.setAuthor("ScienceGuy");
         review.setScore(10);
-        review.setText("Capolavoro FPS, insuperato.");
+        review.setText("Capolavoro FPS");
 
         when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), eq("ScienceGuy")))
                 .thenReturn(Optional.of(review));
@@ -310,12 +361,13 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("getGameReviewByAuthor - review non trovata su Red Dead Redemption")
-    void testGetGameReviewByAuthor_RedDead_NotFound() {
+    @DisplayName("getGameReviewByAuthor - review non trovata")
+    void testGetGameReviewByAuthor_NotFound() {
         when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), eq("CowboyJohn")))
                 .thenReturn(Optional.empty());
 
         var result = reviewService.getGameReviewByAuthor("6807a1905d04121deaab7dc1", "CowboyJohn");
         assertTrue(result.isEmpty());
     }
+
 }

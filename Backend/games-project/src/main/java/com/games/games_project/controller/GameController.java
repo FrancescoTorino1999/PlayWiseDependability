@@ -32,11 +32,6 @@ public class GameController {
         return ResponseEntity.ok(gameService.findSuggestion(query));
     }
 
-    @GetMapping("/getFilters")
-    public ResponseEntity<FilterValuesDto> getFilters() {
-        return ResponseEntity.ok(gameService.getAllFilterValues());
-    }
-
     @GetMapping("/games")
     public PagedGamesResponseDto<GamePreviewDto> getGamesPage(
             @RequestParam(defaultValue = "0") int page,
@@ -51,12 +46,4 @@ public class GameController {
         return gameService.getGamesPaginated(pageable);
     }
 
-
-
-    @PostMapping("/findFilteredGames")
-    public PagedGamesResponseDto<GamePreviewDto> findFilteredGames(@PageableDefault(page = 1, size = 16) Pageable pageable, @RequestBody GameSearchFiltersDto filter) {
-        int correctedPage = Math.max(pageable.getPageNumber() - 1, 0);
-        Pageable correctedPageable = PageRequest.of(correctedPage, pageable.getPageSize(), pageable.getSort());
-        return gameService.findFilteredGames(correctedPageable, filter);
-    }
 }

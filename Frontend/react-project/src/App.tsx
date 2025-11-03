@@ -10,7 +10,6 @@ import { LanguageContext, LanguageProvider } from './Contexts/LanguageProvider';
 import { UserProvider } from './Contexts/UserProvider'; 
 import Profile from './Pages/Profile';
 import GamePage from './Pages/GamePage';
-import Catalogue from './Pages/Catalogue';
 
 function App() {
 
@@ -24,7 +23,6 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/game/:id" element={<GamePage />} />
-            <Route path="/catalogue" element={<Catalogue />} />
           </Routes>
           <Footer />
         </BrowserRouter>

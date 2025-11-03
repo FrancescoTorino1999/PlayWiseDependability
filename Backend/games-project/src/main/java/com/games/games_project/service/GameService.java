@@ -10,7 +10,5 @@ public interface GameService {
     Optional<GameDetailsDto> getGameDetailsById(String id);
     PagedGamesResponseDto<GamePreviewDto> getGamesPaginated(Pageable pageable);
     List<GamePreviewDto> findSuggestion(String value);
-    FilterValuesDto getAllFilterValues();
-    PagedGamesResponseDto<GamePreviewDto> findFilteredGames(Pageable correctedPageable, GameSearchFiltersDto filter);
     List<PlatformCountDto> getGameCountByPlatform();
 }
