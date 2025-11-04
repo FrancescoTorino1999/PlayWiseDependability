@@ -16,7 +16,6 @@ public class SecurityConfig {
                 // Sonar justification: CSRF is disabled intentionally because these are stateless REST APIs
                 // Tokens or other mechanisms (e.g. JWT) are used instead of CSRF cookies
                 .csrf(csrf -> csrf.disable())
-                // API stateless configuration
                 .sessionManagement(session -> session.disable())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
