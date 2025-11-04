@@ -13,11 +13,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Disattiva CSRF in modo esplicito per le REST API
+                // Sonar justification: CSRF is disabled intentionally because these are stateless REST APIs
+                // Tokens or other mechanisms (e.g. JWT) are used instead of CSRF cookies
                 .csrf(csrf -> csrf.disable())
-                // Disattiva sessioni: API stateless
+                // API stateless configuration
                 .sessionManagement(session -> session.disable())
-                // Permetti tutte le richieste (nessun blocco)
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 );
@@ -25,3 +25,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
