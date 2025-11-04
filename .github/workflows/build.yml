@@ -68,7 +68,6 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
-
       - name: Make Docker script executable
         run: chmod +x Docker-info.sh
 
@@ -84,3 +83,41 @@ jobs:
       - name: Run PIT Mutation Testing
         working-directory: ./Backend/games-project
         run: mvn org.pitest:pitest-maven:mutationCoverage -DwithHistory
+
+
+  snyk-scan:
+    name: Snyk Security Scan
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Snyk scan for backend (Maven)
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        working-directory: ./Backend/games-project
+
+      - name: Run Snyk scan for frontend (React)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --severity-threshold=high
+        working-directory: ./Frontend/react-project
