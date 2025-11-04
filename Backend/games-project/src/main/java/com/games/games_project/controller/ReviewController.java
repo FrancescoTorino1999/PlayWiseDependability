@@ -1,8 +1,6 @@
 package com.games.games_project.controller;
 
-import com.games.games_project.dto.PagedReviewsResponseDto;
-import com.games.games_project.dto.ReviewDetailsDto;
-import com.games.games_project.dto.UserProfileReviewDto;
+import com.games.games_project.dto.*;
 import com.games.games_project.model.Review;
 import com.games.games_project.model.User;
 import com.games.games_project.service.GameService;
@@ -15,7 +13,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
+
+import static com.games.games_project.utils.ConverterDTO.convertToEntity;
 
 @RestController
 @RequestMapping("/reviews")
@@ -38,55 +39,50 @@ public class ReviewController {
         Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sortBy = Sort.by(direction, sortParts[0]);
-
         Pageable pageable = PageRequest.of(Math.max(page, 0), size, sortBy);
-
         return reviewService.getReviewsByGameId(gameId, pageable);
     }
 
-
     @PostMapping("/games/reviewsByAuthor")
     public PagedReviewsResponseDto<UserProfileReviewDto> getReviewsForUser(
-            @RequestBody User user,
+            @RequestBody UserRequestDto user,
             @PageableDefault(page = 1, size = 5) Pageable pageable
     ) {
+        User user1 = convertToEntity(user);
         int correctedPage = Math.max(pageable.getPageNumber() - 1, 0);
         Pageable correctedPageable = PageRequest.of(correctedPage, pageable.getPageSize(), pageable.getSort());
-        return reviewService.getReviewsByUsername(user.getUsername(), correctedPageable);
+        return reviewService.getReviewsByUsername(user1.getUsername(), correctedPageable);
     }
 
     @PostMapping("/addReview")
-    public ResponseEntity<Boolean> addReview(@RequestBody Review review) {
-
-        Boolean response = reviewService.addReview(review);
-
-        return  ResponseEntity.ok(Boolean.TRUE);
-
+    public ResponseEntity<Boolean> addReview(@RequestBody ReviewRequestDto dto) {
+        Review review = convertToEntity(dto);
+        boolean result = reviewService.addReview(review);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/modifyReview")
-    public ResponseEntity<Boolean> modifyReview(@RequestBody Review review) {
-
-        Boolean response = reviewService.modifyReview(review);
-
-        return  ResponseEntity.ok(Boolean.TRUE);
-
+    public ResponseEntity<Boolean> modifyReview(@RequestBody ReviewRequestDto dto) {
+        Review review = convertToEntity(dto);
+        boolean result = reviewService.modifyReview(review);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/deleteReview")
-    public ResponseEntity<Boolean> deleteReview(@RequestBody Review review) {
-
-        Boolean response = reviewService.deleteReview(review);
-
-        return  ResponseEntity.ok(Boolean.TRUE);
-
+    public ResponseEntity<Boolean> deleteReview(@RequestBody ReviewRequestDto dto) {
+        Review review = convertToEntity(dto);
+        boolean result = reviewService.deleteReview(review);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("game/{gameId}/review")
     public ReviewDetailsDto getGameReviewByAuthor(
             @PathVariable String gameId,
-            @RequestParam String author) {
+            @RequestParam String author
+    ) {
         Optional<ReviewDetailsDto> review = reviewService.getGameReviewByAuthor(gameId, author);
         return review.orElse(null);
     }
+
+
 }
