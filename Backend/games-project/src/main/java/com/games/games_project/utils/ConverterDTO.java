@@ -1,7 +1,9 @@
 package com.games.games_project.utils;
 
+import com.games.games_project.dto.GameRequestDto;
 import com.games.games_project.dto.ReviewRequestDto;
 import com.games.games_project.dto.UserRequestDto;
+import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.model.User;
 
@@ -41,5 +43,31 @@ public class ConverterDTO {
         user.setRole(dto.getRole());
         user.setBirthDate(dto.getBirthDate() != null ? dto.getBirthDate() : new Date());
         return user;
+    }
+
+    public static Game convertToEntity(GameRequestDto dto) {
+        Game game = new Game();
+        if (dto.getId() != null) {
+            game.setId(dto.getId());
+        }
+        game.setTitle(dto.getTitle());
+        game.setReleaseDate(dto.getReleaseDate() != null ? dto.getReleaseDate() : new Date());
+        game.setRating(dto.getRating());
+        game.setGenre(dto.getGenre());
+        game.setDevelopers(dto.getDevelopers());
+        game.setPublishers(dto.getPublishers());
+        game.setThemes(dto.getThemes());
+        game.setPlatforms(dto.getPlatforms());
+        game.setMetaScore(dto.getMetaScore());
+        game.setMetaScoreCount(dto.getMetaScoreCount());
+        game.setDescription(dto.getDescription());
+        game.setStoryline(dto.getStoryline());
+        game.setSummary(dto.getSummary());
+        game.setCover(dto.getCover());
+        game.setVideo(dto.getVideo());
+        game.setUserScore(dto.getUserScore());
+        game.setReviewCount(dto.getReviewCount());
+        game.setScreenshots(dto.getScreenshots());
+        return game;
     }
 }
