@@ -39,18 +39,23 @@ class UserServiceImplTest {
         return "user_" + UUID.randomUUID();
     }
 
+    private String randomPassword() {
+        return "pwd_" + UUID.randomUUID();
+    }
+
     @Test
     @DisplayName("login - utente valido con password cifrata")
     void testLogin_Success() {
         String username = randomUsername();
+        String rawPassword = randomPassword();
 
         User user = new User();
         user.setId(UUID.randomUUID().toString());
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode("pass123"));
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole("USER");
 
-        LoginRequestDto req = new LoginRequestDto(username, "pass123");
+        LoginRequestDto req = new LoginRequestDto(username, rawPassword);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -66,12 +71,14 @@ class UserServiceImplTest {
     @DisplayName("login - credenziali errate")
     void testLogin_WrongPassword() {
         String username = randomUsername();
+        String correctPassword = randomPassword();
+        String wrongPassword = randomPassword();
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode("rightPass"));
+        user.setPassword(passwordEncoder.encode(correctPassword));
 
-        LoginRequestDto req = new LoginRequestDto(username, "wrongPass");
+        LoginRequestDto req = new LoginRequestDto(username, wrongPassword);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -83,7 +90,7 @@ class UserServiceImplTest {
     void testLogin_UserNotFound() {
         String username = randomUsername();
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
-        LoginRequestDto req = new LoginRequestDto(username, "1234");
+        LoginRequestDto req = new LoginRequestDto(username, randomPassword());
         assertNull(userService.login(req));
     }
 
@@ -91,9 +98,9 @@ class UserServiceImplTest {
     @DisplayName("login - request nulla o campi null")
     void testLogin_NullCases() {
         assertNull(userService.login(null));
-        LoginRequestDto req1 = new LoginRequestDto(null, "1234");
+        LoginRequestDto req1 = new LoginRequestDto(null, randomPassword());
         assertNull(userService.login(req1));
-        LoginRequestDto req2 = new LoginRequestDto("user", null);
+        LoginRequestDto req2 = new LoginRequestDto(randomUsername(), null);
         assertNull(userService.login(req2));
     }
 
@@ -101,10 +108,11 @@ class UserServiceImplTest {
     @DisplayName("register - nuovo utente valido")
     void testRegister_Success() {
         String username = randomUsername();
+        String password = randomPassword();
 
         RegistrationRequestDto reg = new RegistrationRequestDto();
         reg.setUsername(username);
-        reg.setPassword("1234");
+        reg.setPassword(password);
         reg.setEmail(username + "@mail.com");
         reg.setName("Marco");
         reg.setSurname("Verdi");
@@ -128,7 +136,7 @@ class UserServiceImplTest {
         String username = randomUsername();
         RegistrationRequestDto reg = new RegistrationRequestDto();
         reg.setUsername(username);
-        reg.setPassword("1234");
+        reg.setPassword(randomPassword());
         reg.setEmail(username + "@gmail.com");
         reg.setBirthDate(new Date());
 
@@ -143,7 +151,7 @@ class UserServiceImplTest {
     void testRegister_NullCases() {
         assertFalse(userService.register(null));
         RegistrationRequestDto r1 = new RegistrationRequestDto();
-        r1.setPassword("123");
+        r1.setPassword(randomPassword());
         r1.setEmail("e");
         assertFalse(userService.register(r1));
         RegistrationRequestDto r2 = new RegistrationRequestDto();
@@ -152,7 +160,7 @@ class UserServiceImplTest {
         assertFalse(userService.register(r2));
         RegistrationRequestDto r3 = new RegistrationRequestDto();
         r3.setUsername("u");
-        r3.setPassword("p");
+        r3.setPassword(randomPassword());
         assertFalse(userService.register(r3));
     }
 
@@ -314,20 +322,21 @@ class UserServiceImplTest {
     @DisplayName("updateUser - tutti i campi valorizzati → aggiorna tutto")
     void testUpdateUser_AllFieldsFilled() {
         String username = randomUsername();
+        String newPassword = randomPassword();
 
         User existing = new User();
         existing.setUsername(username);
         existing.setEmail("old@mail.com");
         existing.setName("Old");
         existing.setSurname("User");
-        existing.setPassword("oldPass");
+        existing.setPassword(randomPassword());
 
         User update = new User();
         update.setUsername(username);
         update.setEmail("new@mail.com");
         update.setName("NewName");
         update.setSurname("NewSurname");
-        update.setPassword("newPass");
+        update.setPassword(newPassword);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(existing));
 
@@ -339,7 +348,7 @@ class UserServiceImplTest {
                         saved.getEmail().equals("new@mail.com") &&
                         saved.getName().equals("NewName") &&
                         saved.getSurname().equals("NewSurname") &&
-                        passwordEncoder.matches("newPass", saved.getPassword())
+                        passwordEncoder.matches(newPassword, saved.getPassword())
         ));
     }
 
@@ -347,13 +356,14 @@ class UserServiceImplTest {
     @DisplayName("updateUser - tutti i campi null o vuoti → nessun aggiornamento")
     void testUpdateUser_AllFieldsNullOrEmpty() {
         String username = randomUsername();
+        String oldPassword = randomPassword();
 
         User existing = new User();
         existing.setUsername(username);
         existing.setEmail("old@mail.com");
         existing.setName("Old");
         existing.setSurname("User");
-        existing.setPassword("pass123");
+        existing.setPassword(oldPassword);
 
         User update = new User();
         update.setUsername(username);
@@ -372,7 +382,7 @@ class UserServiceImplTest {
                         saved.getEmail().equals("old@mail.com") &&
                         saved.getName().equals("Old") &&
                         saved.getSurname().equals("User") &&
-                        saved.getPassword().equals("pass123")
+                        saved.getPassword().equals(oldPassword)
         ));
     }
 
@@ -380,20 +390,21 @@ class UserServiceImplTest {
     @DisplayName("updateUser - ogni campo testato con combinazioni miste true/false")
     void testUpdateUser_MixedConditions() {
         String username = randomUsername();
+        String newPassword = randomPassword();
 
         User existing = new User();
         existing.setUsername(username);
         existing.setEmail("old@mail.com");
         existing.setName("OldName");
         existing.setSurname("OldSurname");
-        existing.setPassword("oldPass");
+        existing.setPassword(randomPassword());
 
         User update = new User();
         update.setUsername(username);
         update.setEmail(" ");
         update.setName("NewName");
         update.setSurname(null);
-        update.setPassword("newPass");
+        update.setPassword(newPassword);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(existing));
 
@@ -405,7 +416,7 @@ class UserServiceImplTest {
                         saved.getEmail().equals("old@mail.com") &&
                         saved.getName().equals("NewName") &&
                         saved.getSurname().equals("OldSurname") &&
-                        passwordEncoder.matches("newPass", saved.getPassword())
+                        passwordEncoder.matches(newPassword, saved.getPassword())
         ));
     }
 }

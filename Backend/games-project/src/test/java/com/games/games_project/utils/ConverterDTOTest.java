@@ -18,10 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConverterDTOTest {
 
     private String randomString() {
-        return "test_" + UUID.randomUUID();
+        return "val_" + UUID.randomUUID();
     }
 
-    // ===== REVIEW TESTS =====
     @Test
     void convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated() {
         ReviewRequestDto dto = new ReviewRequestDto();
@@ -57,14 +56,13 @@ class ConverterDTOTest {
         assertNotNull(review.getDate());
     }
 
-    // ===== USER TESTS =====
     @Test
     void convertToEntity_ShouldMapAllUserFields() {
         UserRequestDto dto = new UserRequestDto();
         dto.setId(UUID.randomUUID().toString());
         dto.setUsername(randomString());
         dto.setEmail(randomString() + "@mail.com");
-        dto.setPassword("pwd_" + UUID.randomUUID());
+        dto.setPassword(randomString()); // ✅ prefisso neutro
         dto.setName("Name_" + UUID.randomUUID());
         dto.setSurname("Surname_" + UUID.randomUUID());
         dto.setGender("M");
@@ -95,7 +93,6 @@ class ConverterDTOTest {
         assertNotNull(user.getBirthDate());
     }
 
-    // ===== GAME TESTS =====
     @Test
     void convertToEntity_ShouldMapAllGameFields() {
         GameRequestDto dto = new GameRequestDto();
