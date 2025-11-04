@@ -11,24 +11,28 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
-
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConverterDTOTest {
 
+    private String randomString() {
+        return "test_" + UUID.randomUUID();
+    }
+
     // ===== REVIEW TESTS =====
     @Test
     void convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated() {
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setId("1");
-        dto.setAuthor("Mario");
-        dto.setText("Ottimo gioco");
+        dto.setId(UUID.randomUUID().toString());
+        dto.setAuthor(randomString());
+        dto.setText(randomString());
         dto.setScore(5);
         dto.setDate(new Date());
         dto.setGameId(new ObjectId());
         dto.setUserId(new ObjectId());
-        dto.setGameName("Cyberpunk");
+        dto.setGameName(randomString());
 
         Review review = ConverterDTO.convertToEntity(dto);
 
@@ -45,9 +49,11 @@ class ConverterDTOTest {
     @Test
     void convertToEntity_ShouldAssignCurrentDate_WhenDateIsNull() {
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setAuthor("Luigi");
+        dto.setAuthor(randomString());
         dto.setDate(null);
+
         Review review = ConverterDTO.convertToEntity(dto);
+
         assertNotNull(review.getDate());
     }
 
@@ -55,12 +61,12 @@ class ConverterDTOTest {
     @Test
     void convertToEntity_ShouldMapAllUserFields() {
         UserRequestDto dto = new UserRequestDto();
-        dto.setId("u1");
-        dto.setUsername("francesco");
-        dto.setEmail("fra@mail.com");
-        dto.setPassword("123");
-        dto.setName("Francesco");
-        dto.setSurname("Torino");
+        dto.setId(UUID.randomUUID().toString());
+        dto.setUsername(randomString());
+        dto.setEmail(randomString() + "@mail.com");
+        dto.setPassword("pwd_" + UUID.randomUUID());
+        dto.setName("Name_" + UUID.randomUUID());
+        dto.setSurname("Surname_" + UUID.randomUUID());
         dto.setGender("M");
         dto.setRole("Admin");
         dto.setBirthDate(new Date());
@@ -81,7 +87,7 @@ class ConverterDTOTest {
     @Test
     void convertToEntity_ShouldAssignDefaultDate_WhenBirthDateIsNull() {
         UserRequestDto dto = new UserRequestDto();
-        dto.setUsername("mario");
+        dto.setUsername(randomString());
         dto.setBirthDate(null);
 
         User user = ConverterDTO.convertToEntity(dto);
@@ -93,22 +99,22 @@ class ConverterDTOTest {
     @Test
     void convertToEntity_ShouldMapAllGameFields() {
         GameRequestDto dto = new GameRequestDto();
-        dto.setId("g1");
-        dto.setTitle("Zelda");
+        dto.setId(UUID.randomUUID().toString());
+        dto.setTitle(randomString());
         dto.setReleaseDate(new Date());
         dto.setRating("PEGI 18");
         dto.setGenre("Adventure");
-        dto.setDevelopers(List.of("Nintendo"));
-        dto.setPublishers(List.of("Nintendo"));
-        dto.setThemes(List.of("Fantasy"));
-        dto.setPlatforms(List.of("Switch"));
+        dto.setDevelopers(List.of("Dev_" + UUID.randomUUID()));
+        dto.setPublishers(List.of("Pub_" + UUID.randomUUID()));
+        dto.setThemes(List.of("Theme_" + UUID.randomUUID()));
+        dto.setPlatforms(List.of("Platform_" + UUID.randomUUID()));
         dto.setMetaScore(92.5);
         dto.setMetaScoreCount(5000.0);
-        dto.setDescription("An epic adventure");
-        dto.setStoryline("Save the kingdom");
-        dto.setSummary("Great game");
-        dto.setCover("cover.jpg");
-        dto.setVideo("trailer.mp4");
+        dto.setDescription("Desc_" + UUID.randomUUID());
+        dto.setStoryline("Story_" + UUID.randomUUID());
+        dto.setSummary("Summary_" + UUID.randomUUID());
+        dto.setCover("cover_" + UUID.randomUUID() + ".jpg");
+        dto.setVideo("video_" + UUID.randomUUID() + ".mp4");
         dto.setUserScore(9.8);
         dto.setReviewCount(1000);
         dto.setScreenshots(List.of("img1", "img2"));
@@ -138,7 +144,7 @@ class ConverterDTOTest {
     @Test
     void convertToEntity_ShouldAssignDefaultReleaseDate_WhenNull() {
         GameRequestDto dto = new GameRequestDto();
-        dto.setTitle("Elden Ring");
+        dto.setTitle(randomString());
         dto.setReleaseDate(null);
 
         Game game = ConverterDTO.convertToEntity(dto);

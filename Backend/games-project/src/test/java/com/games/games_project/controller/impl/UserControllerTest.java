@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -32,6 +33,10 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    private String randomString() {
+        return "test_" + UUID.randomUUID();
+    }
+
     @BeforeEach
     void setup() {
         Mockito.reset(userService);
@@ -40,17 +45,10 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /users/login → autenticazione riuscita")
     void testLogin_Success() throws Exception {
-        LoginResponseDto response = new LoginResponseDto();
+        String username = randomString();
+        String userId = UUID.randomUUID().toString();
 
-        response = new LoginResponseDto(
-        "6807a1995d04121deaab8a8d",
-        "NuttyMan",
-        "USER"
-        );
-
-        response.setUserId("6807a1904121deaab8a8d");
-        response.setUsername("NuttyMan");
-        response.setRole("USER");
+        LoginResponseDto response = new LoginResponseDto(userId, username, "USER");
 
         when(userService.login(any(LoginRequestDto.class))).thenReturn(response);
 
@@ -58,12 +56,12 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
-                              "username": "NuttyMan",
-                              "password": "password123"
+                              "username": "%s",
+                              "password": "pwd_%s"
                             }
-                            """))
+                            """.formatted(username, UUID.randomUUID())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("NuttyMan"))
+                .andExpect(jsonPath("$.username").value(username))
                 .andExpect(jsonPath("$.role").value("USER"));
     }
 
@@ -76,10 +74,10 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
-                              "username": "FakeUser",
-                              "password": "wrongpass"
+                              "username": "%s",
+                              "password": "%s"
                             }
-                            """))
+                            """.formatted(randomString(), randomString())))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -92,11 +90,11 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
-                              "username": "NewUser",
-                              "password": "abc123",
-                              "email": "newuser@gmail.com"
+                              "username": "%s",
+                              "password": "%s",
+                              "email": "%s@mail.com"
                             }
-                            """))
+                            """.formatted(randomString(), randomString(), randomString())))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
@@ -105,16 +103,16 @@ class UserControllerTest {
     @DisplayName("POST /users/register → registrazione fallita (409 Conflict)")
     void testRegister_Fail() throws Exception {
         when(userService.register(any(RegistrationRequestDto.class))).thenReturn(false);
-        //ggignore
+
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
-                              "username": "ExistingUser",
-                              "password": "abc123",
-                              "email": "existing@gmail.com"
+                              "username": "%s",
+                              "password": "%s",
+                              "email": "%s@mail.com"
                             }
-                            """))
+                            """.formatted(randomString(), randomString(), randomString())))
                 .andExpect(status().isConflict())
                 .andExpect(content().string("false"));
     }
@@ -124,9 +122,11 @@ class UserControllerTest {
     void testDeleteUser() throws Exception {
         when(userService.deleteUser(any(User.class))).thenReturn(true);
 
+        String username = randomString();
+
         mockMvc.perform(post("/users/deleteUser")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"NuttyMan\"}"))
+                        .content(("{\"username\":\"" + username + "\"}")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
@@ -136,9 +136,11 @@ class UserControllerTest {
     void testUpdateUser() throws Exception {
         when(userService.updateUser(any(User.class))).thenReturn(true);
 
+        String username = randomString();
+
         mockMvc.perform(post("/users/updateUser")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"NuttyMan\",\"email\":\"updated@gmail.com\"}"))
+                        .content(("{\"username\":\"" + username + "\",\"email\":\"" + username + "@mail.com\"}")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
@@ -146,27 +148,30 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /users/getUserInfo → restituisce informazioni utente")
     void testGetUserInfo() throws Exception {
+        String username = randomString();
+        String email = username + "@mail.com";
+
         User user = new User(
-                "6807a1905d04121deaab7dd9",
-                "NuttyMan",
-                "nuttyman@gmail.com",
-                "pass123",
-                "Francesco",
-                "Torino",
+                UUID.randomUUID().toString(),
+                username,
+                email,
+                "pwd_" + UUID.randomUUID(),
+                "Name_" + UUID.randomUUID(),
+                "Surname_" + UUID.randomUUID(),
                 "Male",
                 "USER",
                 new Date()
         );
 
-        when(userService.getUserInfo("NuttyMan")).thenReturn(user);
+        when(userService.getUserInfo(username)).thenReturn(user);
 
         mockMvc.perform(post("/users/getUserInfo")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"NuttyMan\"}")
+                        .content(("{\"username\":\"" + username + "\"}"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("NuttyMan"))
-                .andExpect(jsonPath("$.email").value("nuttyman@gmail.com"))
+                .andExpect(jsonPath("$.username").value(username))
+                .andExpect(jsonPath("$.email").value(email))
                 .andExpect(jsonPath("$.role").value("USER"));
     }
 }
