@@ -66,14 +66,7 @@ function GamePage() {
                 return response.json();
             })
             .then((data) => {
-                const safeCover = DOMPurify.sanitize(data.cover);
-                const safeVideo = data.video ? DOMPurify.sanitize(data.video.replace("watch?v=", "embed/")) : null;
-
-                setGame({
-                    ...data,
-                    cover: safeCover,
-                    video: safeVideo
-                });
+                setGame(data);
             })
             .catch((err) => {
             });
@@ -128,7 +121,7 @@ function GamePage() {
                                 <div className="title font-heading-desktop-xl font-heading-l fw-700">
                                     {game.title}
                                 </div>
-                                <img src = {game.cover} alt=""></img>
+                                <img src = {DOMPurify.sanitize(game.cover)} alt=""></img>
                                 <div className="tag-container">
                                     {game.publishers.map((publisher, index) => (
                                         <div key={index} className="tag font-body-desktop-xl fw-500">
@@ -203,7 +196,7 @@ function GamePage() {
                                     {game.video && (
                                         <div className="video-container">
                                             // snyk ignore next-line
-                                            <iframe src={game.video.replace("watch?v=", "embed/")} 
+                                            <iframe src={DOMPurify.sanitize(game.video.replace("watch?v=", "embed/"))} 
                                                 title="Game Trailer" 
                                                 frameBorder="0" 
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
