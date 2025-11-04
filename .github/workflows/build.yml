@@ -215,11 +215,26 @@ jobs:
         working-directory: ./Frontend/react-project
         run: snyk test --severity-threshold=high
 
+  gitguardian:
+    name: GitGuardian Secret Scan
+    runs-on: ubuntu-latest
+    needs: [snyk, sonarcloud]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install GitGuardian ggshield
+        uses: GitGuardian/ggshield-action@v1
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+        with:
+          args: scan path .
 
   dockerhub:
     name: DockerHub Build & Push
     runs-on: ubuntu-latest
-    needs: [mutation-tests, snyk, sonarcloud]
+    needs: [mutation-tests, snyk, sonarcloud, gitguardian]
 
     steps:
       - name: Checkout repository
