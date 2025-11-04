@@ -18,11 +18,13 @@
     <packaging>jar</packaging>
 
     <name>games-project</name>
-    <description>Progetto Francesco Maria Torino e Francesco Pinto</description>
+    <description>Progetto Francesco Maria Torino</description>
 
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
+        <sonar.organization>francescotorino1999</sonar.organization>
+        <sonar.projectKey>PlayWiseDependability</sonar.projectKey>
     </properties>
 
     <dependencies>
