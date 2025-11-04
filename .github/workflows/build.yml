@@ -224,12 +224,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install GitGuardian ggshield
+      - name: Run GitGuardian Secret Scan
         uses: GitGuardian/ggshield-action@v1
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
         with:
-          args: scan path .
+          args: secret scan path .
+
 
   dockerhub:
     name: DockerHub Build & Push
