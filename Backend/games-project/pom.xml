@@ -25,6 +25,7 @@
         <spring-cloud.version>2023.0.5</spring-cloud.version>
         <sonar.organization>francescotorino1999</sonar.organization>
         <sonar.projectKey>PlayWiseDependability</sonar.projectKey>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -152,7 +153,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -186,13 +186,12 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <exclude>**/*Config*.class</exclude>
                                 <exclude>**/CorsConfig.class</exclude>
-                                <exclude>**/*Config.class</exclude>
-                                <exclude>**/config/**/*</exclude>
                                 <exclude>**/GamesProjectApplication.class</exclude>
-                                <exclude>**/constants/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/model/**/*</exclude>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/model/**</exclude>
+                                <exclude>**/constants/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
