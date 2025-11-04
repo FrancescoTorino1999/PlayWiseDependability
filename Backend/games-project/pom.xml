@@ -24,7 +24,6 @@
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
 
-        <!-- SonarCloud -->
         <sonar.organization>francescotorino1999</sonar.organization>
         <sonar.projectKey>PlayWiseDependability</sonar.projectKey>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
@@ -34,31 +33,26 @@
 
     <dependencies>
 
-        <!-- ✅ MongoDB (non reactive) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
-        <!-- ✅ Web MVC (Servlet stack) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- ✅ Spring Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- ✅ Password encoder -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
-        <!-- ✅ DevTools per reload -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -66,7 +60,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- ✅ Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -86,7 +79,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ✅ Mutation testing -->
         <dependency>
             <groupId>org.pitest</groupId>
             <artifactId>pitest-junit5-plugin</artifactId>
@@ -94,7 +86,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ✅ Benchmarking -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
@@ -108,7 +99,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ✅ Logback -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
@@ -137,14 +127,11 @@
 
     <build>
         <plugins>
-
-            <!-- ✅ Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- ✅ Mutation Testing -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -166,7 +153,6 @@
                 </configuration>
             </plugin>
 
-            <!-- ✅ JaCoCo Coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
