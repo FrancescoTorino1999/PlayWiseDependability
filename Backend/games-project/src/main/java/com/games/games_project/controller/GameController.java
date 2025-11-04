@@ -13,13 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
-@CrossOrigin(
-        origins = "*",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}
-)
 public class GameController {
-
     private final GameService gameService;
 
     public GameController(GameService gameService) {
@@ -27,7 +21,6 @@ public class GameController {
     }
 
     @GetMapping("/games/{id}")
-    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ResponseEntity<GameDetailsDto> getGameById(@PathVariable String id) {
         return gameService.getGameDetailsById(id)
                 .map(ResponseEntity::ok)
@@ -35,24 +28,22 @@ public class GameController {
     }
 
     @GetMapping("/autocomplete/{query}")
-    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ResponseEntity<List<GamePreviewDto>> findSuggestions(@PathVariable String query) {
         return ResponseEntity.ok(gameService.findSuggestion(query));
     }
 
     @GetMapping("/games")
-    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public PagedGamesResponseDto<GamePreviewDto> getGamesPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int size,
             @RequestParam(defaultValue = "userScore,desc") String sort
     ) {
         String[] sortParts = sort.split(",");
-        Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc")
-                ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sortBy = Sort.by(direction, sortParts[0]);
 
         Pageable pageable = PageRequest.of(page, size, sortBy);
         return gameService.getGamesPaginated(pageable);
     }
+
 }
