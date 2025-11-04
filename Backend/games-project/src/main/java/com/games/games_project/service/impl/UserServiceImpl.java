@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,22 +30,28 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private GameRepository gameRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequest) {
-        if(loginRequest==null || loginRequest.getUsername()==null || loginRequest.getPassword()==null){
+        if (loginRequest == null || loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
             return null;
         }
 
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
-        // snyk ignore next-line
-        if(user.isPresent() && user.get().getPassword().equals(loginRequest.getPassword())){
-            return new LoginResponseDto(user.get().getId(), user.get().getUsername(), user.get().getRole());
+
+        if (user.isPresent()) {
+            String storedPassword = user.get().getPassword();
+            String rawPassword = loginRequest.getPassword();
+
+            if (passwordEncoder.matches(rawPassword, storedPassword)) {
+                return new LoginResponseDto(user.get().getId(), user.get().getUsername(), user.get().getRole());
+            }
         }
-        else{
-            return null;
-        }
+
+        return null;
     }
+
 
     @Override
     public Boolean register(RegistrationRequestDto registrationRequest) {
@@ -58,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
         User newUser = new User();
         newUser.setUsername(registrationRequest.getUsername());
-        newUser.setPassword(registrationRequest.getPassword());
+        newUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         newUser.setEmail(registrationRequest.getEmail());
         newUser.setName(registrationRequest.getName());
         newUser.setSurname(registrationRequest.getSurname());
@@ -131,7 +138,7 @@ public class UserServiceImpl implements UserService {
                 updatedUser.setSurname(user.getSurname());
             }
             if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
-                updatedUser.setPassword(user.getPassword());
+                updatedUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
 
             userRepository.save(updatedUser);
@@ -146,4 +153,6 @@ public class UserServiceImpl implements UserService {
     public List<GenderCountDto> getUserCountByGender() {
         return userRepository.countUsersByGender();
     }
+
+
 }

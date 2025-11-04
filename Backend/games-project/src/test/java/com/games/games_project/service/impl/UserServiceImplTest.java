@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
 
@@ -27,17 +28,18 @@ class UserServiceImplTest {
     @Mock private GameRepository gameRepository;
     @InjectMocks private UserServiceImpl userService;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @BeforeEach
     void setup() { MockitoAnnotations.openMocks(this); }
 
-
     @Test
-    @DisplayName("login - utente valido")
+    @DisplayName("login - utente valido con password cifrata")
     void testLogin_Success() {
         User nutty = new User();
         nutty.setId("6807a1995d04121deaab8a8d");
         nutty.setUsername("NuttyMan");
-        nutty.setPassword("pass123");
+        nutty.setPassword(passwordEncoder.encode("pass123"));
         nutty.setRole("USER");
 
         LoginRequestDto req = new LoginRequestDto("NuttyMan", "pass123");
@@ -57,7 +59,7 @@ class UserServiceImplTest {
     void testLogin_WrongPassword() {
         User user = new User();
         user.setUsername("NuttyMan");
-        user.setPassword("rightPass");
+        user.setPassword(passwordEncoder.encode("rightPass"));
 
         LoginRequestDto req = new LoginRequestDto("NuttyMan", "wrongPass");
 
@@ -78,10 +80,8 @@ class UserServiceImplTest {
     @DisplayName("login - request nulla o campi null")
     void testLogin_NullCases() {
         assertNull(userService.login(null));
-
         LoginRequestDto req1 = new LoginRequestDto(null, "1234");
         assertNull(userService.login(req1));
-
         LoginRequestDto req2 = new LoginRequestDto("user", null);
         assertNull(userService.login(req2));
     }
@@ -128,17 +128,14 @@ class UserServiceImplTest {
     @DisplayName("register - request nulla o campi null")
     void testRegister_NullCases() {
         assertFalse(userService.register(null));
-
         RegistrationRequestDto r1 = new RegistrationRequestDto();
         r1.setPassword("123");
         r1.setEmail("e");
         assertFalse(userService.register(r1));
-
         RegistrationRequestDto r2 = new RegistrationRequestDto();
         r2.setUsername("u");
         r2.setEmail("e");
         assertFalse(userService.register(r2));
-
         RegistrationRequestDto r3 = new RegistrationRequestDto();
         r3.setUsername("u");
         r3.setPassword("p");
@@ -315,7 +312,7 @@ class UserServiceImplTest {
                         saved.getEmail().equals("new@mail.com") &&
                         saved.getName().equals("NewName") &&
                         saved.getSurname().equals("NewSurname") &&
-                        saved.getPassword().equals("newPass")
+                        passwordEncoder.matches("newPass", saved.getPassword())
         ));
     }
 
@@ -377,10 +374,7 @@ class UserServiceImplTest {
                         saved.getEmail().equals("old@mail.com") &&
                         saved.getName().equals("NewName") &&
                         saved.getSurname().equals("OldSurname") &&
-                        saved.getPassword().equals("newPass")
+                        passwordEncoder.matches("newPass", saved.getPassword())
         ));
     }
-
-
-
 }

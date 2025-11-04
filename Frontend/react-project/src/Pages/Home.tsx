@@ -3,7 +3,6 @@ import { CONSTANTS } from "../constants";
 import Card from "../components/Card/Card";
 import HeroBanner from "../components/HeroBanner/HeroBanner";
 import { LanguageContext } from "../Contexts/LanguageProvider";
-import TableSteamGames from "../components/TableSteamGames/TableSteamGames";
 import Carusel from "../components/Carusel/Carusel";
 
 function Home() {

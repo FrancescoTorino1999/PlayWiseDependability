@@ -9,7 +9,7 @@ import { useUser } from '../Contexts/UserProvider';
 import LeaveReview from "../components/LeaveReview/LeaveReview";
 import Carusel from "../components/Carusel/Carusel";
 import { ENV } from "../env";
-
+import DOMPurify from "dompurify";
 
 
 function GamePage() {
@@ -66,7 +66,14 @@ function GamePage() {
                 return response.json();
             })
             .then((data) => {
-                setGame(data);
+                const safeCover = DOMPurify.sanitize(data.cover);
+                const safeVideo = data.video ? DOMPurify.sanitize(data.video.replace("watch?v=", "embed/")) : null;
+
+                setGame({
+                    ...data,
+                    cover: safeCover,
+                    video: safeVideo
+                });
             })
             .catch((err) => {
             });
@@ -121,7 +128,6 @@ function GamePage() {
                                 <div className="title font-heading-desktop-xl font-heading-l fw-700">
                                     {game.title}
                                 </div>
-                                // snyk ignore next-line
                                 <img src = {game.cover} alt=""></img>
                                 <div className="tag-container">
                                     {game.publishers.map((publisher, index) => (
