@@ -13,22 +13,27 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static com.games.games_project.utils.ConverterDTO.convertToEntity;
 
 @RestController
 @RequestMapping("/reviews")
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}
+)
 public class ReviewController {
+
     @Autowired
     private ReviewService reviewService;
 
     @Autowired
     private GameService gameService;
 
-
     @GetMapping("/games/{gameId}/reviews")
+    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public PagedReviewsResponseDto<ReviewDetailsDto> getReviewsForGame(
             @PathVariable String gameId,
             @RequestParam(defaultValue = "0") int page,
@@ -44,6 +49,7 @@ public class ReviewController {
     }
 
     @PostMapping("/games/reviewsByAuthor")
+    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public PagedReviewsResponseDto<UserProfileReviewDto> getReviewsForUser(
             @RequestBody UserRequestDto user,
             @PageableDefault(page = 1, size = 5) Pageable pageable
@@ -55,6 +61,7 @@ public class ReviewController {
     }
 
     @PostMapping("/addReview")
+    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<Boolean> addReview(@RequestBody ReviewRequestDto dto) {
         Review review = convertToEntity(dto);
         boolean result = reviewService.addReview(review);
@@ -62,6 +69,7 @@ public class ReviewController {
     }
 
     @PostMapping("/modifyReview")
+    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<Boolean> modifyReview(@RequestBody ReviewRequestDto dto) {
         Review review = convertToEntity(dto);
         boolean result = reviewService.modifyReview(review);
@@ -69,13 +77,15 @@ public class ReviewController {
     }
 
     @PostMapping("/deleteReview")
+    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<Boolean> deleteReview(@RequestBody ReviewRequestDto dto) {
         Review review = convertToEntity(dto);
         boolean result = reviewService.deleteReview(review);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("game/{gameId}/review")
+    @GetMapping("/game/{gameId}/review")
+    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ReviewDetailsDto getGameReviewByAuthor(
             @PathVariable String gameId,
             @RequestParam String author
@@ -83,6 +93,4 @@ public class ReviewController {
         Optional<ReviewDetailsDto> review = reviewService.getGameReviewByAuthor(gameId, author);
         return review.orElse(null);
     }
-
-
 }
