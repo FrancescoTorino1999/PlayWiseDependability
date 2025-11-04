@@ -84,3 +84,19 @@ jobs:
       - name: Run PIT Mutation Testing
         working-directory: ./Backend/games-project
         run: mvn org.pitest:pitest-maven:mutationCoverage -DwithHistory
+
+      - name: SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        working-directory: ./Backend/games-project
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=FrancescoTorino1999_PlayWiseDependability \
+          -Dsonar.organization=francescotorino1999 \
+          -Dsonar.host.url=https://sonarcloud.io
+
+      - name: Security Scan with Snyk
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
