@@ -30,7 +30,7 @@ public class UserRepositoryBenchmark {
         sampleUser.setId(UUID.randomUUID().toString());
         sampleUser.setUsername(randomUsername());
         sampleUser.setEmail(randomEmail());
-        sampleUser.setPassword("encodedPassword");
+        sampleUser.setPassword(UUID.randomUUID().toString());
         sampleUser.setGender("M");
         sampleUser.setRole("USER");
 
