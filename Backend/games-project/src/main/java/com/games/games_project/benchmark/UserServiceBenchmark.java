@@ -46,7 +46,6 @@ public class UserServiceBenchmark {
         reviewRepository = mock(ReviewRepository.class);
         gameRepository = mock(GameRepository.class);
         userService = new UserServiceImpl();
-        userService.getClass();
         try {
             var f1 = UserServiceImpl.class.getDeclaredField("userRepository");
             var f2 = UserServiceImpl.class.getDeclaredField("reviewRepository");
@@ -61,11 +60,14 @@ public class UserServiceBenchmark {
 
         encoder = new BCryptPasswordEncoder();
 
+        String username = randomUsername();
+        String password = randomPassword();
+
         sampleUser = new User();
         sampleUser.setId("u1");
-        sampleUser.setUsername("Francesco");
-        sampleUser.setPassword(encoder.encode("password"));
-        sampleUser.setEmail("francesco@example.com");
+        sampleUser.setUsername(username);
+        sampleUser.setPassword(encoder.encode(password));
+        sampleUser.setEmail(username + "@example.com");
         sampleUser.setRole("USER");
 
         sampleGame = new Game();
@@ -76,7 +78,7 @@ public class UserServiceBenchmark {
 
         sampleReview = new Review();
         sampleReview.setId("r1");
-        sampleReview.setAuthor("Francesco");
+        sampleReview.setAuthor(username);
         sampleReview.setScore(7);
         sampleReview.setText("Mock review");
         sampleReview.setGameId(new ObjectId("6555abcd9876abcd1234abcd"));
@@ -84,27 +86,35 @@ public class UserServiceBenchmark {
         reviewPage = new PageImpl<>(List.of(sampleReview));
 
         registrationRequest = new RegistrationRequestDto();
-        registrationRequest.setUsername("Francesco");
-        registrationRequest.setPassword("password");
-        registrationRequest.setEmail("francesco@example.com");
-        registrationRequest.setName("Francesco");
-        registrationRequest.setSurname("Torino");
+        registrationRequest.setUsername(username);
+        registrationRequest.setPassword(password);
+        registrationRequest.setEmail(username + "@example.com");
+        registrationRequest.setName("Name");
+        registrationRequest.setSurname("Surname");
         registrationRequest.setGender("M");
 
         loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("Francesco");
-        loginRequest.setPassword("password");
+        loginRequest.setUsername(username);
+        loginRequest.setPassword(password);
+    }
+
+    private String randomUsername() {
+        return "user_" + UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private String randomPassword() {
+        return "pwd_" + UUID.randomUUID().toString().substring(0, 8);
     }
 
     @Benchmark
     public LoginResponseDto benchmarkLoginSuccess() {
-        when(userRepository.findByUsername("Francesco")).thenReturn(Optional.of(sampleUser));
+        when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.of(sampleUser));
         return userService.login(loginRequest);
     }
 
     @Benchmark
     public LoginResponseDto benchmarkLoginFail() {
-        when(userRepository.findByUsername("Francesco")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.empty());
         return userService.login(loginRequest);
     }
 
@@ -122,8 +132,8 @@ public class UserServiceBenchmark {
 
     @Benchmark
     public User benchmarkGetUserInfo() {
-        when(userRepository.findByUsername("Francesco")).thenReturn(Optional.of(sampleUser));
-        return userService.getUserInfo("Francesco");
+        when(userRepository.findByUsername(sampleUser.getUsername())).thenReturn(Optional.of(sampleUser));
+        return userService.getUserInfo(sampleUser.getUsername());
     }
 
     @Benchmark
