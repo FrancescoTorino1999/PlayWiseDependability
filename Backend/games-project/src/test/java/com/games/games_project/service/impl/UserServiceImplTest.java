@@ -401,18 +401,19 @@ class UserServiceImplTest {
     @Test
     @DisplayName("deleteUser - aggiorna correttamente media con più recensioni")
     void testDeleteUser_UpdateAverageProperly() {
-        String username = "UserZ";
+        String username = randomUsername();
+
         User user = new User();
         user.setUsername(username);
 
         Review review = new Review();
-        review.setId("revZ");
+        review.setId(UUID.randomUUID().toString());
         review.setAuthor(username);
         review.setScore(9);
-        review.setGameId(new ObjectId("6807a1905d04121deaab7da9"));
+        review.setGameId(new ObjectId(UUID.randomUUID().toString().substring(0, 24)));
 
         Game game = new Game();
-        game.setId("6807a1905d04121deaab7da9");
+        game.setId(review.getGameId().toHexString());
         game.setUserScore(7.5);
         game.setReviewCount(3);
 
@@ -426,23 +427,33 @@ class UserServiceImplTest {
         double expectedNewAvg = Math.round(((7.5 * 3) - 9) / (3 - 1));
         assertEquals(expectedNewAvg, game.getUserScore());
         assertEquals(2, game.getReviewCount());
+
+        verify(gameRepository).save(argThat(g ->
+                g.getUserScore() == expectedNewAvg && g.getReviewCount() == 2));
+        verify(reviewRepository).deleteById(review.getId());
     }
 
     @Test
     @DisplayName("updateUser - aggiorna anche lo username")
     void testUpdateUser_UpdateUsername() {
+        String oldUsername = randomUsername();
+        String newUsername = randomUsername();
+
         User existing = new User();
-        existing.setUsername("oldUser");
+        existing.setUsername(oldUsername);
 
         User update = new User();
-        update.setUsername("newUser");
+        update.setUsername(newUsername);
 
-        when(userRepository.findByUsername("newUser")).thenReturn(Optional.of(existing));
+        when(userRepository.findByUsername(newUsername)).thenReturn(Optional.of(existing));
 
         assertTrue(userService.updateUser(update));
 
-        verify(userRepository).save(argThat(u -> u.getUsername().equals("newUser")));
+        verify(userRepository).save(argThat(u ->
+                u.getUsername().equals(newUsername)
+        ));
     }
+
 
 
 }
