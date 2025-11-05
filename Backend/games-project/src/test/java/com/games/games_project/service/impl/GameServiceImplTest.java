@@ -114,6 +114,19 @@ class GameServiceImplTest {
         assertEquals(92.0, dto.getUserScore());
         assertNotNull(dto.getLatestReviews());
         assertEquals(0, dto.getLatestReviews().size());
+        assertEquals(List.of("Ubisoft"), dto.getPublishers());
+        assertEquals(List.of("Ubisoft Montreal"), dto.getDevelopers());
+        assertEquals(List.of("Stealth", "Espionage"), dto.getThemes());
+        assertEquals(List.of("PC", "Xbox"), dto.getPlatforms());
+        assertEquals(1200.0, dto.getMetaScoreCount());
+        assertEquals("Stealth action game.", dto.getDescription());
+        assertEquals("Sam Fisher returns for a new mission.", dto.getStoryline());
+        assertEquals("A top-tier stealth experience.", dto.getSummary());
+        assertEquals("cover.jpg", dto.getCover());
+        assertEquals("trailer.mp4", dto.getVideo());
+        assertEquals(33, dto.getReviewCount());
+        assertEquals(List.of("img1.jpg", "img2.jpg"), dto.getScreenshots());
+
     }
 
     @Test
@@ -162,6 +175,14 @@ class GameServiceImplTest {
         assertEquals("Grand Theft Auto IV", dto.getTitle());
         assertEquals(3, dto.getLatestReviews().size());
         assertEquals("NikoBellic", dto.getLatestReviews().get(0).getAuthor());
+        List<ReviewDetailsDto> reviews = dto.getLatestReviews();
+        assertEquals(3, reviews.size());
+        assertEquals("NikoBellic", reviews.get(0).getAuthor());
+        assertNotNull(reviews.get(0).getText());
+        assertNotNull(reviews.get(1).getText());
+        assertEquals(9, reviews.get(2).getScore());
+        assertNotNull(reviews.get(2).getDate());
+
     }
 
     @Test
@@ -188,6 +209,8 @@ class GameServiceImplTest {
 
         Optional<GameDetailsDto> result = gameService.getGameDetailsById(id);
 
+        assertNotNull(result.get().getLatestReviews());
+        assertTrue(result.get().getLatestReviews().stream().allMatch(r -> r.getId() != null));
         assertTrue(result.isPresent());
         assertEquals(8, result.get().getLatestReviews().size());
     }
@@ -230,6 +253,11 @@ class GameServiceImplTest {
         assertEquals("Splinter Cell", result.getContent().get(1).getTitle());
         assertEquals(2, result.getTotalElements());
         assertTrue(result.getContent().stream().allMatch(dto -> dto.getMetaScore() > 0));
+        assertEquals("gta.jpg", result.getContent().get(0).getCover());
+        assertEquals(8.7, result.getContent().get(0).getUserScore());
+        assertEquals("sc.jpg", result.getContent().get(1).getCover());
+        assertEquals(9.1, result.getContent().get(1).getUserScore());
+
         verify(gameRepository).findAll(pageable);
     }
 

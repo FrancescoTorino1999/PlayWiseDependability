@@ -213,4 +213,35 @@ class GameControllerTest {
                 pageable.getSort().getOrderFor("title").getDirection());
     }
 
+    @Test
+    @DisplayName("GET /games/games → gestisce sort vuoto (usa default DESC)")
+    void testGetGamesPage_EmptySortParam() throws Exception {
+        GamePreviewDto g1 = new GamePreviewDto("1", "Default Game");
+
+        PagedGamesResponseDto<GamePreviewDto> page = new PagedGamesResponseDto<>();
+        page.setContent(List.of(g1));
+        page.setPage(0);
+        page.setSize(1);
+        page.setTotalPages(1);
+        page.setTotalElements(1L);
+        page.setFirst(true);
+        page.setLast(true);
+
+        when(gameService.getGamesPaginated(any(Pageable.class)))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/games/games")
+                        .param("page", "0")
+                        .param("size", "1")
+                        .param("sort", "")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].title").value("Default Game"));
+
+        Mockito.verify(gameService).getGamesPaginated(argThat(pageable ->
+                pageable.getSort().getOrderFor("userScore").getDirection().equals(Sort.Direction.DESC)
+        ));
+    }
+
+
 }

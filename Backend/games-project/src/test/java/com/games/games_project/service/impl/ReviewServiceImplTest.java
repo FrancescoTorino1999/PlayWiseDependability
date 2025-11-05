@@ -74,6 +74,15 @@ class ReviewServiceImplTest {
 
         var result = reviewService.getReviewsByUsername(author, pageable);
 
+        assertNotNull(result.getContent().get(0).getDate());
+        assertEquals("rev1", result.getContent().get(0).getId());
+        assertEquals(9, result.getContent().get(0).getScore());
+        assertEquals("Bellissimo gameplay!", result.getContent().get(0).getText());
+        assertEquals("hzd.jpg", result.getContent().get(0).getGameCover());
+        assertEquals("rev2", result.getContent().get(1).getId());
+        assertEquals("Grafica pazzesca!", result.getContent().get(1).getText());
+        assertEquals(8, result.getContent().get(1).getScore());
+        assertEquals("gow.jpg", result.getContent().get(1).getGameCover());
         assertNotNull(result);
         assertEquals(2, result.getContent().size());
         assertEquals("PlayerZ", result.getContent().get(0).getAuthor());
@@ -169,6 +178,11 @@ class ReviewServiceImplTest {
         verify(gameRepository).save(argThat(g ->
                 g.getUserScore() == Math.round(((8.0 * 100) - 7 + 9) / 100)
         ));
+
+        assertEquals(9, modified.getScore());
+        assertEquals("Recensione aggiornata", modified.getText());
+        assertTrue(result);
+
     }
 
     @Test
@@ -211,6 +225,12 @@ class ReviewServiceImplTest {
         when(reviewRepository.findByGameId(any(ObjectId.class), any())).thenReturn(page);
 
         var result = reviewService.getReviewsByGameId(gtaId, PageRequest.of(0, 5));
+        var dto = result.getContent().get(0);
+        assertEquals("rev1", dto.getId());
+        assertEquals("Incredibile open world!", dto.getText());
+        assertEquals(9, dto.getScore());
+        assertNull(dto.getDate());
+        assertNotNull(dto.getGameId());
 
         assertEquals(2, result.getContent().size());
         assertEquals("PlayerOne", result.getContent().get(0).getAuthor());
@@ -235,6 +255,10 @@ class ReviewServiceImplTest {
         when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
 
         Boolean result = reviewService.addReview(review);
+
+        verify(gameRepository).save(argThat(g ->
+                g.getUserScore() == Math.round(((8.6 * 533) + 9) / (533 + 1))
+        ));
 
         assertTrue(result);
         verify(reviewRepository).save(any(Review.class));
@@ -291,6 +315,10 @@ class ReviewServiceImplTest {
         when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
 
         Boolean result = reviewService.deleteReview(review);
+
+        verify(gameRepository).save(argThat(g ->
+                g.getUserScore() == Math.round(((8.7 * 293) - 8) / (293 - 1))
+        ));
 
         assertTrue(result);
         verify(gameRepository).save(any(Game.class));
@@ -355,6 +383,11 @@ class ReviewServiceImplTest {
 
         Optional<ReviewDetailsDto> result = reviewService.getGameReviewByAuthor(gameId, "ScienceGuy");
 
+        assertEquals("rHalf", result.get().getId());
+        assertEquals("Capolavoro FPS", result.get().getText());
+        assertNull(result.get().getDate());
+        assertEquals("6807a1905d04121deaab7db1", result.get().getGameId());
+
         assertTrue(result.isPresent());
         assertEquals("ScienceGuy", result.get().getAuthor());
         assertEquals(10, result.get().getScore());
@@ -396,6 +429,30 @@ class ReviewServiceImplTest {
         verify(reviewRepository, times(1)).countReviewsPerMonth();
     }
 
+    @Test
+    @DisplayName("modifyReview - modifica con punteggio inferiore aggiorna media correttamente")
+    void testModifyReview_LowerScore() {
+        Review existing = new Review();
+        existing.setId("revLow");
+        existing.setGameId(new ObjectId("671a9f4e9c7a4a321c7a9e77"));
+        existing.setScore(9);
+        Game game = new Game();
+        game.setId(existing.getGameId().toHexString());
+        game.setUserScore(8.0);
+        game.setReviewCount(10);
+        Review modified = new Review();
+        modified.setId("revLow");
+        modified.setScore(5);
 
+        when(reviewRepository.findById("revLow")).thenReturn(Optional.of(existing));
+        when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
+
+        Boolean result = reviewService.modifyReview(modified);
+
+        assertTrue(result);
+        verify(gameRepository).save(argThat(g ->
+                g.getUserScore() == Math.round(((8.0 * 10) - 9 + 5) / 10)
+        ));
+    }
 
 }

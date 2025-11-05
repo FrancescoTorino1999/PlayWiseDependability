@@ -148,11 +148,13 @@
                     <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
                     <timeoutFactor>1.25</timeoutFactor>
                     <excludedClasses>
-                        <param>com.games.dto.*</param>
-                        <param>com.games.model.*</param>
-                        <param>com.games.benchmark.*</param>
+                        <param>com.games.games_project.dto.*</param>
+                        <param>com.games.games_project.model.*</param>
+                        <param>com.games.games_project.benchmark.*</param>
+                        <param>com.games.games_project.benchmark.jmh_generated.*</param>
+                        <param>com.games.games_project.SecurityConfig</param>
                     </excludedClasses>
-                    <mutationThreshold>0</mutationThreshold>
+                    <mutationThreshold>85</mutationThreshold>
                 </configuration>
             </plugin>
 
