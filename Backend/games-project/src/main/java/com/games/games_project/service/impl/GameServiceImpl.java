@@ -28,6 +28,11 @@ public class GameServiceImpl implements GameService {
     @Autowired
     ReviewRepository reviewRepository;
 
+    public GameServiceImpl(GameRepository gameRepository, ReviewRepository reviewRepository) {
+        this.gameRepository = gameRepository;
+        this.reviewRepository = reviewRepository;
+    }
+
     @Override
     public Optional<GameDetailsDto> getGameDetailsById(String id) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

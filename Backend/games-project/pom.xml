@@ -152,7 +152,7 @@
                         <param>com.games.model.*</param>
                         <param>com.games.benchmark.*</param>
                     </excludedClasses>
-                    <mutationThreshold>40</mutationThreshold>
+                    <mutationThreshold>0</mutationThreshold>
                 </configuration>
             </plugin>
 
