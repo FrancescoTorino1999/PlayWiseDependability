@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.service.impl</a> &gt; <span class="el_source">UserServiceImpl.java</span></div><h1>UserServiceImpl.java</h1><pre class="source lang-java linenums">package com.games.games_project.service.impl;
+
+import com.games.games_project.dto.GenderCountDto;
+import com.games.games_project.dto.LoginRequestDto;
+import com.games.games_project.dto.LoginResponseDto;
+import com.games.games_project.dto.RegistrationRequestDto;
+import com.games.games_project.model.Game;
+import com.games.games_project.model.Review;
+import com.games.games_project.model.User;
+import com.games.games_project.repositories.GameRepository;
+import com.games.games_project.repositories.ReviewRepository;
+import com.games.games_project.repositories.UserRepository;
+import com.games.games_project.service.UserService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L25">public class UserServiceImpl implements UserService {</span>
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private GameRepository gameRepository;
+
+<span class="fc" id="L33">    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();</span>
+
+    @Override
+    public LoginResponseDto login(LoginRequestDto loginRequest) {
+<span class="fc bfc" id="L37" title="All 6 branches covered.">        if (loginRequest == null || loginRequest.getUsername() == null || loginRequest.getPassword() == null) {</span>
+<span class="fc" id="L38">            return null;</span>
+        }
+
+<span class="fc" id="L41">        Optional&lt;User&gt; user = userRepository.findByUsername(loginRequest.getUsername());</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (user.isPresent()) {</span>
+<span class="fc" id="L44">            String storedPassword = user.get().getPassword();</span>
+<span class="fc" id="L45">            String rawPassword = loginRequest.getPassword();</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (passwordEncoder.matches(rawPassword, storedPassword)) {</span>
+<span class="fc" id="L48">                return new LoginResponseDto(user.get().getId(), user.get().getUsername(), user.get().getRole());</span>
+            }
+        }
+
+<span class="fc" id="L52">        return null;</span>
+    }
+
+
+    @Override
+    public Boolean register(RegistrationRequestDto registrationRequest) {
+<span class="fc bfc" id="L58" title="All 8 branches covered.">        if(registrationRequest==null || registrationRequest.getUsername()==null || registrationRequest.getPassword()==null || registrationRequest.getEmail()==null){</span>
+<span class="fc" id="L59">            return false;</span>
+        }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (userRepository.findByEmailAndUsername(registrationRequest.getEmail(), registrationRequest.getUsername()).isPresent()){</span>
+<span class="fc" id="L63">            return false;</span>
+        }
+
+<span class="fc" id="L66">        User newUser = new User();</span>
+<span class="fc" id="L67">        newUser.setUsername(registrationRequest.getUsername());</span>
+<span class="fc" id="L68">        newUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));</span>
+<span class="fc" id="L69">        newUser.setEmail(registrationRequest.getEmail());</span>
+<span class="fc" id="L70">        newUser.setName(registrationRequest.getName());</span>
+<span class="fc" id="L71">        newUser.setSurname(registrationRequest.getSurname());</span>
+<span class="fc" id="L72">        newUser.setGender(registrationRequest.getGender());</span>
+<span class="fc" id="L73">        newUser.setBirthDate(registrationRequest.getBirthDate());</span>
+<span class="fc" id="L74">        newUser.setRole(&quot;USER&quot;);</span>
+<span class="fc" id="L75">        userRepository.save(newUser);</span>
+
+<span class="fc" id="L77">        return true;</span>
+    }
+
+    @Override
+    public User getUserInfo(String username) {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if(!username.isEmpty()){</span>
+<span class="fc" id="L83">            return userRepository.findByUsername(username).get();</span>
+        }
+        else {
+<span class="fc" id="L86">            return new User();</span>
+        }
+    }
+
+    @Override
+    public Boolean deleteUser(User user) {
+<span class="fc" id="L92">        Page&lt;Review&gt; reviewsPage = reviewRepository.findByAuthor(user.getUsername(), Pageable.unpaged());</span>
+<span class="fc" id="L93">        List&lt;Review&gt; reviews = reviewsPage.getContent();</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Review review : reviews) {</span>
+<span class="fc" id="L96">            ObjectId gameId = review.getGameId();</span>
+<span class="fc" id="L97">            Game game = gameRepository.findById(String.valueOf(gameId))</span>
+<span class="pc" id="L98">                    .orElseThrow(() -&gt; new RuntimeException(&quot;Game not Found!&quot;));</span>
+
+<span class="fc" id="L100">            int numReviews = game.getReviewCount();</span>
+<span class="fc" id="L101">            double currentAvg = game.getUserScore();</span>
+<span class="fc" id="L102">            double reviewScore = review.getScore();</span>
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (numReviews &lt;= 1) {</span>
+<span class="fc" id="L105">                game.setUserScore(0.0);</span>
+<span class="fc" id="L106">                game.setReviewCount(0);</span>
+            } else {
+<span class="fc" id="L108">                double newAvg = Math.round(((currentAvg * numReviews) - reviewScore) / (numReviews - 1));</span>
+<span class="fc" id="L109">                game.setUserScore(newAvg);</span>
+<span class="fc" id="L110">                game.setReviewCount(numReviews - 1);</span>
+            }
+<span class="fc" id="L112">            gameRepository.save(game);</span>
+
+<span class="fc" id="L114">            reviewRepository.deleteById(review.getId());</span>
+<span class="fc" id="L115">        }</span>
+
+<span class="fc" id="L117">        userRepository.deleteByUsername(user.getUsername());</span>
+
+<span class="fc" id="L119">        return Boolean.TRUE;</span>
+    }
+
+    @Override
+    public Boolean updateUser(User user) {
+<span class="fc" id="L124">        Optional&lt;User&gt; existingUser = userRepository.findByUsername(user.getUsername());</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(existingUser.isPresent()){</span>
+<span class="fc" id="L127">            User updatedUser = existingUser.get();</span>
+<span class="pc bpc" id="L128" title="2 of 4 branches missed.">            if (user.getUsername() != null &amp;&amp; !user.getUsername().trim().isEmpty()) {</span>
+<span class="fc" id="L129">                updatedUser.setUsername(user.getUsername());</span>
+            }
+<span class="fc bfc" id="L131" title="All 4 branches covered.">            if (user.getEmail() != null &amp;&amp; !user.getEmail().trim().isEmpty()) {</span>
+<span class="fc" id="L132">                updatedUser.setEmail(user.getEmail());</span>
+            }
+<span class="fc bfc" id="L134" title="All 4 branches covered.">            if (user.getName() != null &amp;&amp; !user.getName().trim().isEmpty()) {</span>
+<span class="fc" id="L135">                updatedUser.setName(user.getName());</span>
+            }
+<span class="pc bpc" id="L137" title="1 of 4 branches missed.">            if (user.getSurname() != null &amp;&amp; !user.getSurname().trim().isEmpty()) {</span>
+<span class="fc" id="L138">                updatedUser.setSurname(user.getSurname());</span>
+            }
+<span class="pc bpc" id="L140" title="1 of 4 branches missed.">            if (user.getPassword() != null &amp;&amp; !user.getPassword().trim().isEmpty()) {</span>
+<span class="fc" id="L141">                updatedUser.setPassword(passwordEncoder.encode(user.getPassword()));</span>
+            }
+
+<span class="fc" id="L144">            userRepository.save(updatedUser);</span>
+<span class="fc" id="L145">            return true;</span>
+        }
+        else {
+<span class="fc" id="L148">            return Boolean.FALSE;</span>
+        }
+    }
+
+    @Override
+    public List&lt;GenderCountDto&gt; getUserCountByGender() {
+<span class="fc" id="L154">        return userRepository.countUsersByGender();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReviewServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.service.impl</a> &gt; <span class="el_source">ReviewServiceImpl.java</span></div><h1>ReviewServiceImpl.java</h1><pre class="source lang-java linenums">package com.games.games_project.service.impl;
+
+import com.games.games_project.dto.PagedReviewsResponseDto;
+import com.games.games_project.dto.ReviewDetailsDto;
+import com.games.games_project.dto.ReviewsMonthlyCountDto;
+import com.games.games_project.dto.UserProfileReviewDto;
+import com.games.games_project.model.Game;
+import com.games.games_project.model.Review;
+import com.games.games_project.repositories.GameRepository;
+import com.games.games_project.repositories.ReviewRepository;
+import com.games.games_project.service.ReviewService;
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class ReviewServiceImpl implements ReviewService {
+    private final ReviewRepository reviewRepository;
+
+    private final GameRepository gameRepository;
+
+<span class="fc" id="L30">    public ReviewServiceImpl(ReviewRepository reviewRepository, GameRepository gameRepository) {</span>
+<span class="fc" id="L31">        this.reviewRepository = reviewRepository;</span>
+<span class="fc" id="L32">        this.gameRepository = gameRepository;</span>
+<span class="fc" id="L33">    }</span>
+
+    @Override
+    public PagedReviewsResponseDto&lt;ReviewDetailsDto&gt; getReviewsByGameId(String gameId, Pageable pageable) {
+<span class="fc" id="L37">        ObjectId gameObjectId = new ObjectId(gameId);</span>
+<span class="fc" id="L38">        DateFormat df = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+
+<span class="fc" id="L40">        Page&lt;Review&gt; reviewPage = reviewRepository.findByGameId(gameObjectId, pageable);</span>
+
+<span class="fc" id="L42">        List&lt;ReviewDetailsDto&gt; reviewDtos = reviewPage.getContent().stream().map(review -&gt; {</span>
+<span class="fc" id="L43">            ReviewDetailsDto dto = new ReviewDetailsDto();</span>
+<span class="fc" id="L44">            dto.setId(review.getId());</span>
+<span class="fc" id="L45">            dto.setAuthor(review.getAuthor());</span>
+<span class="fc" id="L46">            dto.setText(review.getText());</span>
+<span class="fc" id="L47">            dto.setScore(review.getScore());</span>
+<span class="fc" id="L48">            dto.setGameId(review.getId());</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L50">            return dto;</span>
+<span class="fc" id="L51">        }).collect(Collectors.toList());</span>
+
+<span class="fc" id="L53">        return new PagedReviewsResponseDto&lt;&gt;(</span>
+                reviewDtos,
+<span class="fc" id="L55">                reviewPage.getNumber(),</span>
+<span class="fc" id="L56">                reviewPage.getSize(),</span>
+<span class="fc" id="L57">                reviewPage.getTotalPages(),</span>
+<span class="fc" id="L58">                reviewPage.getTotalElements(),</span>
+<span class="fc" id="L59">                reviewPage.isFirst(),</span>
+<span class="fc" id="L60">                reviewPage.isLast()</span>
+        );
+    }
+
+    @Override
+    @Transactional
+    public Boolean addReview(Review review) {
+<span class="fc" id="L67">        Optional&lt;Review&gt; existing = reviewRepository.findByGameIdAndAuthor(review.getGameId(), review.getAuthor());</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (existing.isPresent()) {</span>
+<span class="fc" id="L69">            throw new RuntimeException(&quot;Review already exists&quot;);</span>
+        }
+
+<span class="fc" id="L72">        reviewRepository.save(review);</span>
+
+<span class="fc" id="L74">        ObjectId gameId = review.getGameId();</span>
+<span class="fc" id="L75">        Game game = gameRepository.findById(String.valueOf(gameId))</span>
+<span class="fc" id="L76">                .orElseThrow(() -&gt; new RuntimeException(&quot;Game not found!&quot;));</span>
+
+<span class="fc" id="L78">        int numReviews = game.getReviewCount();</span>
+<span class="fc" id="L79">        double currentAvg = game.getUserScore();</span>
+<span class="fc" id="L80">        double newAvg = Math.round(((currentAvg * numReviews) + review.getScore()) / (numReviews + 1));</span>
+<span class="fc" id="L81">        game.setUserScore(newAvg);</span>
+<span class="fc" id="L82">        game.setReviewCount(numReviews + 1);</span>
+
+<span class="fc" id="L84">        gameRepository.save(game);</span>
+
+<span class="fc" id="L86">        return Boolean.TRUE;</span>
+    }
+
+    @Override
+    @Transactional
+    public Boolean modifyReview(Review review) {
+<span class="fc" id="L92">        Optional&lt;Review&gt; existingReview = reviewRepository.findById(review.getId());</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (existingReview.isPresent()) {</span>
+<span class="fc" id="L95">            Review updatedReview = existingReview.get();</span>
+<span class="fc" id="L96">            double oldScore = existingReview.get().getScore();</span>
+<span class="fc" id="L97">            double newScore = review.getScore();</span>
+
+<span class="fc" id="L99">            updatedReview.setText(review.getText());</span>
+<span class="fc" id="L100">            updatedReview.setScore(review.getScore());</span>
+<span class="fc" id="L101">            updatedReview.setDate(review.getDate());</span>
+<span class="fc" id="L102">            reviewRepository.save(updatedReview);</span>
+
+<span class="fc" id="L104">            ObjectId gameId = updatedReview.getGameId();</span>
+<span class="fc" id="L105">            Game game = gameRepository.findById(String.valueOf(gameId))</span>
+<span class="pc" id="L106">                    .orElseThrow(() -&gt; new RuntimeException(&quot;Game not found!&quot;));</span>
+
+<span class="fc" id="L108">            int numReviews = game.getReviewCount();</span>
+<span class="fc" id="L109">            double currentAvg = game.getUserScore();</span>
+<span class="fc" id="L110">            double newAvg = Math.round(((currentAvg * numReviews) - oldScore + newScore) / numReviews);</span>
+<span class="fc" id="L111">            game.setUserScore(newAvg);</span>
+<span class="fc" id="L112">            gameRepository.save(game);</span>
+
+<span class="fc" id="L114">            return Boolean.TRUE;</span>
+        }
+
+<span class="fc" id="L117">        return Boolean.FALSE;</span>
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteReview(Review review) {
+<span class="fc" id="L123">        Optional&lt;Review&gt; reviewOpt = reviewRepository.findById(review.getId());</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (reviewOpt.isPresent()) {</span>
+<span class="fc" id="L125">            Review reviewToDelete = reviewOpt.get();</span>
+<span class="fc" id="L126">            double scoreToDelete = reviewToDelete.getScore();</span>
+
+<span class="fc" id="L128">            ObjectId gameId = reviewToDelete.getGameId();</span>
+<span class="fc" id="L129">            Game game = gameRepository.findById(String.valueOf(gameId))</span>
+<span class="pc" id="L130">                    .orElseThrow(() -&gt; new RuntimeException(&quot;Game not found!&quot;));</span>
+
+<span class="fc" id="L132">            int numReviews = game.getReviewCount();</span>
+<span class="fc" id="L133">            double currentAvg = game.getUserScore();</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            if (numReviews &lt;= 1) {</span>
+<span class="fc" id="L136">                game.setUserScore(0.0);</span>
+<span class="fc" id="L137">                game.setReviewCount(0);</span>
+            } else {
+<span class="fc" id="L139">                double newAvg = Math.round(((currentAvg * numReviews) - scoreToDelete) / (numReviews - 1));</span>
+<span class="fc" id="L140">                game.setUserScore(newAvg);</span>
+<span class="fc" id="L141">                game.setReviewCount(numReviews - 1);</span>
+            }
+
+<span class="fc" id="L144">            gameRepository.save(game);</span>
+
+<span class="fc" id="L146">            reviewRepository.deleteById(review.getId());</span>
+<span class="fc" id="L147">            return Boolean.TRUE;</span>
+        }
+<span class="fc" id="L149">        return Boolean.FALSE;</span>
+    }
+
+    @Override
+    public PagedReviewsResponseDto&lt;UserProfileReviewDto&gt; getReviewsByUsername(String author, Pageable pageable) {
+<span class="fc" id="L154">        DateFormat df = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+
+<span class="fc" id="L156">        Page&lt;Review&gt; reviewPage = reviewRepository.findByAuthor(author, pageable);</span>
+
+<span class="fc" id="L158">        List&lt;UserProfileReviewDto&gt; reviewDtos = reviewPage.getContent().stream().map(review -&gt; {</span>
+<span class="fc" id="L159">            Optional&lt;Game&gt; reviewedGame = gameRepository.findById(String.valueOf(review.getGameId()));</span>
+<span class="fc" id="L160">            UserProfileReviewDto dto = new UserProfileReviewDto();</span>
+<span class="fc" id="L161">            dto.setAuthor(review.getAuthor());</span>
+<span class="fc" id="L162">            dto.setScore(review.getScore());</span>
+<span class="fc" id="L163">            dto.setId(review.getId());</span>
+<span class="fc" id="L164">            dto.setText(review.getText());</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+
+<span class="fc bfc" id="L167" title="All 2 branches covered.">            if(reviewedGame.isPresent()) {</span>
+<span class="fc" id="L168">                Game game = reviewedGame.get();</span>
+<span class="fc" id="L169">                dto.setGameId(game.getId());</span>
+<span class="fc" id="L170">                dto.setGameTitle(game.getTitle());</span>
+<span class="fc" id="L171">                dto.setGameCover(game.getCover());</span>
+            }
+
+<span class="fc" id="L174">            return dto;</span>
+<span class="fc" id="L175">        }).collect(Collectors.toList());</span>
+
+<span class="fc" id="L177">        return new PagedReviewsResponseDto&lt;&gt;(</span>
+                reviewDtos,
+<span class="fc" id="L179">                reviewPage.getNumber(),</span>
+<span class="fc" id="L180">                reviewPage.getSize(),</span>
+<span class="fc" id="L181">                reviewPage.getTotalPages(),</span>
+<span class="fc" id="L182">                reviewPage.getTotalElements(),</span>
+<span class="fc" id="L183">                reviewPage.isFirst(),</span>
+<span class="fc" id="L184">                reviewPage.isLast()</span>
+        );
+    }
+
+    @Override
+    public Optional&lt;ReviewDetailsDto&gt; getGameReviewByAuthor(String gameId, String author) {
+<span class="fc" id="L190">        Optional&lt;Review&gt; reviewOpt = reviewRepository.findByGameIdAndAuthor(new ObjectId(gameId), author);</span>
+<span class="fc" id="L191">        DateFormat df = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        if (reviewOpt.isPresent()) {</span>
+<span class="fc" id="L194">            Review review = reviewOpt.get();</span>
+<span class="fc" id="L195">            ReviewDetailsDto dto = new ReviewDetailsDto();</span>
+<span class="fc" id="L196">            dto.setAuthor(review.getAuthor());</span>
+<span class="fc" id="L197">            dto.setScore(review.getScore());</span>
+<span class="fc" id="L198">            dto.setId(review.getId());</span>
+<span class="fc" id="L199">            dto.setText(review.getText());</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L201">            dto.setGameId(gameId);</span>
+<span class="fc" id="L202">            return Optional.of(dto);</span>
+        }
+<span class="fc" id="L204">        return Optional.empty();</span>
+    }
+
+    @Override
+    public List&lt;ReviewsMonthlyCountDto&gt; getMonthlyReviewCount() {
+<span class="fc" id="L209">        return reviewRepository.countReviewsPerMonth();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

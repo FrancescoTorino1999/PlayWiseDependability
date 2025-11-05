@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.controller</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.games.games_project.controller;
+
+import com.games.games_project.dto.LoginRequestDto;
+import com.games.games_project.dto.LoginResponseDto;
+import com.games.games_project.dto.RegistrationRequestDto;
+import com.games.games_project.dto.UserRequestDto;
+import com.games.games_project.model.User;
+import com.games.games_project.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static com.games.games_project.utils.ConverterDTO.convertToEntity;
+
+@RestController
+@RequestMapping(&quot;/users&quot;)
+<span class="fc" id="L18">public class UserController {</span>
+
+    @Autowired
+    private UserService userService;
+
+
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;LoginResponseDto&gt; login(@RequestBody LoginRequestDto loginRequest) {
+<span class="fc" id="L26">        LoginResponseDto response = userService.login(loginRequest);</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(response!=null){</span>
+<span class="fc" id="L29">            return ResponseEntity.ok(response);</span>
+        }
+        else{
+<span class="fc" id="L32">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); //401 Unauthorized</span>
+        }
+
+    }
+
+    @PostMapping(&quot;/deleteUser&quot;)
+    public ResponseEntity&lt;Boolean&gt; deleteUser(@RequestBody UserRequestDto user) {
+
+<span class="fc" id="L40">        User user1 = convertToEntity(user);</span>
+
+<span class="fc" id="L42">        Boolean response = userService.deleteUser(user1);</span>
+
+<span class="fc" id="L44">        return ResponseEntity.ok(response);</span>
+
+    }
+
+    @PostMapping(&quot;/updateUser&quot;)
+    public ResponseEntity&lt;Boolean&gt; updateUser(@RequestBody UserRequestDto user) {
+
+<span class="fc" id="L51">        User user1 = convertToEntity(user);</span>
+
+<span class="fc" id="L53">        Boolean response = userService.updateUser(user1);</span>
+
+<span class="fc" id="L55">        return ResponseEntity.ok(response);</span>
+
+    }
+
+    @PostMapping(&quot;/register&quot;)
+    public ResponseEntity&lt;Boolean&gt; register(@RequestBody RegistrationRequestDto registrationRequest) {
+<span class="fc" id="L61">        Boolean response = userService.register(registrationRequest);</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if(response){</span>
+<span class="fc" id="L64">            return ResponseEntity.ok(true);</span>
+        }
+        else{
+<span class="fc" id="L67">            return ResponseEntity.status(HttpStatus.CONFLICT).body(false);</span>
+        }
+    }
+
+    @PostMapping(&quot;/getUserInfo&quot;)
+    public ResponseEntity&lt;User&gt; getUserInfo(@RequestBody UserRequestDto user) {
+
+<span class="fc" id="L74">        User response = userService.getUserInfo(user.getUsername());</span>
+
+<span class="fc" id="L76">        return  ResponseEntity.ok(response);</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

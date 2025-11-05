@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.service.impl</a> &gt; <span class="el_source">GameServiceImpl.java</span></div><h1>GameServiceImpl.java</h1><pre class="source lang-java linenums">package com.games.games_project.service.impl;
+
+import com.games.games_project.dto.*;
+import com.games.games_project.model.Game;
+import com.games.games_project.model.Review;
+import com.games.games_project.repositories.GameRepository;
+import com.games.games_project.repositories.ReviewRepository;
+import com.games.games_project.service.GameService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@Service
+public class GameServiceImpl implements GameService {
+
+
+    @Autowired
+    GameRepository gameRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
+<span class="fc" id="L31">    public GameServiceImpl(GameRepository gameRepository, ReviewRepository reviewRepository) {</span>
+<span class="fc" id="L32">        this.gameRepository = gameRepository;</span>
+<span class="fc" id="L33">        this.reviewRepository = reviewRepository;</span>
+<span class="fc" id="L34">    }</span>
+
+    @Override
+    public Optional&lt;GameDetailsDto&gt; getGameDetailsById(String id) {
+<span class="fc" id="L38">        DateFormat df = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+
+<span class="fc" id="L40">        return gameRepository.findById(id).map(game -&gt; {</span>
+<span class="fc" id="L41">            GameDetailsDto dto = new GameDetailsDto();</span>
+<span class="fc" id="L42">            dto.setId(game.getId());</span>
+<span class="fc" id="L43">            dto.setTitle(game.getTitle());</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            dto.setReleaseDate(game.getReleaseDate() != null ? df.format(game.getReleaseDate()) : null);</span>
+<span class="fc" id="L45">            dto.setRating(game.getRating());</span>
+<span class="fc" id="L46">            dto.setGenre(game.getGenre());</span>
+<span class="fc" id="L47">            dto.setPublishers(game.getPublishers());</span>
+<span class="fc" id="L48">            dto.setDevelopers(game.getDevelopers());</span>
+<span class="fc" id="L49">            dto.setThemes(game.getThemes());</span>
+<span class="fc" id="L50">            dto.setPlatforms(game.getPlatforms());</span>
+<span class="fc" id="L51">            dto.setMetaScore(game.getMetaScore());</span>
+<span class="fc" id="L52">            dto.setMetaScoreCount(game.getMetaScoreCount());</span>
+<span class="fc" id="L53">            dto.setDescription(game.getDescription());</span>
+<span class="fc" id="L54">            dto.setStoryline(game.getStoryline());</span>
+<span class="fc" id="L55">            dto.setSummary(game.getSummary());</span>
+<span class="fc" id="L56">            dto.setCover(game.getCover());</span>
+<span class="fc" id="L57">            dto.setVideo(game.getVideo());</span>
+<span class="fc" id="L58">            dto.setUserScore(game.getUserScore());</span>
+<span class="fc" id="L59">            dto.setReviewCount(game.getReviewCount());</span>
+<span class="fc" id="L60">            dto.setScreenshots(game.getScreenshots());</span>
+
+<span class="fc" id="L62">            Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc(&quot;date&quot;)));</span>
+<span class="fc" id="L63">            Page&lt;Review&gt; recentReviews = reviewRepository.findByGameId(new ObjectId(id), pageable);</span>
+
+<span class="fc" id="L65">            List&lt;ReviewDetailsDto&gt; reviewDtos = recentReviews.getContent().stream().map(review -&gt; {</span>
+<span class="fc" id="L66">                ReviewDetailsDto reviewDto = new ReviewDetailsDto();</span>
+<span class="fc" id="L67">                reviewDto.setId(review.getId());</span>
+<span class="fc" id="L68">                reviewDto.setAuthor(review.getAuthor());</span>
+<span class="fc" id="L69">                reviewDto.setText(review.getText());</span>
+<span class="fc" id="L70">                reviewDto.setScore(review.getScore());</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                reviewDto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L72">                return reviewDto;</span>
+<span class="fc" id="L73">            }).toList();</span>
+<span class="fc" id="L74">            dto.setLatestReviews(reviewDtos);</span>
+
+<span class="fc" id="L76">            return dto;</span>
+        });
+    }
+
+    @Override
+    public PagedGamesResponseDto&lt;GamePreviewDto&gt; getGamesPaginated(Pageable pageable) {
+<span class="fc" id="L82">        Page&lt;Game&gt; gamePage = gameRepository.findAll(pageable);</span>
+
+<span class="fc" id="L84">        List&lt;GamePreviewDto&gt; dtos = gamePage.getContent().stream().map(game -&gt; {</span>
+<span class="fc" id="L85">            GamePreviewDto dto = new GamePreviewDto();</span>
+<span class="fc" id="L86">            dto.setId(game.getId());</span>
+<span class="fc" id="L87">            dto.setTitle(game.getTitle());</span>
+<span class="fc" id="L88">            dto.setCover(game.getCover());</span>
+<span class="fc" id="L89">            dto.setMetaScore(game.getMetaScore());</span>
+<span class="fc" id="L90">            dto.setUserScore(game.getUserScore());</span>
+<span class="fc" id="L91">            return dto;</span>
+<span class="fc" id="L92">        }).toList();</span>
+
+<span class="fc" id="L94">        return new PagedGamesResponseDto&lt;&gt;(</span>
+                dtos,
+<span class="fc" id="L96">                gamePage.getNumber(),</span>
+<span class="fc" id="L97">                gamePage.getSize(),</span>
+<span class="fc" id="L98">                gamePage.getTotalPages(),</span>
+<span class="fc" id="L99">                gamePage.getTotalElements(),</span>
+<span class="fc" id="L100">                gamePage.isFirst(),</span>
+<span class="fc" id="L101">                gamePage.isLast()</span>
+        );
+    }
+
+    @Override
+    public List&lt;GamePreviewDto&gt; findSuggestion(String value) {
+<span class="fc bfc" id="L107" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L108">            return List.of();</span>
+        }
+<span class="fc" id="L110">        return gameRepository.findSuggestions(value).stream()</span>
+<span class="fc" id="L111">                .limit(5)</span>
+<span class="fc" id="L112">                .map(game -&gt; new GamePreviewDto(game.getId(), game.getTitle()))</span>
+<span class="fc" id="L113">                .toList();</span>
+    }
+
+
+
+    @Override
+    public List&lt;PlatformCountDto&gt; getGameCountByPlatform() {
+<span class="fc" id="L120">        return gameRepository.countGamesByPlatform();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

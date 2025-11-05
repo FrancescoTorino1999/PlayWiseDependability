@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RatingComparator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.utils</a> &gt; <span class="el_source">RatingComparator.java</span></div><h1>RatingComparator.java</h1><pre class="source lang-java linenums">package com.games.games_project.utils;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
+<span class="fc" id="L7">public class RatingComparator implements Comparator&lt;String&gt; {</span>
+<span class="fc" id="L8">    private static final Map&lt;String, Integer&gt; ratingPriority = new HashMap&lt;&gt;();</span>
+
+    static {
+<span class="fc" id="L11">        ratingPriority.put(&quot;AO&quot;, 1);</span>
+<span class="fc" id="L12">        ratingPriority.put(&quot;M&quot;, 2);</span>
+<span class="fc" id="L13">        ratingPriority.put(&quot;T&quot;, 3);</span>
+<span class="fc" id="L14">        ratingPriority.put(&quot;E10+&quot;, 4);</span>
+<span class="fc" id="L15">        ratingPriority.put(&quot;E&quot;, 5);</span>
+<span class="fc" id="L16">        ratingPriority.put(&quot;K-A&quot;, 6);</span>
+<span class="fc" id="L17">    }</span>
+
+    @Override
+    public int compare(String rating1, String rating2) {
+<span class="fc" id="L21">        Integer priority1 = ratingPriority.getOrDefault(rating1, Integer.MAX_VALUE);</span>
+<span class="fc" id="L22">        Integer priority2 = ratingPriority.getOrDefault(rating2, Integer.MAX_VALUE);</span>
+
+<span class="fc" id="L24">        return Integer.compare(priority1, priority2);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

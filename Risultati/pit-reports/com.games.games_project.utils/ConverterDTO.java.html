@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+
+<h1>ConverterDTO.java</h1>
+
+<table class="src">
+
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_1'/>
+1
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_1'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>package com.games.games_project.utils;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_2'/>
+2
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_2'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_3'/>
+3
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_3'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.dto.GameRequestDto;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_4'/>
+4
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_4'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.dto.ReviewRequestDto;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_5'/>
+5
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_5'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.dto.UserRequestDto;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_6'/>
+6
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_6'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.model.Game;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_7'/>
+7
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_7'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.model.Review;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_8'/>
+8
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_8'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.games.games_project.model.User;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_9'/>
+9
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_9'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_10'/>
+10
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_10'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.util.Date;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_11'/>
+11
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_11'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='uncovered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_12'/>
+12
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_12'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='uncovered'><pre><span  class=''>public class ConverterDTO {</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_13'/>
+13
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_13'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    public static Review convertToEntity(ReviewRequestDto dto) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_14'/>
+14
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_14'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        Review review = new Review();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_15'/>
+15
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_15'>1</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (dto.getId() != null) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_16'/>
+16
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_16'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setId &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            review.setId(dto.getId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_17'/>
+17
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_17'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_18'/>
+18
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_18'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setAuthor &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        review.setAuthor(dto.getAuthor());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_19'/>
+19
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_19'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setText &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        review.setText(dto.getText());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_20'/>
+20
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_20'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setScore &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        review.setScore(dto.getScore());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_21'/>
+21
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_21'>2</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setDate &rarr; KILLED<br/>
+2. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        review.setDate(dto.getDate() != null ? dto.getDate() : new Date());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_22'/>
+22
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_22'>1</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (dto.getGameId() != null) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_23'/>
+23
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_23'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setGameId &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            review.setGameId(dto.getGameId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_24'/>
+24
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_24'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_25'/>
+25
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_25'>1</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (dto.getUserId() != null) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_26'/>
+26
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_26'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setUserId &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            review.setUserId(dto.getUserId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_27'/>
+27
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_27'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_28'/>
+28
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_28'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Review::setGameName &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        review.setGameName(dto.getGameName());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_29'/>
+29
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_29'>1</a>
+<span>
+1. convertToEntity : replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        return review;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_30'/>
+30
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_30'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_31'/>
+31
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_31'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_32'/>
+32
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_32'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    public static User convertToEntity(UserRequestDto dto) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_33'/>
+33
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_33'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        User user = new User();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_34'/>
+34
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_34'>1</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (dto.getId() != null) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_35'/>
+35
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_35'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setId &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            user.setId(dto.getId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_36'/>
+36
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_36'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_37'/>
+37
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_37'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setUsername &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setUsername(dto.getUsername());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_38'/>
+38
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_38'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setEmail &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setEmail(dto.getEmail());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_39'/>
+39
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_39'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setPassword &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setPassword(dto.getPassword());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_40'/>
+40
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_40'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setName &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setName(dto.getName());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_41'/>
+41
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_41'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setSurname &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setSurname(dto.getSurname());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_42'/>
+42
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_42'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setGender &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setGender(dto.getGender());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_43'/>
+43
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_43'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setRole &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setRole(dto.getRole());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_44'/>
+44
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_44'>2</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/User::setBirthDate &rarr; KILLED<br/>
+2. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        user.setBirthDate(dto.getBirthDate() != null ? dto.getBirthDate() : new Date());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_45'/>
+45
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_45'>1</a>
+<span>
+1. convertToEntity : replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        return user;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_46'/>
+46
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_46'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_47'/>
+47
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_47'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_48'/>
+48
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_48'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    public static Game convertToEntity(GameRequestDto dto) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_49'/>
+49
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_49'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        Game game = new Game();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_50'/>
+50
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_50'>1</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (dto.getId() != null) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_51'/>
+51
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_51'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setId &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            game.setId(dto.getId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_52'/>
+52
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_52'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_53'/>
+53
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_53'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setTitle &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setTitle(dto.getTitle());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_54'/>
+54
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_54'>2</a>
+<span>
+1. convertToEntity : negated conditional &rarr; KILLED<br/>
+2. convertToEntity : removed call to com/games/games_project/model/Game::setReleaseDate &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setReleaseDate(dto.getReleaseDate() != null ? dto.getReleaseDate() : new Date());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_55'/>
+55
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_55'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setRating &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setRating(dto.getRating());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_56'/>
+56
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_56'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setGenre &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setGenre(dto.getGenre());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_57'/>
+57
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_57'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setDevelopers &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setDevelopers(dto.getDevelopers());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_58'/>
+58
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_58'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setPublishers &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setPublishers(dto.getPublishers());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_59'/>
+59
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_59'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setThemes &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setThemes(dto.getThemes());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_60'/>
+60
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_60'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setPlatforms &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setPlatforms(dto.getPlatforms());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_61'/>
+61
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_61'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setMetaScore &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setMetaScore(dto.getMetaScore());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_62'/>
+62
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_62'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setMetaScoreCount &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setMetaScoreCount(dto.getMetaScoreCount());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_63'/>
+63
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_63'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setDescription &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setDescription(dto.getDescription());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_64'/>
+64
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_64'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setStoryline &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setStoryline(dto.getStoryline());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_65'/>
+65
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_65'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setSummary &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setSummary(dto.getSummary());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_66'/>
+66
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_66'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setCover &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setCover(dto.getCover());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_67'/>
+67
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_67'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setVideo &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setVideo(dto.getVideo());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_68'/>
+68
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_68'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setUserScore &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setUserScore(dto.getUserScore());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_69'/>
+69
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_69'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setReviewCount &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setReviewCount(dto.getReviewCount());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_70'/>
+70
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_70'>1</a>
+<span>
+1. convertToEntity : removed call to com/games/games_project/model/Game::setScreenshots &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        game.setScreenshots(dto.getScreenshots());</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_71'/>
+71
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_71'>1</a>
+<span>
+1. convertToEntity : replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        return game;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_72'/>
+72
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_72'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@101c15ad_73'/>
+73
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_73'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>}</span></pre></td></tr>
+
+
+
+<tr><td></td><td></td><td><h2>Mutations</h2></td></tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_15'>15</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_15'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_16'>16</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_16'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setId &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_18'>18</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_18'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setAuthor &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_19'>19</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_19'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setText &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_20'>20</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_20'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setScore &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_21'>21</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_21'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignCurrentDate_WhenDateIsNull()]</span></span> removed call to com/games/games_project/model/Review::setDate &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignCurrentDate_WhenDateIsNull()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_22'>22</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_22'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_23'>23</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_23'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setGameId &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_25'>25</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_25'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_26'>26</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_26'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setUserId &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_28'>28</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_28'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()]</span></span> removed call to com/games/games_project/model/Review::setGameName &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_29'>29</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_29'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignCurrentDate_WhenDateIsNull()]</span></span> replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_34'>34</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_34'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_35'>35</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_35'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setId &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_37'>37</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_37'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setUsername &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_38'>38</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_38'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setEmail &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_39'>39</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_39'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setPassword &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_40'>40</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_40'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setName &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_41'>41</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_41'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setSurname &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_42'>42</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_42'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setGender &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_43'>43</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_43'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()]</span></span> removed call to com/games/games_project/model/User::setRole &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_44'>44</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_44'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultDate_WhenBirthDateIsNull()]</span></span> removed call to com/games/games_project/model/User::setBirthDate &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultDate_WhenBirthDateIsNull()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_45'>45</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_45'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultDate_WhenBirthDateIsNull()]</span></span> replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_50'>50</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_50'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> negated conditional &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_51'>51</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_51'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setId &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_53'>53</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_53'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setTitle &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_54'>54</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_54'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultReleaseDate_WhenNull()]</span></span> negated conditional &rarr; KILLED</p> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultReleaseDate_WhenNull()]</span></span> removed call to com/games/games_project/model/Game::setReleaseDate &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_55'>55</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_55'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setRating &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_56'>56</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_56'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setGenre &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_57'>57</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_57'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setDevelopers &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_58'>58</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_58'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setPublishers &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_59'>59</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_59'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setThemes &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_60'>60</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_60'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setPlatforms &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_61'>61</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_61'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setMetaScore &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_62'>62</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_62'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setMetaScoreCount &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_63'>63</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_63'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setDescription &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_64'>64</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_64'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setStoryline &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_65'>65</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_65'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setSummary &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_66'>66</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_66'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setCover &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_67'>67</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_67'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setVideo &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_68'>68</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_68'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setUserScore &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_69'>69</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_69'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setReviewCount &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_70'>70</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_70'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()]</span></span> removed call to com/games/games_project/model/Game::setScreenshots &rarr; KILLED</p> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@101c15ad_71'>71</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@101c15ad_71'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>convertToEntity<br/><b>Killed by : </b>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultReleaseDate_WhenNull()]</span></span> replaced return value with null for com/games/games_project/utils/ConverterDTO::convertToEntity &rarr; KILLED</p> 
+</td>
+</tr>
+
+</table>
+
+
+<h2>Active mutators</h2>
+<ul>
+<li class='mutator'>CONDITIONALS_BOUNDARY</li>
+<li class='mutator'>EMPTY_RETURNS</li>
+<li class='mutator'>FALSE_RETURNS</li>
+<li class='mutator'>INCREMENTS</li>
+<li class='mutator'>INVERT_NEGS</li>
+<li class='mutator'>MATH</li>
+<li class='mutator'>NEGATE_CONDITIONALS</li>
+<li class='mutator'>NULL_RETURNS</li>
+<li class='mutator'>PRIMITIVE_RETURNS</li>
+<li class='mutator'>TRUE_RETURNS</li>
+<li class='mutator'>VOID_METHOD_CALLS</li>
+
+</ul>
+
+<h2>Tests examined</h2>
+<ul>
+<li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated()] (0 ms)</li><li>com.games.games_project.controller.impl.ReviewControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.ReviewControllerTest]/[method:testModifyReview()] (1 ms)</li><li>com.games.games_project.controller.impl.ReviewControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.ReviewControllerTest]/[method:testDeleteReview()] (4 ms)</li><li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultReleaseDate_WhenNull()] (0 ms)</li><li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllGameFields()] (0 ms)</li><li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignDefaultDate_WhenBirthDateIsNull()] (0 ms)</li><li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldMapAllUserFields()] (0 ms)</li><li>com.games.games_project.controller.impl.UserControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.UserControllerTest]/[method:testDeleteUser()] (1 ms)</li><li>com.games.games_project.controller.impl.UserControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.UserControllerTest]/[method:testUpdateUser()] (2 ms)</li><li>com.games.games_project.controller.impl.ReviewControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.ReviewControllerTest]/[method:testGetReviewsForUser()] (14 ms)</li><li>com.games.games_project.utils.ConverterDTOTest.[engine:junit-jupiter]/[class:com.games.games_project.utils.ConverterDTOTest]/[method:convertToEntity_ShouldAssignCurrentDate_WhenDateIsNull()] (0 ms)</li><li>com.games.games_project.controller.impl.ReviewControllerTest.[engine:junit-jupiter]/[class:com.games.games_project.controller.impl.ReviewControllerTest]/[method:testAddReview()] (1 ms)</li>
+</ul>
+
+<br/>
+
+Report generated by <a href='https://pitest.org'>PIT</a> 1.15.2
+
+</body>
+</html>

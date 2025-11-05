@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReviewController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">games-project</a> &gt; <a href="index.source.html" class="el_package">com.games.games_project.controller</a> &gt; <span class="el_source">ReviewController.java</span></div><h1>ReviewController.java</h1><pre class="source lang-java linenums">package com.games.games_project.controller;
+
+import com.games.games_project.dto.*;
+import com.games.games_project.model.Review;
+import com.games.games_project.model.User;
+import com.games.games_project.service.GameService;
+import com.games.games_project.service.ReviewService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.Optional;
+
+import static com.games.games_project.utils.ConverterDTO.convertToEntity;
+
+@RestController
+@RequestMapping(&quot;/reviews&quot;)
+<span class="fc" id="L23">public class ReviewController {</span>
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private GameService gameService;
+
+
+    @GetMapping(&quot;/games/{gameId}/reviews&quot;)
+    public PagedReviewsResponseDto&lt;ReviewDetailsDto&gt; getReviewsForGame(
+            @PathVariable String gameId,
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;5&quot;) int size,
+            @RequestParam(defaultValue = &quot;date,desc&quot;) String sort
+    ) {
+<span class="fc" id="L38">        String[] sortParts = sort.split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L39" title="All 4 branches covered.">        Sort.Direction direction = sortParts.length &gt; 1 &amp;&amp; sortParts[1].equalsIgnoreCase(&quot;asc&quot;)</span>
+<span class="fc" id="L40">                ? Sort.Direction.ASC : Sort.Direction.DESC;</span>
+<span class="fc" id="L41">        Sort sortBy = Sort.by(direction, sortParts[0]);</span>
+<span class="fc" id="L42">        Pageable pageable = PageRequest.of(Math.max(page, 0), size, sortBy);</span>
+<span class="fc" id="L43">        return reviewService.getReviewsByGameId(gameId, pageable);</span>
+    }
+
+    @PostMapping(&quot;/games/reviewsByAuthor&quot;)
+    public PagedReviewsResponseDto&lt;UserProfileReviewDto&gt; getReviewsForUser(
+            @RequestBody UserRequestDto user,
+            @PageableDefault(page = 1, size = 5) Pageable pageable
+    ) {
+<span class="fc" id="L51">        User user1 = convertToEntity(user);</span>
+<span class="fc" id="L52">        int correctedPage = Math.max(pageable.getPageNumber() - 1, 0);</span>
+<span class="fc" id="L53">        Pageable correctedPageable = PageRequest.of(correctedPage, pageable.getPageSize(), pageable.getSort());</span>
+<span class="fc" id="L54">        return reviewService.getReviewsByUsername(user1.getUsername(), correctedPageable);</span>
+    }
+
+    @PostMapping(&quot;/addReview&quot;)
+    public ResponseEntity&lt;Boolean&gt; addReview(@RequestBody ReviewRequestDto dto) {
+<span class="fc" id="L59">        Review review = convertToEntity(dto);</span>
+<span class="fc" id="L60">        boolean result = reviewService.addReview(review);</span>
+<span class="fc" id="L61">        return ResponseEntity.ok(result);</span>
+    }
+
+    @PostMapping(&quot;/modifyReview&quot;)
+    public ResponseEntity&lt;Boolean&gt; modifyReview(@RequestBody ReviewRequestDto dto) {
+<span class="fc" id="L66">        Review review = convertToEntity(dto);</span>
+<span class="fc" id="L67">        boolean result = reviewService.modifyReview(review);</span>
+<span class="fc" id="L68">        return ResponseEntity.ok(result);</span>
+    }
+
+    @PostMapping(&quot;/deleteReview&quot;)
+    public ResponseEntity&lt;Boolean&gt; deleteReview(@RequestBody ReviewRequestDto dto) {
+<span class="fc" id="L73">        Review review = convertToEntity(dto);</span>
+<span class="fc" id="L74">        boolean result = reviewService.deleteReview(review);</span>
+<span class="fc" id="L75">        return ResponseEntity.ok(result);</span>
+    }
+
+    @GetMapping(&quot;game/{gameId}/review&quot;)
+    public ReviewDetailsDto getGameReviewByAuthor(
+            @PathVariable String gameId,
+            @RequestParam String author
+    ) {
+<span class="fc" id="L83">        Optional&lt;ReviewDetailsDto&gt; review = reviewService.getGameReviewByAuthor(gameId, author);</span>
+<span class="fc" id="L84">        return review.orElse(null);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
