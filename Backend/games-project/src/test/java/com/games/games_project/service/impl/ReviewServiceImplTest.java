@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,47 +159,65 @@ class ReviewServiceImplTest {
        ------------------------------------------------------------ */
 
     @Test
-    @DisplayName("modifyReview - aggiorna recensione esistente e ricalcola media correttamente")
+    @DisplayName("modifyReview - aggiorna recensione esistente e ricalcola media e data correttamente")
     void testModifyReview_UpdateExistingReview() {
         String reviewId = "rev001";
         ObjectId gameId = new ObjectId("671a9f4e9c7a4a321c7a9e01");
+
+        Date oldDate = new Date(System.currentTimeMillis() - 100000);
+        Date newDate = new Date(System.currentTimeMillis());
 
         Review existing = new Review();
         existing.setId(reviewId);
         existing.setGameId(gameId);
         existing.setText("Recensione vecchia");
-        existing.setScore(7);
-        existing.setDate(new java.util.Date());
+        existing.setScore(6); // leggermente più basso
+        existing.setDate(oldDate);
 
         Review modified = new Review();
         modified.setId(reviewId);
         modified.setGameId(gameId);
         modified.setText("Recensione aggiornata");
-        modified.setScore(9);
-        modified.setDate(new java.util.Date());
+        modified.setScore(10); // leggermente più alto
+        modified.setDate(newDate);
 
         Game game = new Game();
         game.setId(gameId.toHexString());
         game.setTitle("Elden Ring");
-        game.setUserScore(8.0);
+        game.setUserScore(8.3); // valore che non si arrotonda uguale
         game.setReviewCount(100);
-        assertNotNull(modified.getDate());
-        when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existing));
         when(gameRepository.findById(gameId.toHexString())).thenReturn(Optional.of(game));
 
         Boolean result = reviewService.modifyReview(modified);
-        assertNotNull(modified.getDate());
-        verify(gameRepository).save(argThat(g -> g.getUserScore() > 0));
         assertTrue(result);
-        verify(reviewRepository).save(argThat(r ->
-                r.getText().equals("Recensione aggiornata") && r.getScore() == 9
-        ));
-        verify(gameRepository).save(argThat(g ->
-                g.getUserScore() == Math.round(((8.0 * 100) - 7 + 9) / 100)
-        ));
+
+        double expectedNewAvg = Math.round(((8.3 * 100) - 6 + 10) / 100.0);
+
+        ArgumentCaptor<Review> reviewCaptor = ArgumentCaptor.forClass(Review.class);
+        ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
+
+        verify(reviewRepository).save(reviewCaptor.capture());
+        verify(gameRepository).save(gameCaptor.capture());
+
+        Review savedReview = reviewCaptor.getValue();
+        Game savedGame = gameCaptor.getValue();
+
+        assertEquals("Recensione aggiornata", savedReview.getText());
+        assertEquals(10, savedReview.getScore());
+        assertEquals(newDate, savedReview.getDate());
+
+        assertEquals(expectedNewAvg, savedGame.getUserScore(), 0.0001);
+        assertEquals(100, savedGame.getReviewCount());
+        assertEquals(gameId.toHexString(), savedGame.getId());
+
+        assertNotEquals(8.3, savedGame.getUserScore());
     }
+
+
+
+
 
     @Test
     @DisplayName("modifyReview - review non trovata restituisce FALSE")
@@ -247,57 +268,62 @@ class ReviewServiceImplTest {
        ------------------------------------------------------------ */
 
     @Test
-    @DisplayName("getReviewsByGameId - GTA V restituisce recensioni corrette")
-    void testGetReviewsByGameId_GTA() {
+    @DisplayName("getReviewsByGameId - data e gameId corretti")
+    void testGetReviewsByGameId_WithDateAndGameId() {
         String gtaId = "6807a1905d04121deaab7da0";
+        ObjectId expectedObjectId = new ObjectId(gtaId);
 
-        Review r1 = new Review();
-        r1.setId("rev1");
-        r1.setAuthor("PlayerOne");
-        r1.setText("Incredibile open world!");
-        r1.setScore(9);
-        r1.setGameId(new ObjectId(gtaId));
+        Calendar cal = Calendar.getInstance();
+        cal.set(2023, Calendar.MARCH, 15, 10, 0, 0);
+        Date reviewDate = cal.getTime();
 
-        Review r2 = new Review();
-        r2.setId("rev2");
-        r2.setAuthor("GamerX");
-        r2.setText("Una delle migliori esperienze Rockstar.");
-        r2.setScore(10);
-        r2.setGameId(new ObjectId(gtaId));
+        Review review = new Review();
+        review.setId("rev1");
+        review.setAuthor("PlayerOne");
+        review.setText("Ottimo gioco!");
+        review.setScore(9);
+        review.setGameId(expectedObjectId);
+        review.setDate(reviewDate);
 
-        Page<Review> page = new PageImpl<>(List.of(r1, r2));
-
-        when(reviewRepository.findByGameId(any(ObjectId.class), any())).thenReturn(page);
+        Page<Review> page = new PageImpl<>(List.of(review));
+        when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class))).thenReturn(page);
 
         var result = reviewService.getReviewsByGameId(gtaId, PageRequest.of(0, 5));
-        assertEquals(r1.getId(), result.getContent().get(0).getGameId());
-        assertEquals(2, result.getContent().size());
-        assertEquals("rev1", result.getContent().get(0).getId());
-        assertEquals("PlayerOne", result.getContent().get(0).getAuthor());
-        assertEquals("Incredibile open world!", result.getContent().get(0).getText());
-        assertEquals(9, result.getContent().get(0).getScore());
-        assertTrue(result.getContent().get(0).getDate() == null ||
-                result.getContent().get(0).getDate().matches("\\d{4}-\\d{2}-\\d{2}"));
 
+        assertEquals(1, result.getContent().size());
+        ReviewDetailsDto dto = result.getContent().get(0);
+
+        assertNotNull(dto.getDate());
+        assertEquals("2023-03-15", dto.getDate());
+
+        assertEquals("rev1", dto.getGameId(), "Il campo gameId del DTO deve corrispondere all'id della review");
+
+        assertEquals("rev1", dto.getId());
+        assertEquals("PlayerOne", dto.getAuthor());
+        assertEquals("Ottimo gioco!", dto.getText());
+        assertEquals(9, dto.getScore());
     }
+
+
+
 
     /* ------------------------------------------------------------
        addReview()
        ------------------------------------------------------------ */
 
     @Test
-    @DisplayName("addReview - nuova review aggiorna correttamente i punteggi")
-    void testAddReview_Success() {
+    @DisplayName("addReview - uccide mutazioni matematiche su moltiplicazione e somma")
+    void testAddReview_Success_MathSensitive() {
         Review review = new Review();
         review.setGameId(new ObjectId("6807a1905d04121deaab7daa"));
         review.setAuthor("RPGFan");
-        review.setScore(9);
+        review.setScore(8);
 
         Game game = new Game();
         game.setId("6807a1905d04121deaab7daa");
         game.setTitle("Baldur's Gate 3");
-        game.setUserScore(8.6);
-        game.setReviewCount(533);
+        game.setUserScore(6.0);
+        game.setReviewCount(2);
 
         when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), anyString()))
                 .thenReturn(Optional.empty());
@@ -306,16 +332,20 @@ class ReviewServiceImplTest {
         Boolean result = reviewService.addReview(review);
 
         assertTrue(result);
-        verify(reviewRepository).save(any(Review.class));
-        verify(gameRepository).save(argThat(g ->
-                g.getUserScore() == Math.round(((8.6 * 533) + 9) / (533 + 1))
-        ));
-        verify(gameRepository).save(argThat(g ->
-                g.getReviewCount() == 534 &&
-                        g.getUserScore() == Math.round(((8.6 * 533) + 9) / 534)
-        ));
 
+        double expectedNewAvg = Math.round(((6.0 * 2) + 8.0) / (2 + 1)); // (12 + 8)/3 = 6.67 -> 7
+        int expectedNewCount = 3;
+
+        verify(gameRepository).save(argThat(g -> {
+            assertEquals(expectedNewCount, g.getReviewCount());
+            assertEquals(expectedNewAvg, g.getUserScore(), 0.0001);
+            return true;
+        }));
+
+        verify(reviewRepository).save(argThat(r -> r.getAuthor().equals("RPGFan")));
     }
+
+
 
     @Test
     @DisplayName("addReview - review già presente genera eccezione")
@@ -425,7 +455,7 @@ class ReviewServiceImplTest {
        ------------------------------------------------------------ */
 
     @Test
-    @DisplayName("getGameReviewByAuthor - review presente")
+    @DisplayName("getGameReviewByAuthor - review presente con data valorizzata")
     void testGetGameReviewByAuthor_Present() {
         String gameId = "6807a1905d04121deaab7db1";
 
@@ -435,23 +465,26 @@ class ReviewServiceImplTest {
         review.setAuthor("ScienceGuy");
         review.setScore(10);
         review.setText("Capolavoro FPS");
+        review.setDate(java.sql.Date.valueOf("2024-11-06"));
 
         when(reviewRepository.findByGameIdAndAuthor(any(ObjectId.class), eq("ScienceGuy")))
                 .thenReturn(Optional.of(review));
 
         Optional<ReviewDetailsDto> result = reviewService.getGameReviewByAuthor(gameId, "ScienceGuy");
 
-        assertTrue(result.isPresent());
-        assertEquals("rHalf", result.get().getId());
-        assertEquals("ScienceGuy", result.get().getAuthor());
-        assertEquals("Capolavoro FPS", result.get().getText());
-        assertEquals(10, result.get().getScore());
-        assertNull(result.get().getDate());
-        assertTrue(result.get().getDate() == null ||
-                result.get().getDate().matches("\\d{4}-\\d{2}-\\d{2}"));
+        assertTrue(result.isPresent(), "La review deve essere presente");
+        ReviewDetailsDto dto = result.get();
 
-        assertEquals("6807a1905d04121deaab7db1", result.get().getGameId());
+        assertEquals("rHalf", dto.getId());
+        assertEquals("ScienceGuy", dto.getAuthor());
+        assertEquals("Capolavoro FPS", dto.getText());
+        assertEquals(10, dto.getScore());
+        assertEquals("6807a1905d04121deaab7db1", dto.getGameId());
+
+        assertNotNull(dto.getDate(), "La data deve essere valorizzata");
+        assertEquals("2024-11-06", dto.getDate(), "La data deve essere formattata correttamente (yyyy-MM-dd)");
     }
+
 
     @Test
     @DisplayName("getGameReviewByAuthor - review non trovata")
