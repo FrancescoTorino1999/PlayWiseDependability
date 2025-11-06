@@ -62,7 +62,7 @@ class ConverterDTOTest {
         dto.setId(UUID.randomUUID().toString());
         dto.setUsername(randomString());
         dto.setEmail(randomString() + "@mail.com");
-        dto.setPassword(randomString()); // ✅ prefisso neutro
+        dto.setPassword(randomString());
         dto.setName("Name_" + UUID.randomUUID());
         dto.setSurname("Surname_" + UUID.randomUUID());
         dto.setGender("M");

@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -215,7 +217,7 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.content[0].author").value("UserX"));
 
         ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(reviewService).getReviewsByGameId(eq("1"), captor.capture());
+        verify(reviewService).getReviewsByGameId(eq("1"), captor.capture());
         Pageable pageable = captor.getValue();
         assertEquals(Sort.Direction.DESC, pageable.getSort().getOrderFor("date").getDirection());
     }
@@ -240,7 +242,7 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.content[0].author").value("Upper"));
 
         ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(reviewService).getReviewsByGameId(eq("2"), captor.capture());
+        verify(reviewService).getReviewsByGameId(eq("2"), captor.capture());
         Pageable pageable = captor.getValue();
         assertEquals(Sort.Direction.ASC, pageable.getSort().getOrderFor("date").getDirection());
     }
@@ -258,7 +260,7 @@ class ReviewControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<Pageable> captorAsc = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(reviewService).getReviewsByGameId(eq("1"), captorAsc.capture());
+        verify(reviewService).getReviewsByGameId(eq("1"), captorAsc.capture());
         Pageable pageableAsc = captorAsc.getValue();
         assertEquals(Sort.Direction.ASC, pageableAsc.getSort().getOrderFor("date").getDirection());
 
@@ -272,8 +274,39 @@ class ReviewControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<Pageable> captorDesc = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(reviewService).getReviewsByGameId(eq("2"), captorDesc.capture());
+        verify(reviewService).getReviewsByGameId(eq("2"), captorDesc.capture());
         Pageable pageableDesc = captorDesc.getValue();
         assertEquals(Sort.Direction.DESC, pageableDesc.getSort().getOrderFor("date").getDirection());
     }
+
+    @Test
+    @DisplayName("POST /reviews/games/reviewsByAuthor → verifica correzione pagina (page - 1)")
+    void testGetReviewsForUser_PageCorrection() throws Exception {
+        UserProfileReviewDto dto = new UserProfileReviewDto();
+        dto.setAuthor("Francesco");
+        dto.setText("Recensione test");
+        dto.setGameTitle("Elden Ring");
+
+        PagedReviewsResponseDto<UserProfileReviewDto> response =
+                new PagedReviewsResponseDto<>(List.of(dto), 1, 5, 3, 15L, false, false);
+
+        when(reviewService.getReviewsByUsername(eq("Francesco"), any(Pageable.class)))
+                .thenReturn(response);
+
+        mockMvc.perform(post("/reviews/games/reviewsByAuthor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"Francesco\"}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(reviewService).getReviewsByUsername(eq("Francesco"), captor.capture());
+
+        Pageable pageable = captor.getValue();
+        assertEquals(0, pageable.getPageNumber(), "La pagina deve essere decrementata di 1");
+        assertEquals(5, pageable.getPageSize());
+    }
+
+
+
 }
