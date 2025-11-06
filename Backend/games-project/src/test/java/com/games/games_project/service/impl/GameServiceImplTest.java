@@ -38,6 +38,10 @@ class GameServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /* ------------------------------------------------------------
+       getGameDetailsById()
+       ------------------------------------------------------------ */
+
     @Test
     @DisplayName("getGameDetailsById - ID nullo deve restituire Optional vuoto")
     void testGetGameDetailsById_NullId() {
@@ -50,7 +54,9 @@ class GameServiceImplTest {
     void testGetGameDetailsById_GameNotFound() {
         String id = "6807a1905d04121deaab7d99";
         when(gameRepository.findById(id)).thenReturn(Optional.empty());
+
         Optional<GameDetailsDto> result = gameService.getGameDetailsById(id);
+
         assertTrue(result.isEmpty());
     }
 
@@ -80,26 +86,6 @@ class GameServiceImplTest {
         Date releaseDate = new Date();
         game.setReleaseDate(releaseDate);
 
-        assertEquals(id, game.getId());
-        assertEquals("Tom Clancy's Splinter Cell: Chaos Theory", game.getTitle());
-        assertEquals("Action Adventure", game.getGenre());
-        assertEquals("M", game.getRating());
-        assertEquals(94.0, game.getMetaScore());
-        assertEquals(92.0, game.getUserScore());
-        assertEquals(33, game.getReviewCount());
-        assertEquals(1200.0, game.getMetaScoreCount());
-        assertEquals("Stealth action game.", game.getDescription());
-        assertEquals("Sam Fisher returns for a new mission.", game.getStoryline());
-        assertEquals("A top-tier stealth experience.", game.getSummary());
-        assertEquals("cover.jpg", game.getCover());
-        assertEquals("trailer.mp4", game.getVideo());
-        assertEquals(List.of("Ubisoft Montreal"), game.getDevelopers());
-        assertEquals(List.of("Ubisoft"), game.getPublishers());
-        assertEquals(List.of("Stealth", "Espionage"), game.getThemes());
-        assertEquals(List.of("PC", "Xbox"), game.getPlatforms());
-        assertEquals(List.of("img1.jpg", "img2.jpg"), game.getScreenshots());
-        assertEquals(releaseDate, game.getReleaseDate());
-
         when(gameRepository.findById(id)).thenReturn(Optional.of(game));
         when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
@@ -108,6 +94,7 @@ class GameServiceImplTest {
 
         assertTrue(result.isPresent());
         GameDetailsDto dto = result.get();
+        assertEquals(id, dto.getId());
         assertEquals("Tom Clancy's Splinter Cell: Chaos Theory", dto.getTitle());
         assertEquals("Action Adventure", dto.getGenre());
         assertEquals(94, dto.getMetaScore());
@@ -126,7 +113,9 @@ class GameServiceImplTest {
         assertEquals("trailer.mp4", dto.getVideo());
         assertEquals(33, dto.getReviewCount());
         assertEquals(List.of("img1.jpg", "img2.jpg"), dto.getScreenshots());
-
+        assertNotNull(dto.getReleaseDate());
+        assertTrue(dto.getReleaseDate().matches("\\d{4}-\\d{2}-\\d{2}"));
+        assertEquals("M", dto.getRating());
     }
 
     @Test
@@ -156,14 +145,7 @@ class GameServiceImplTest {
         r3.setUserId(userId);
         r3.setGameName("Grand Theft Auto IV");
 
-        assertEquals("rev3", r3.getId());
-        assertEquals("PlayerX", r3.getAuthor());
-        assertEquals("One of the best Rockstar titles.", r3.getText());
-        assertEquals(9, r3.getScore());
-        assertEquals(now, r3.getDate());
-        assertEquals(gameId, r3.getGameId());
-        assertEquals(userId, r3.getUserId());
-        assertEquals("Grand Theft Auto IV", r3.getGameName());        Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2, r3));
+        Page<Review> reviewPage = new PageImpl<>(List.of(r1, r2, r3));
 
         when(gameRepository.findById(id)).thenReturn(Optional.of(game));
         when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class))).thenReturn(reviewPage);
@@ -174,15 +156,11 @@ class GameServiceImplTest {
         GameDetailsDto dto = result.get();
         assertEquals("Grand Theft Auto IV", dto.getTitle());
         assertEquals(3, dto.getLatestReviews().size());
-        assertEquals("NikoBellic", dto.getLatestReviews().get(0).getAuthor());
         List<ReviewDetailsDto> reviews = dto.getLatestReviews();
-        assertEquals(3, reviews.size());
         assertEquals("NikoBellic", reviews.get(0).getAuthor());
         assertNotNull(reviews.get(0).getText());
-        assertNotNull(reviews.get(1).getText());
         assertEquals(9, reviews.get(2).getScore());
         assertNotNull(reviews.get(2).getDate());
-
     }
 
     @Test
@@ -209,9 +187,9 @@ class GameServiceImplTest {
 
         Optional<GameDetailsDto> result = gameService.getGameDetailsById(id);
 
+        assertTrue(result.isPresent());
         assertNotNull(result.get().getLatestReviews());
         assertTrue(result.get().getLatestReviews().stream().allMatch(r -> r.getId() != null));
-        assertTrue(result.isPresent());
         assertEquals(8, result.get().getLatestReviews().size());
     }
 
@@ -233,6 +211,10 @@ class GameServiceImplTest {
         assertTrue(result.isPresent());
         assertNull(result.get().getReleaseDate());
     }
+
+    /* ------------------------------------------------------------
+       getGamesPaginated()
+       ------------------------------------------------------------ */
 
     @Test
     @DisplayName("getGamesPaginated - deve restituire una pagina di anteprime giochi corretta")
@@ -257,9 +239,15 @@ class GameServiceImplTest {
         assertEquals(8.7, result.getContent().get(0).getUserScore());
         assertEquals("sc.jpg", result.getContent().get(1).getCover());
         assertEquals(9.1, result.getContent().get(1).getUserScore());
+        assertEquals("id1", result.getContent().get(0).getId());
+        assertEquals("id2", result.getContent().get(1).getId());
 
         verify(gameRepository).findAll(pageable);
     }
+
+    /* ------------------------------------------------------------
+       findSuggestion()
+       ------------------------------------------------------------ */
 
     @Test
     @DisplayName("findSuggestion - valore nullo o vuoto restituisce lista vuota")
@@ -288,9 +276,9 @@ class GameServiceImplTest {
         verify(gameRepository, times(1)).findSuggestions("Game");
     }
 
-
-
-
+    /* ------------------------------------------------------------
+       getGameCountByPlatform()
+       ------------------------------------------------------------ */
 
     @Test
     @DisplayName("getGameCountByPlatform - deve restituire la lista delle piattaforme con conteggio giochi")

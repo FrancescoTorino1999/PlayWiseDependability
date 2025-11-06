@@ -94,8 +94,7 @@ public class UserServiceImpl implements UserService {
 
         for (Review review : reviews) {
             ObjectId gameId = review.getGameId();
-            Game game = gameRepository.findById(String.valueOf(gameId))
-                    .orElseThrow(() -> new RuntimeException("Game not Found!"));
+            Game game = gameRepository.findById(String.valueOf(gameId)).get();
 
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();

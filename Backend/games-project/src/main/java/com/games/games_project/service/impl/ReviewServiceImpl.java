@@ -72,8 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(review);
 
         ObjectId gameId = review.getGameId();
-        Game game = gameRepository.findById(String.valueOf(gameId))
-                .orElseThrow(() -> new RuntimeException("Game not found!"));
+        Game game = gameRepository.findById(String.valueOf(gameId)).get();
 
         int numReviews = game.getReviewCount();
         double currentAvg = game.getUserScore();
@@ -102,8 +101,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewRepository.save(updatedReview);
 
             ObjectId gameId = updatedReview.getGameId();
-            Game game = gameRepository.findById(String.valueOf(gameId))
-                    .orElseThrow(() -> new RuntimeException("Game not found!"));
+            Game game = gameRepository.findById(String.valueOf(gameId)).get();
 
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
@@ -126,8 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
             double scoreToDelete = reviewToDelete.getScore();
 
             ObjectId gameId = reviewToDelete.getGameId();
-            Game game = gameRepository.findById(String.valueOf(gameId))
-                    .orElseThrow(() -> new RuntimeException("Game not found!"));
+            Game game = gameRepository.findById(String.valueOf(gameId)).get();
 
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
