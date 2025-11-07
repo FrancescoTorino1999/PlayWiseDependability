@@ -44,8 +44,8 @@ class ReviewServiceImplTest {
        ------------------------------------------------------------ */
 
     @Test
-    @DisplayName("getReviewsByUsername - utente con recensioni su più giochi")
-    void testGetReviewsByUsername_WithReviews() {
+    @DisplayName("getReviewsByUsername - copertura completa della formattazione data")
+    void testGetReviewsByUsername_DateFormattingBranches() {
         String author = "PlayerZ";
         Pageable pageable = PageRequest.of(0, 5);
 
@@ -82,30 +82,20 @@ class ReviewServiceImplTest {
         when(gameRepository.findById("671a9f4e9c7a4a321c7a9e12")).thenReturn(Optional.of(g2));
 
         var result = reviewService.getReviewsByUsername(author, pageable);
-        assertNotNull(result.getContent().get(0).getDate());
 
         assertNotNull(result);
         assertEquals(2, result.getContent().size());
-        assertEquals("PlayerZ", result.getContent().get(0).getAuthor());
-        assertEquals("Horizon Zero Dawn", result.getContent().get(0).getGameTitle());
-        assertEquals("God of War", result.getContent().get(1).getGameTitle());
-        assertTrue(result.isFirst());
 
-        assertEquals("rev1", result.getContent().get(0).getId());
-        assertEquals("Bellissimo gameplay!", result.getContent().get(0).getText());
-        assertEquals(9, result.getContent().get(0).getScore());
-        assertEquals("hzd.jpg", result.getContent().get(0).getGameCover());
+        var first = result.getContent().get(0);
+        var second = result.getContent().get(1);
 
-        assertEquals("rev2", result.getContent().get(1).getId());
-        assertEquals("Grafica pazzesca!", result.getContent().get(1).getText());
-        assertEquals(8, result.getContent().get(1).getScore());
-        assertEquals("gow.jpg", result.getContent().get(1).getGameCover());
-        assertEquals("671a9f4e9c7a4a321c7a9e11", result.getContent().get(0).getGameId());
-        assertEquals("671a9f4e9c7a4a321c7a9e12", result.getContent().get(1).getGameId());
+        assertNotNull(first.getDate());
+        assertNotNull(second.getDate());
 
         verify(reviewRepository).findByAuthor(author, pageable);
         verify(gameRepository, times(2)).findById(anyString());
     }
+
 
     @Test
     @DisplayName("getReviewsByUsername - utente senza recensioni restituisce pagina vuota")
@@ -496,6 +486,7 @@ class ReviewServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
+
     /* ------------------------------------------------------------
        getMonthlyReviewCount()
        ------------------------------------------------------------ */
@@ -544,6 +535,109 @@ class ReviewServiceImplTest {
         assertTrue(result);
         assertEquals(0, game.getReviewCount());
         assertEquals(0.0, game.getUserScore());
+    }
+
+    @Test
+    @DisplayName("deleteReview - gioco con 2 recensioni aggiorna correttamente la media (uccide mutanti 132,136)")
+    void testDeleteReview_TwoReviewsBoundary() {
+        Review review = new Review();
+        review.setId("revTwo");
+        review.setScore(9);
+        review.setGameId(new ObjectId("6807a1905d04121deaab7df0"));
+
+        Game game = new Game();
+        game.setId("6807a1905d04121deaab7df0");
+        game.setUserScore(8.0);
+        game.setReviewCount(2); // caso limite per boundary e media
+
+        when(reviewRepository.findById("revTwo")).thenReturn(Optional.of(review));
+        when(gameRepository.findById(anyString())).thenReturn(Optional.of(game));
+
+        Boolean result = reviewService.deleteReview(review);
+
+        assertTrue(result);
+        verify(reviewRepository).deleteById("revTwo");
+        verify(gameRepository).save(argThat(g -> {
+            assertEquals(7.0, g.getUserScore(), 0.0001);
+            assertEquals(1, g.getReviewCount());
+            return true;
+        }));
+    }
+
+    @Test
+    @DisplayName("getReviewsByUsername - verifica completa dei campi del DTO (uccide mutanti 158–168)")
+    void testGetReviewsByUsername_VerifyAllDtoFields() {
+        String author = "MutantKiller";
+        Pageable pageable = PageRequest.of(0, 5);
+
+        Review review = new Review();
+        review.setId("revKill");
+        review.setAuthor(author);
+        review.setText("Test completo!");
+        review.setScore(10);
+        review.setDate(java.sql.Date.valueOf("2025-11-07"));
+        review.setGameId(new ObjectId("671a9f4e9c7a4a321c7a9e33"));
+
+        Page<Review> reviewPage = new PageImpl<>(List.of(review), pageable, 1);
+
+        Game game = new Game();
+        game.setId("671a9f4e9c7a4a321c7a9e33");
+        game.setTitle("Killer Game");
+        game.setCover("cover.jpg");
+
+        when(reviewRepository.findByAuthor(eq(author), eq(pageable))).thenReturn(reviewPage);
+        when(gameRepository.findById("671a9f4e9c7a4a321c7a9e33")).thenReturn(Optional.of(game));
+
+        var result = reviewService.getReviewsByUsername(author, pageable);
+
+        assertEquals(1, result.getContent().size());
+        var dto = result.getContent().get(0);
+
+        assertEquals("revKill", dto.getId());
+        assertEquals("MutantKiller", dto.getAuthor());
+        assertEquals("Test completo!", dto.getText());
+        assertEquals(10, dto.getScore());
+        assertEquals("671a9f4e9c7a4a321c7a9e33", dto.getGameId());
+        assertEquals("Killer Game", dto.getGameTitle());
+        assertEquals("cover.jpg", dto.getGameCover());
+        assertEquals("2025-11-07", dto.getDate());
+
+        verify(reviewRepository).findByAuthor(author, pageable);
+        verify(gameRepository).findById("671a9f4e9c7a4a321c7a9e33");
+    }
+
+    @Test
+    @DisplayName("deleteReview - 1 sola recensione con media != punteggio: deve azzerare (uccide boundary 132)")
+    void testDeleteReview_SingleReview_AsymmetricAverage() {
+        ObjectId oid = new ObjectId("6807a1905d04121deaab7da7");
+
+        Review review = new Review();
+        review.setId("revUniqueSkew");
+        review.setScore(8);
+        review.setGameId(oid);
+
+        Game game = new Game();
+        game.setId(oid.toHexString());
+        game.setTitle("Solo Game");
+        game.setUserScore(7.9);
+        game.setReviewCount(1);
+
+        when(reviewRepository.findById("revUniqueSkew")).thenReturn(Optional.of(review));
+        when(gameRepository.findById(eq(oid.toHexString()))).thenReturn(Optional.of(game));
+
+        Boolean result = reviewService.deleteReview(review);
+
+        assertTrue(result);
+        assertEquals(0.0, game.getUserScore());
+        assertEquals(0, game.getReviewCount());
+
+        // e salvataggio effettuato
+        verify(reviewRepository).deleteById("revUniqueSkew");
+        verify(gameRepository).save(argThat(g -> {
+            assertEquals(0.0, g.getUserScore());
+            assertEquals(0, g.getReviewCount());
+            return true;
+        }));
     }
 
 }

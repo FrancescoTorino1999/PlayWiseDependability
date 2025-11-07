@@ -9,66 +9,69 @@ import com.games.games_project.model.User;
 
 import java.util.Date;
 
-<span class="nc" id="L12">public class ConverterDTO {</span>
+public class ConverterDTO {
+
+<span class="fc" id="L14">    public ConverterDTO(){}</span>
+
     public static Review convertToEntity(ReviewRequestDto dto) {
-<span class="fc" id="L14">        Review review = new Review();</span>
-<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
-<span class="fc" id="L16">            review.setId(dto.getId());</span>
+<span class="fc" id="L17">        Review review = new Review();</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
+<span class="fc" id="L19">            review.setId(dto.getId());</span>
         }
-<span class="fc" id="L18">        review.setAuthor(dto.getAuthor());</span>
-<span class="fc" id="L19">        review.setText(dto.getText());</span>
-<span class="fc" id="L20">        review.setScore(dto.getScore());</span>
-<span class="fc bfc" id="L21" title="All 2 branches covered.">        review.setDate(dto.getDate() != null ? dto.getDate() : new Date());</span>
-<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (dto.getGameId() != null) {</span>
-<span class="fc" id="L23">            review.setGameId(dto.getGameId());</span>
+<span class="fc" id="L21">        review.setAuthor(dto.getAuthor());</span>
+<span class="fc" id="L22">        review.setText(dto.getText());</span>
+<span class="fc" id="L23">        review.setScore(dto.getScore());</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        review.setDate(dto.getDate() != null ? dto.getDate() : new Date());</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (dto.getGameId() != null) {</span>
+<span class="fc" id="L26">            review.setGameId(dto.getGameId());</span>
         }
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (dto.getUserId() != null) {</span>
-<span class="fc" id="L26">            review.setUserId(dto.getUserId());</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (dto.getUserId() != null) {</span>
+<span class="fc" id="L29">            review.setUserId(dto.getUserId());</span>
         }
-<span class="fc" id="L28">        review.setGameName(dto.getGameName());</span>
-<span class="fc" id="L29">        return review;</span>
+<span class="fc" id="L31">        review.setGameName(dto.getGameName());</span>
+<span class="fc" id="L32">        return review;</span>
     }
 
     public static User convertToEntity(UserRequestDto dto) {
-<span class="fc" id="L33">        User user = new User();</span>
-<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
-<span class="fc" id="L35">            user.setId(dto.getId());</span>
+<span class="fc" id="L36">        User user = new User();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
+<span class="fc" id="L38">            user.setId(dto.getId());</span>
         }
-<span class="fc" id="L37">        user.setUsername(dto.getUsername());</span>
-<span class="fc" id="L38">        user.setEmail(dto.getEmail());</span>
-<span class="fc" id="L39">        user.setPassword(dto.getPassword());</span>
-<span class="fc" id="L40">        user.setName(dto.getName());</span>
-<span class="fc" id="L41">        user.setSurname(dto.getSurname());</span>
-<span class="fc" id="L42">        user.setGender(dto.getGender());</span>
-<span class="fc" id="L43">        user.setRole(dto.getRole());</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        user.setBirthDate(dto.getBirthDate() != null ? dto.getBirthDate() : new Date());</span>
-<span class="fc" id="L45">        return user;</span>
+<span class="fc" id="L40">        user.setUsername(dto.getUsername());</span>
+<span class="fc" id="L41">        user.setEmail(dto.getEmail());</span>
+<span class="fc" id="L42">        user.setPassword(dto.getPassword());</span>
+<span class="fc" id="L43">        user.setName(dto.getName());</span>
+<span class="fc" id="L44">        user.setSurname(dto.getSurname());</span>
+<span class="fc" id="L45">        user.setGender(dto.getGender());</span>
+<span class="fc" id="L46">        user.setRole(dto.getRole());</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        user.setBirthDate(dto.getBirthDate() != null ? dto.getBirthDate() : new Date());</span>
+<span class="fc" id="L48">        return user;</span>
     }
 
     public static Game convertToEntity(GameRequestDto dto) {
-<span class="fc" id="L49">        Game game = new Game();</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
-<span class="fc" id="L51">            game.setId(dto.getId());</span>
+<span class="fc" id="L52">        Game game = new Game();</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (dto.getId() != null) {</span>
+<span class="fc" id="L54">            game.setId(dto.getId());</span>
         }
-<span class="fc" id="L53">        game.setTitle(dto.getTitle());</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">        game.setReleaseDate(dto.getReleaseDate() != null ? dto.getReleaseDate() : new Date());</span>
-<span class="fc" id="L55">        game.setRating(dto.getRating());</span>
-<span class="fc" id="L56">        game.setGenre(dto.getGenre());</span>
-<span class="fc" id="L57">        game.setDevelopers(dto.getDevelopers());</span>
-<span class="fc" id="L58">        game.setPublishers(dto.getPublishers());</span>
-<span class="fc" id="L59">        game.setThemes(dto.getThemes());</span>
-<span class="fc" id="L60">        game.setPlatforms(dto.getPlatforms());</span>
-<span class="fc" id="L61">        game.setMetaScore(dto.getMetaScore());</span>
-<span class="fc" id="L62">        game.setMetaScoreCount(dto.getMetaScoreCount());</span>
-<span class="fc" id="L63">        game.setDescription(dto.getDescription());</span>
-<span class="fc" id="L64">        game.setStoryline(dto.getStoryline());</span>
-<span class="fc" id="L65">        game.setSummary(dto.getSummary());</span>
-<span class="fc" id="L66">        game.setCover(dto.getCover());</span>
-<span class="fc" id="L67">        game.setVideo(dto.getVideo());</span>
-<span class="fc" id="L68">        game.setUserScore(dto.getUserScore());</span>
-<span class="fc" id="L69">        game.setReviewCount(dto.getReviewCount());</span>
-<span class="fc" id="L70">        game.setScreenshots(dto.getScreenshots());</span>
-<span class="fc" id="L71">        return game;</span>
+<span class="fc" id="L56">        game.setTitle(dto.getTitle());</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        game.setReleaseDate(dto.getReleaseDate() != null ? dto.getReleaseDate() : new Date());</span>
+<span class="fc" id="L58">        game.setRating(dto.getRating());</span>
+<span class="fc" id="L59">        game.setGenre(dto.getGenre());</span>
+<span class="fc" id="L60">        game.setDevelopers(dto.getDevelopers());</span>
+<span class="fc" id="L61">        game.setPublishers(dto.getPublishers());</span>
+<span class="fc" id="L62">        game.setThemes(dto.getThemes());</span>
+<span class="fc" id="L63">        game.setPlatforms(dto.getPlatforms());</span>
+<span class="fc" id="L64">        game.setMetaScore(dto.getMetaScore());</span>
+<span class="fc" id="L65">        game.setMetaScoreCount(dto.getMetaScoreCount());</span>
+<span class="fc" id="L66">        game.setDescription(dto.getDescription());</span>
+<span class="fc" id="L67">        game.setStoryline(dto.getStoryline());</span>
+<span class="fc" id="L68">        game.setSummary(dto.getSummary());</span>
+<span class="fc" id="L69">        game.setCover(dto.getCover());</span>
+<span class="fc" id="L70">        game.setVideo(dto.getVideo());</span>
+<span class="fc" id="L71">        game.setUserScore(dto.getUserScore());</span>
+<span class="fc" id="L72">        game.setReviewCount(dto.getReviewCount());</span>
+<span class="fc" id="L73">        game.setScreenshots(dto.getScreenshots());</span>
+<span class="fc" id="L74">        return game;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

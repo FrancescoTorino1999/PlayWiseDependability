@@ -46,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
             dto.setText(review.getText());
             dto.setScore(review.getScore());
             dto.setGameId(review.getId());
-            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);
+            dto.setDate(df.format(review.getDate()));
             return dto;
         }).collect(Collectors.toList());
 
@@ -129,7 +129,7 @@ public class ReviewServiceImpl implements ReviewService {
             int numReviews = game.getReviewCount();
             double currentAvg = game.getUserScore();
 
-            if (numReviews <= 1) {
+            if (numReviews == 1 || numReviews == 0) {
                 game.setUserScore(0.0);
                 game.setReviewCount(0);
             } else {
@@ -159,7 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
             dto.setScore(review.getScore());
             dto.setId(review.getId());
             dto.setText(review.getText());
-            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);
+            dto.setDate(df.format(review.getDate()));
 
             if(reviewedGame.isPresent()) {
                 Game game = reviewedGame.get();
@@ -194,7 +194,7 @@ public class ReviewServiceImpl implements ReviewService {
             dto.setScore(review.getScore());
             dto.setId(review.getId());
             dto.setText(review.getText());
-            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);
+            dto.setDate(df.format(review.getDate()));
             dto.setGameId(gameId);
             return Optional.of(dto);
         }

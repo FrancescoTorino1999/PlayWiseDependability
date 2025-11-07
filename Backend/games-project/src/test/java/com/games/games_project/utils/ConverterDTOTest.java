@@ -23,6 +23,7 @@ class ConverterDTOTest {
 
     @Test
     void convertToEntity_ShouldMapAllFields_WhenDtoIsFullyPopulated() {
+        ConverterDTO converterDTO = new ConverterDTO();
         ReviewRequestDto dto = new ReviewRequestDto();
         dto.setId(UUID.randomUUID().toString());
         dto.setAuthor(randomString());

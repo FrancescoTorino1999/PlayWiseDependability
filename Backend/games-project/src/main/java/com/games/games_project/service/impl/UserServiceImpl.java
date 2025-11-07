@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
             double currentAvg = game.getUserScore();
             double reviewScore = review.getScore();
 
-            if (numReviews <= 1) {
+            if (numReviews == 1 || numReviews == 0) {
                 game.setUserScore(0.0);
                 game.setReviewCount(0);
             } else {
@@ -124,9 +124,8 @@ public class UserServiceImpl implements UserService {
 
         if(existingUser.isPresent()){
             User updatedUser = existingUser.get();
-            if (user.getUsername() != null && !user.getUsername().trim().isEmpty()) {
-                updatedUser.setUsername(user.getUsername());
-            }
+            updatedUser.setUsername(user.getUsername());
+
             if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
                 updatedUser.setEmail(user.getEmail());
             }

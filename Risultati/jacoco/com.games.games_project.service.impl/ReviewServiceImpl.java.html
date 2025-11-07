@@ -46,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
 <span class="fc" id="L46">            dto.setText(review.getText());</span>
 <span class="fc" id="L47">            dto.setScore(review.getScore());</span>
 <span class="fc" id="L48">            dto.setGameId(review.getId());</span>
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L49">            dto.setDate(df.format(review.getDate()));</span>
 <span class="fc" id="L50">            return dto;</span>
 <span class="fc" id="L51">        }).collect(Collectors.toList());</span>
 
@@ -159,7 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
 <span class="fc" id="L159">            dto.setScore(review.getScore());</span>
 <span class="fc" id="L160">            dto.setId(review.getId());</span>
 <span class="fc" id="L161">            dto.setText(review.getText());</span>
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L162">            dto.setDate(df.format(review.getDate()));</span>
 
 <span class="fc bfc" id="L164" title="All 2 branches covered.">            if(reviewedGame.isPresent()) {</span>
 <span class="fc" id="L165">                Game game = reviewedGame.get();</span>
@@ -194,7 +194,7 @@ public class ReviewServiceImpl implements ReviewService {
 <span class="fc" id="L194">            dto.setScore(review.getScore());</span>
 <span class="fc" id="L195">            dto.setId(review.getId());</span>
 <span class="fc" id="L196">            dto.setText(review.getText());</span>
-<span class="pc bpc" id="L197" title="1 of 2 branches missed.">            dto.setDate(review.getDate() != null ? df.format(review.getDate()) : null);</span>
+<span class="fc" id="L197">            dto.setDate(df.format(review.getDate()));</span>
 <span class="fc" id="L198">            dto.setGameId(gameId);</span>
 <span class="fc" id="L199">            return Optional.of(dto);</span>
         }

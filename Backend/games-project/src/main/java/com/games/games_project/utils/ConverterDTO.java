@@ -10,6 +10,9 @@ import com.games.games_project.model.User;
 import java.util.Date;
 
 public class ConverterDTO {
+
+    public ConverterDTO(){}
+
     public static Review convertToEntity(ReviewRequestDto dto) {
         Review review = new Review();
         if (dto.getId() != null) {

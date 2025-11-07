@@ -357,8 +357,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateUser - tutti i campi null o vuoti → nessun aggiornamento")
-    void testUpdateUser_AllFieldsNullOrEmpty() {
+    @DisplayName("updateUser - tutti i campi vuoti → nessun aggiornamento")
+    void testUpdateUser_AllFieldsEmpty() {
         String username = randomUsername();
         String oldPassword = randomPassword();
 
@@ -372,7 +372,40 @@ class UserServiceImplTest {
         User update = new User();
         update.setUsername(username);
         update.setEmail("");
-        update.setName(" ");
+        update.setName("");
+        update.setSurname("");
+        update.setPassword("");
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(existing));
+
+        assertTrue(userService.updateUser(update));
+
+        verify(userRepository).save(argThat(saved ->
+                saved.getUsername().equals(username) &&
+                        saved.getEmail().equals("old@mail.com") &&
+                        saved.getName().equals("Old") &&
+                        saved.getSurname().equals("User") &&
+                        passwordEncoder.matches(oldPassword, saved.getPassword())));
+    }
+
+
+    @Test
+    @DisplayName("updateUser - tutti i campi null → nessun aggiornamento")
+    void testUpdateUser_AllFieldsNull() {
+        String username = randomUsername();
+        String oldPassword = randomPassword();
+
+        User existing = new User();
+        existing.setUsername(username);
+        existing.setEmail("old@mail.com");
+        existing.setName("Old");
+        existing.setSurname("User");
+        existing.setPassword(passwordEncoder.encode(oldPassword));
+
+        User update = new User();
+        update.setUsername(username);
+        update.setEmail(null);
+        update.setName(null);
         update.setSurname(null);
         update.setPassword(null);
 
@@ -387,6 +420,7 @@ class UserServiceImplTest {
                         saved.getSurname().equals("User") &&
                         passwordEncoder.matches(oldPassword, saved.getPassword())));
     }
+
 
     @Test
     @DisplayName("updateUser - combinazioni miste di aggiornamento")
