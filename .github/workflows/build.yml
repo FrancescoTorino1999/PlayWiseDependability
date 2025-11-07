@@ -95,29 +95,33 @@ jobs:
           name: jacoco-report
           path: ./Backend/games-project/target/site/jacoco
     
-  codecov:
-    name: Upload Coverage to Codecov
-    runs-on: ubuntu-latest
-    needs: unit-tests
+    codecov:
+      name: Upload Coverage to Codecov
+      runs-on: ubuntu-latest
+      needs: unit-tests
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: jacoco-report
-          path: ./Backend/games-project/target/site/jacoco
+        - name: Download coverage report
+          uses: actions/download-artifact@v4
+          with:
+            name: jacoco-report
+            path: ./Backend/games-project/target/site/jacoco
 
-      - name: Upload JaCoCo coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./Backend/games-project/target/site/jacoco/jacoco.xml
-          flags: unittests
-          verbose: true
+        - name: Debug coverage path
+          run: |
+            echo "Listing coverage files..."
+            ls -R ./Backend/games-project/target/site/jacoco || echo "No jacoco folder found"
 
+        - name: Upload JaCoCo coverage to Codecov
+          uses: codecov/codecov-action@v5
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            files: ./Backend/games-project/target/site/jacoco/jacoco.xml
+            flags: unittests
+            verbose: true
 
 
   mutation-tests:
