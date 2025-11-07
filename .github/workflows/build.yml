@@ -98,9 +98,8 @@ jobs:
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
-          files: ./Backend/games-project/target/junit-reports/*.xml
-          flags: backend
-          name: backend-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./Backend/games-project/target/surefire-reports/*.xml
       - name: Upload coverage to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v4
