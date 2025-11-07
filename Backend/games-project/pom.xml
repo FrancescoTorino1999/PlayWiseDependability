@@ -193,13 +193,22 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>3.2.5</version>
-                <configuration>
-                    <useFile>true</useFile>
-                    <reportFormat>xml</reportFormat>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-only</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/junit-reports</outputDirectory>
+                            <formats>
+                                <format>xml</format>
+                            </formats>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
