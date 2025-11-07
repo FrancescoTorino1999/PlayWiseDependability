@@ -94,64 +94,63 @@ import java.util.Optional;
 
 <span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Review review : reviews) {</span>
 <span class="fc" id="L96">            ObjectId gameId = review.getGameId();</span>
-<span class="fc" id="L97">            Game game = gameRepository.findById(String.valueOf(gameId))</span>
-<span class="pc" id="L98">                    .orElseThrow(() -&gt; new RuntimeException(&quot;Game not Found!&quot;));</span>
+<span class="fc" id="L97">            Game game = gameRepository.findById(String.valueOf(gameId)).get();</span>
 
-<span class="fc" id="L100">            int numReviews = game.getReviewCount();</span>
-<span class="fc" id="L101">            double currentAvg = game.getUserScore();</span>
-<span class="fc" id="L102">            double reviewScore = review.getScore();</span>
+<span class="fc" id="L99">            int numReviews = game.getReviewCount();</span>
+<span class="fc" id="L100">            double currentAvg = game.getUserScore();</span>
+<span class="fc" id="L101">            double reviewScore = review.getScore();</span>
 
-<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (numReviews &lt;= 1) {</span>
-<span class="fc" id="L105">                game.setUserScore(0.0);</span>
-<span class="fc" id="L106">                game.setReviewCount(0);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            if (numReviews &lt;= 1) {</span>
+<span class="fc" id="L104">                game.setUserScore(0.0);</span>
+<span class="fc" id="L105">                game.setReviewCount(0);</span>
             } else {
-<span class="fc" id="L108">                double newAvg = Math.round(((currentAvg * numReviews) - reviewScore) / (numReviews - 1));</span>
-<span class="fc" id="L109">                game.setUserScore(newAvg);</span>
-<span class="fc" id="L110">                game.setReviewCount(numReviews - 1);</span>
+<span class="fc" id="L107">                double newAvg = Math.round(((currentAvg * numReviews) - reviewScore) / (numReviews - 1));</span>
+<span class="fc" id="L108">                game.setUserScore(newAvg);</span>
+<span class="fc" id="L109">                game.setReviewCount(numReviews - 1);</span>
             }
-<span class="fc" id="L112">            gameRepository.save(game);</span>
+<span class="fc" id="L111">            gameRepository.save(game);</span>
 
-<span class="fc" id="L114">            reviewRepository.deleteById(review.getId());</span>
-<span class="fc" id="L115">        }</span>
+<span class="fc" id="L113">            reviewRepository.deleteById(review.getId());</span>
+<span class="fc" id="L114">        }</span>
 
-<span class="fc" id="L117">        userRepository.deleteByUsername(user.getUsername());</span>
+<span class="fc" id="L116">        userRepository.deleteByUsername(user.getUsername());</span>
 
-<span class="fc" id="L119">        return Boolean.TRUE;</span>
+<span class="fc" id="L118">        return Boolean.TRUE;</span>
     }
 
     @Override
     public Boolean updateUser(User user) {
-<span class="fc" id="L124">        Optional&lt;User&gt; existingUser = userRepository.findByUsername(user.getUsername());</span>
+<span class="fc" id="L123">        Optional&lt;User&gt; existingUser = userRepository.findByUsername(user.getUsername());</span>
 
-<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(existingUser.isPresent()){</span>
-<span class="fc" id="L127">            User updatedUser = existingUser.get();</span>
-<span class="pc bpc" id="L128" title="2 of 4 branches missed.">            if (user.getUsername() != null &amp;&amp; !user.getUsername().trim().isEmpty()) {</span>
-<span class="fc" id="L129">                updatedUser.setUsername(user.getUsername());</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if(existingUser.isPresent()){</span>
+<span class="fc" id="L126">            User updatedUser = existingUser.get();</span>
+<span class="pc bpc" id="L127" title="2 of 4 branches missed.">            if (user.getUsername() != null &amp;&amp; !user.getUsername().trim().isEmpty()) {</span>
+<span class="fc" id="L128">                updatedUser.setUsername(user.getUsername());</span>
             }
-<span class="fc bfc" id="L131" title="All 4 branches covered.">            if (user.getEmail() != null &amp;&amp; !user.getEmail().trim().isEmpty()) {</span>
-<span class="fc" id="L132">                updatedUser.setEmail(user.getEmail());</span>
+<span class="fc bfc" id="L130" title="All 4 branches covered.">            if (user.getEmail() != null &amp;&amp; !user.getEmail().trim().isEmpty()) {</span>
+<span class="fc" id="L131">                updatedUser.setEmail(user.getEmail());</span>
             }
-<span class="fc bfc" id="L134" title="All 4 branches covered.">            if (user.getName() != null &amp;&amp; !user.getName().trim().isEmpty()) {</span>
-<span class="fc" id="L135">                updatedUser.setName(user.getName());</span>
+<span class="fc bfc" id="L133" title="All 4 branches covered.">            if (user.getName() != null &amp;&amp; !user.getName().trim().isEmpty()) {</span>
+<span class="fc" id="L134">                updatedUser.setName(user.getName());</span>
             }
-<span class="pc bpc" id="L137" title="1 of 4 branches missed.">            if (user.getSurname() != null &amp;&amp; !user.getSurname().trim().isEmpty()) {</span>
-<span class="fc" id="L138">                updatedUser.setSurname(user.getSurname());</span>
+<span class="pc bpc" id="L136" title="1 of 4 branches missed.">            if (user.getSurname() != null &amp;&amp; !user.getSurname().trim().isEmpty()) {</span>
+<span class="fc" id="L137">                updatedUser.setSurname(user.getSurname());</span>
             }
-<span class="pc bpc" id="L140" title="1 of 4 branches missed.">            if (user.getPassword() != null &amp;&amp; !user.getPassword().trim().isEmpty()) {</span>
-<span class="fc" id="L141">                updatedUser.setPassword(passwordEncoder.encode(user.getPassword()));</span>
+<span class="pc bpc" id="L139" title="1 of 4 branches missed.">            if (user.getPassword() != null &amp;&amp; !user.getPassword().trim().isEmpty()) {</span>
+<span class="fc" id="L140">                updatedUser.setPassword(passwordEncoder.encode(user.getPassword()));</span>
             }
 
-<span class="fc" id="L144">            userRepository.save(updatedUser);</span>
-<span class="fc" id="L145">            return true;</span>
+<span class="fc" id="L143">            userRepository.save(updatedUser);</span>
+<span class="fc" id="L144">            return true;</span>
         }
         else {
-<span class="fc" id="L148">            return Boolean.FALSE;</span>
+<span class="fc" id="L147">            return Boolean.FALSE;</span>
         }
     }
 
     @Override
     public List&lt;GenderCountDto&gt; getUserCountByGender() {
-<span class="fc" id="L154">        return userRepository.countUsersByGender();</span>
+<span class="fc" id="L153">        return userRepository.countUsersByGender();</span>
     }
 
 

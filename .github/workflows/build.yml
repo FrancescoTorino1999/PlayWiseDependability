@@ -95,6 +95,13 @@ jobs:
           name: jacoco-report
           path: ./Backend/games-project/target/site/jacoco
 
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+
 
   mutation-tests:
     name: Mutation Testing (PIT)
