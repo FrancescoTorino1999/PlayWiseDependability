@@ -89,39 +89,31 @@ jobs:
         working-directory: ./Backend/games-project
         run: mvn test jacoco:report
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: ./Backend/games-project/target/site/jacoco
-    
-  codecov:
-    name: Upload Coverage to Codecov
-    runs-on: ubuntu-latest
-    needs: unit-tests
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: jacoco-report
-          path: ./Backend/games-project/target/site/jacoco
-
-      - name: Debug coverage path
+      - name: Show execution time for UserServiceImplTest
+        working-directory: ./Backend/games-project
         run: |
-          echo "Listing coverage files..."
-          ls -R ./Backend/games-project/target/site/jacoco || echo "No jacoco folder found"
+          FILE=target/surefire-reports/TEST-com.games.games_project.service.UserServiceImplTest.xml
+          if [ -f "$FILE" ]; then
+            echo "⏱️  Execution time for UserServiceImplTest:"
+            grep "<testsuite" $FILE | sed -n 's/.*time="\([^"]*\)".*/\1 seconds/p'
+          else
+            echo "⚠️  No test report found for UserServiceImplTest"
+            ls -la target/surefire-reports || true
+          fi
 
-      - name: Upload JaCoCo coverage to Codecov
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./Backend/games-project/target/site/jacoco/jacoco.xml
           flags: unittests
           verbose: true
+
+      - name: Upload JaCoCo HTML report (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: ./Backend/games-project/target/site/jacoco
 
 
   mutation-tests:
