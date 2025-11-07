@@ -94,14 +94,20 @@ jobs:
         with:
           name: jacoco-report
           path: ./Backend/games-project/target/site/jacoco
-
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-
-
+          files: ./Backend/games-project/target/surefire-reports/*.xml
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./Backend/games-project/target/site/jacoco/jacoco.xml
+          flags: backend
+          name: backend-coverage
 
   mutation-tests:
     name: Mutation Testing (PIT)
