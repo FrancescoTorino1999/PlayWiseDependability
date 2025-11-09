@@ -501,4 +501,36 @@ class UserServiceImplTest {
 
         verify(userRepository).save(argThat(u -> u.getUsername().equals(newUsername)));
     }
+
+    @Test
+    @DisplayName("deleteUser - gioco senza recensioni (numReviews == 0)")
+    void testDeleteUser_GameWithZeroReviews() {
+        String username = randomUsername();
+        User user = new User();
+        user.setUsername(username);
+
+        Review review = new Review();
+        review.setId("revZero");
+        review.setAuthor(username);
+        review.setScore(6);
+        review.setGameId(new ObjectId("6807a1905d04121deaab7da2"));
+
+        Game game = new Game();
+        game.setId("6807a1905d04121deaab7da2");
+        game.setUserScore(0.0);
+        game.setReviewCount(0);
+
+        when(reviewRepository.findByAuthor(eq(username), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(review)));
+        when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
+
+        assertTrue(userService.deleteUser(user));
+
+        // verifica che sia scattato il ramo numReviews == 0
+        assertEquals(0.0, game.getUserScore(), 0.001);
+        assertEquals(0, game.getReviewCount());
+        verify(reviewRepository).deleteById("revZero");
+        verify(gameRepository).save(game);
+    }
+
 }

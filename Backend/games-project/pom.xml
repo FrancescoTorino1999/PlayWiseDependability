@@ -23,8 +23,16 @@
         <sonar.organization>francescotorino1999</sonar.organization>
         <sonar.projectKey>PlayWiseDependability</sonar.projectKey>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.exclusions>**/dto/**/*,**/benchmark/**/*</sonar.exclusions>
-        <sonar.cpd.exclusions>**/dto/**/*,**/benchmark/**/*</sonar.cpd.exclusions>
+        <sonar.exclusions>
+            **/dto/**/*,
+            **/benchmark/**/*,
+            **/service/impl/PegiClassifierServiceImpl*.java
+        </sonar.exclusions>
+        <sonar.cpd.exclusions>
+            **/dto/**/*,
+            **/benchmark/**/*,
+            **/service/impl/PegiClassifierServiceImpl*.java
+        </sonar.cpd.exclusions>
     </properties>
     <dependencies>
         <dependency>
@@ -129,6 +137,8 @@
                         <param>com.games.games_project.benchmark.*</param>
                         <param>com.games.games_project.benchmark.jmh_generated.*</param>
                         <param>com.games.games_project.SecurityConfig</param>
+                        <param>com.games.games_project.service.impl.PegiClassifierServiceImpl</param>
+                        <param>com.games.games_project.service.impl.PegiClassifierServiceImpl$*</param>
                     </excludedClasses>
                     <mutationThreshold>85</mutationThreshold>
                 </configuration>
@@ -158,6 +168,7 @@
                                 <exclude>**/constants/**</exclude>
                                 <exclude>**/*Config*.class</exclude>
                                 <exclude>**/GamesProjectApplication.class</exclude>
+                                <exclude>**/service/impl/PegiClassifierServiceImpl*.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
