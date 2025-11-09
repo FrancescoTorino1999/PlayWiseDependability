@@ -26,12 +26,14 @@
         <sonar.exclusions>
             **/dto/**/*,
             **/benchmark/**/*,
-            **/service/impl/PegiClassifierServiceImpl*.java
+            **/service/impl/PegiClassifierServiceImpl*.java,
+            **/src/jml/**/*
         </sonar.exclusions>
         <sonar.cpd.exclusions>
             **/dto/**/*,
             **/benchmark/**/*,
-            **/service/impl/PegiClassifierServiceImpl*.java
+            **/service/impl/PegiClassifierServiceImpl*.java,
+            **/src/jml/**/*
         </sonar.cpd.exclusions>
     </properties>
     <dependencies>
@@ -139,6 +141,7 @@
                         <param>com.games.games_project.SecurityConfig</param>
                         <param>com.games.games_project.service.impl.PegiClassifierServiceImpl</param>
                         <param>com.games.games_project.service.impl.PegiClassifierServiceImpl$*</param>
+                        <param>**/src/jml/**</param>
                     </excludedClasses>
                     <mutationThreshold>85</mutationThreshold>
                 </configuration>
@@ -169,6 +172,7 @@
                                 <exclude>**/*Config*.class</exclude>
                                 <exclude>**/GamesProjectApplication.class</exclude>
                                 <exclude>**/service/impl/PegiClassifierServiceImpl*.class</exclude>
+                                <exclude>**/src/jml/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
