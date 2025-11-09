@@ -3,8 +3,11 @@ package com.games.games_project.service.impl;
 
 import com.games.games_project.dto.PegiResponseDto;
 import com.games.games_project.service.PegiClassifierService;
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
+@Service
 public class PegiClassifierServiceImpl implements PegiClassifierService {
 
     private enum PegiLevel {
