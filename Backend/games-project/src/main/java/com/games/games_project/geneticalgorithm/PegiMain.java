@@ -9,8 +9,9 @@ public class PegiMain {
         //@ assume args != null;
 
         PegiFeatureExtractor extractor = new PegiFeatureExtractor();
+        GeneticEngine engine = new GeneticEngine();
 
-        System.out.println("=== Test 1: normale ===");
+        System.out.println("=== Test 1: estrazione feature ===");
         PegiFeatures f1 = extractor.extract("This family puzzle game is colorful and fun.");
         //@ assert f1 != null;
         System.out.println("Ratio = " + f1.ratio());
@@ -22,12 +23,26 @@ public class PegiMain {
 
         System.out.println("\n=== Test 3: errore intenzionale ===");
         try {
-            //@ assume extractor != null;
             extractor.extract(null); // viola requires text != null
             //@ unreachable;
         } catch (Throwable e) {
             //@ assert e != null;
-            System.err.println("Violazione JML catturata: " + e);
+            System.err.println("Violazione JML catturata (estrazione): " + e);
+        }
+
+        System.out.println("\n=== Test 4: GeneticEngine - evoluzione ===");
+        try {
+            //@ assume engine != null;
+            double[] best = engine.evolve();
+            //@ assert best != null && best.length == 7;
+
+            System.out.println("Soluzione evoluta:");
+            for (int i = 0; i < best.length; i++) {
+                System.out.printf("w[%d] = %.4f%n", i, best[i]);
+            }
+
+        } catch (Throwable e) {
+            System.err.println("Violazione JML catturata (evolve): " + e);
         }
     }
 }

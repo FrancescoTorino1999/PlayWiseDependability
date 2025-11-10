@@ -12,7 +12,8 @@ openjml -rac -noInternalSpecs -quiet \
 -Dmdep.outputFile=/dev/stdout -DincludeScope=compile):target/classes" \
 -sourcepath src/main/java \
 -d target/jml-instrumented \
-src/main/java/com/games/games_project/geneticalgorithm/PegiFeatureExtractor.java
+src/main/java/com/games/games_project/geneticalgorithm/*.java
+
 
 java -cp "/usr/local/openjml-0.17/jmlruntime.jar:target/jml-instrumented:target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputAbsoluteArtifactFilename=true \
 -Dmdep.outputFile=/dev/stdout -DincludeScope=compile)" \
