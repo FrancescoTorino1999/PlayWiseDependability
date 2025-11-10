@@ -18,15 +18,29 @@ public class PegiFeatureExtractor {
     public PegiFeatures extract(String text) {
         String d = text.toLowerCase(Locale.ROOT);
         int total = Math.max(1, d.split("\\s+").length);
+
         int v = count(d, VIOLENCE);
         int f = count(d, FEAR);
         int s = count(d, SEXUAL);
         int a = count(d, ADDICTION);
         int l = count(d, LANGUAGE);
         int p = count(d, POSITIVE);
-        double ratio = (double)(v + f + s + a + l + 1) / (p + 1);
-        return new PegiFeatures((double)v / total, (double)f / total, (double)s / total,
-                (double)a / total, (double)l / total, (double)p / total, ratio);
+
+        long num = (long) v + f + s + a + l + 1L;
+        long den = (long) p + 1L;
+        //@ assume den > 0;
+
+        double ratio = ((double) num) / ((double) den);
+
+        return new PegiFeatures(
+                (double) v / total,
+                (double) f / total,
+                (double) s / total,
+                (double) a / total,
+                (double) l / total,
+                (double) p / total,
+                ratio
+        );
     }
 
     //@ requires d != null && terms != null;
@@ -34,7 +48,41 @@ public class PegiFeatureExtractor {
     //@ assignable \nothing;
     private int count(String d, List<String> terms) {
         int c = 0;
-        for (String t : terms) if (d.contains(t)) c++;
+        //@ maintaining c >= 0;
+        //@ decreases terms.size() - k;
+        for (int k = 0; k < terms.size(); k++) {
+            String t = terms.get(k);
+            //@ assume t != null;
+            if (containsSubstr(d, t)) {
+                //@ assume c < Integer.MAX_VALUE;
+                c++;
+            }
+        }
+        //@ assert c >= 0;
         return c;
+    }
+
+    //@ requires s != null && sub != null;
+    //@ assignable \nothing;
+    private /*@ pure @*/ boolean containsSubstr(String s, String sub) {
+        int n = s.length();
+        int m = sub.length();
+        if (m == 0) return true;
+        if (m > n) return false;
+
+        //@ assume n >= 0 && m >= 0 && n >= m;
+        for (int i = 0; i <= n - m; i++) {
+            //@ assume 0 <= i && i <= n - m; // invariants sostituiti con assunzioni
+            boolean ok = true;
+            for (int j = 0; j < m; j++) {
+                //@ assume 0 <= i + j && i + j < n;
+                if (s.charAt(i + j) != sub.charAt(j)) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return true;
+        }
+        return false;
     }
 }

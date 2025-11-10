@@ -3,6 +3,10 @@ openjml -esc -classpath "$(mvn -q dependency:build-classpath -Dmdep.outputAbsolu
 src/main/java/com/games/games_project/geneticalgorithm/*.java
 
 
-openjml -rac -classpath "$(mvn -q dependency:build-classpath -Dmdep.outputAbsoluteArtifactFilename=true -Dmdep.outputFile=/dev/stdout -DincludeScope=compile):target/classes" \
+openjml -rac \
+-classpath "$(mvn -q dependency:build-classpath -Dmdep.outputAbsoluteArtifactFilename=true -Dmdep.outputFile=/dev/stdout -DincludeScope=compile):target/classes" \
 -sourcepath src/main/java \
+-d target/jml-instrumented \
+-no-internalSpecs -noPurityCheck \
 src/main/java/com/games/games_project/geneticalgorithm/*.java
+
