@@ -27,11 +27,13 @@
             **/dto/**/*
             **/benchmark/**/*
             src/jml/**/*
+            **/PegiMain.java
         </sonar.exclusions>
         <sonar.cpd.exclusions>
             **/dto/**/*
             **/benchmark/**/*
             src/jml/**/*
+            **/PegiMain.java
         </sonar.cpd.exclusions>
 
     </properties>
@@ -139,6 +141,7 @@
                         <param>com.games.games_project.benchmark.jmh_generated.*</param>
                         <param>com.games.games_project.SecurityConfig</param>
                         <param>**/src/jml/**</param>
+                        <param>com.games.games_project.geneticalgorithm.PegiMain</param>
                     </excludedClasses>
                     <mutationThreshold>95</mutationThreshold>
                 </configuration>
@@ -169,6 +172,7 @@
                                 <exclude>**/*Config*.class</exclude>
                                 <exclude>**/GamesProjectApplication.class</exclude>
                                 <exclude>**/src/jml/**</exclude>
+                                <exclude>com/games/games_project/geneticalgorithm/PegiMain*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
