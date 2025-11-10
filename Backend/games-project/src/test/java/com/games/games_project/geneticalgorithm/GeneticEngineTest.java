@@ -347,7 +347,110 @@ class GeneticEngineTest {
         Assertions.assertThat(res1).isGreaterThan(0);
     }
 
+    // --- GeneticEngine mutation-killer extensions ---------------------------------------------
 
+    @Test
+    void evolve_matches_spec_deterministically() {
+        Random r = new Random(42);
+        int n = 7, pop = 25, gens = 20;
+        List<double[]> population = new ArrayList<>();
+        for (int i = 0; i < pop; i++) population.add(randSpec(r, n));
+        for (int g = 0; g < gens; g++) {
+            population.sort(Comparator.comparingDouble((double[] w) -> -fitnessSpec(w)));
+            List<double[]> next = new ArrayList<>(population.subList(0, 5));
+            while (next.size() < pop) {
+                double[] c = crossoverSpec(population.get(r.nextInt(pop)), population.get(r.nextInt(pop)), r);
+                mutateSpec(c, r, 0.25);
+                next.add(c);
+            }
+            population = next;
+        }
+        double[] expected = population.get(0);
+        double[] actual = engine.evolve();
+        Assertions.assertThat(actual.length).isEqualTo(expected.length);
+        for (int i = 0; i < expected.length; i++) {
+            Assertions.assertThat(actual[i]).isCloseTo(expected[i], Assertions.offset(1e-12));
+        }
+    }
+
+    private double[] randSpec(Random r, int n) {
+        double[] v = new double[n];
+        for (int i = 0; i < n; i++) v[i] = r.nextDouble() * 2 - 1;
+        return v;
+    }
+
+    private double fitnessSpec(double[] w) {
+        double s = 0;
+        for (int i = 0; i < w.length; i++) s += w[i] * w[i];
+        return 1.0 / (1.0 + s);
+    }
+
+    private double[] crossoverSpec(double[] a, double[] b, Random r) {
+        int cut = r.nextInt(a.length);
+        double[] c = new double[a.length];
+        for (int i = 0; i < a.length; i++) c[i] = (i < cut) ? a[i] : b[i];
+        return c;
+    }
+
+    private void mutateSpec(double[] w, Random r, double rate) {
+        for (int i = 0; i < w.length; i++) {
+            if (r.nextDouble() < rate) w[i] += r.nextGaussian() * 0.3;
+        }
+    }
+
+    static class ZeroDoubleRandom extends Random {
+        @Override public double nextDouble() { return 0.0; }
+        @Override public double nextGaussian() { return 1.0; }
+    }
+
+    @Test
+    void mutate_does_not_change_when_rate_zero_and_nextDouble_zero() throws Exception {
+        Method m = GeneticEngine.class.getDeclaredMethod("mutate", double[].class, Random.class, double.class);
+        m.setAccessible(true);
+        double[] w = new double[]{0, 0, 0, 0, 0, 0, 0};
+        double[] before = w.clone();
+        m.invoke(engine, w, new ZeroDoubleRandom(), 0.0d);
+        Assertions.assertThat(w).containsExactly(before);
+    }
+
+    static class FixedRandom extends Random {
+        private int i = 0;
+        @Override public double nextDouble() { return 0.5; }
+        @Override public double nextGaussian() { return ++i == 1 ? 2.0 : 0.0; }
+    }
+
+    @Test
+    void mutate_applies_positive_increment_when_gaussian_positive() throws Exception {
+        Method m = GeneticEngine.class.getDeclaredMethod("mutate", double[].class, Random.class, double.class);
+        m.setAccessible(true);
+        double[] w = new double[]{1.0, 0, 0, 0, 0, 0, 0};
+        m.invoke(engine, w, new FixedRandom(), 1.0d);
+        Assertions.assertThat(w[0]).isCloseTo(1.0 + 0.6, Assertions.offset(1e-12));
+    }
+
+    @Test
+    void evolve_differs_from_no_mutate_trajectory() {
+        Random r = new Random(42);
+        int n = 7, pop = 25, gens = 20;
+        List<double[]> population = new ArrayList<>();
+        for (int i = 0; i < pop; i++) population.add(randSpec(r, n));
+        for (int g = 0; g < gens; g++) {
+            population.sort(Comparator.comparingDouble((double[] w) -> -fitnessSpec(w)));
+            List<double[]> next = new ArrayList<>(population.subList(0, 5));
+            while (next.size() < pop) {
+                double[] c = crossoverSpec(population.get(r.nextInt(pop)), population.get(r.nextInt(pop)), r);
+                next.add(c);
+            }
+            population = next;
+        }
+        double[] noMutate = population.get(0);
+        double[] evolved = engine.evolve();
+        boolean allEqual = true;
+        for (int i = 0; i < evolved.length; i++) {
+            if (Math.abs(evolved[i] - noMutate[i]) > 1e-12) { allEqual = false; break; }
+        }
+        Assertions.assertThat(allEqual).isFalse();
+    }
 }
 
 

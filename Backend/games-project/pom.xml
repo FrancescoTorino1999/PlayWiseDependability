@@ -138,10 +138,9 @@
                         <param>com.games.games_project.benchmark.*</param>
                         <param>com.games.games_project.benchmark.jmh_generated.*</param>
                         <param>com.games.games_project.SecurityConfig</param>
-                        <param>com.games.games_project.geneticalgorithm.*</param>
                         <param>**/src/jml/**</param>
                     </excludedClasses>
-                    <mutationThreshold>80</mutationThreshold>
+                    <mutationThreshold>95</mutationThreshold>
                 </configuration>
             </plugin>
             <plugin>
