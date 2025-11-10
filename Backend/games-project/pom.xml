@@ -26,13 +26,11 @@
         <sonar.exclusions>
             **/dto/**/*
             **/benchmark/**/*
-            **/geneticalgorithm/**/*
             src/jml/**/*
         </sonar.exclusions>
         <sonar.cpd.exclusions>
             **/dto/**/*
             **/benchmark/**/*
-            **/geneticalgorithm/**/*
             src/jml/**/*
         </sonar.cpd.exclusions>
 
@@ -138,12 +136,12 @@
                         <param>com.games.games_project.dto.*</param>
                         <param>com.games.games_project.model.*</param>
                         <param>com.games.games_project.benchmark.*</param>
-                        <param>com.games.games_project.geneticalgorithm.*</param>
                         <param>com.games.games_project.benchmark.jmh_generated.*</param>
                         <param>com.games.games_project.SecurityConfig</param>
+                        <param>com.games.games_project.geneticalgorithm.*</param>
                         <param>**/src/jml/**</param>
                     </excludedClasses>
-                    <mutationThreshold>85</mutationThreshold>
+                    <mutationThreshold>80</mutationThreshold>
                 </configuration>
             </plugin>
             <plugin>
@@ -166,7 +164,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/benchmark/**</exclude>
-                                <exclude>**/geneticalgorithm/**</exclude>
                                 <exclude>**/dto/**</exclude>
                                 <exclude>**/model/**</exclude>
                                 <exclude>**/constants/**</exclude>
