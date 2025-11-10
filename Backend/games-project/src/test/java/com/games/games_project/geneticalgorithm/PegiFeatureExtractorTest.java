@@ -6,6 +6,9 @@ import org.assertj.core.api.Assertions;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class PegiFeatureExtractorTest {
 
     private final PegiFeatureExtractor extractor = new PegiFeatureExtractor();
@@ -83,6 +86,21 @@ class PegiFeatureExtractorTest {
                 .isCloseTo(expectedRatio, Assertions.offset(1e-12))
                 .isGreaterThan(1.0)
                 .isLessThan(10.0);
+    }
+
+    @Test
+    void testContainsSubstr_edgeCases() throws Exception {
+        PegiFeatureExtractor extractor = new PegiFeatureExtractor();
+
+        // Caso 1: sottostringa vuota → deve tornare true
+        Method m = PegiFeatureExtractor.class.getDeclaredMethod("containsSubstr", String.class, String.class);
+        m.setAccessible(true);
+        boolean resultEmpty = (boolean) m.invoke(extractor, "abc", "");
+        assertTrue(resultEmpty);
+
+        // Caso 2: sottostringa più lunga del testo → deve tornare false
+        boolean resultLong = (boolean) m.invoke(extractor, "hi", "hello");
+        assertFalse(resultLong);
     }
 
 }
