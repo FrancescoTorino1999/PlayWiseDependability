@@ -88,19 +88,28 @@ class PegiFeatureExtractorTest {
                 .isLessThan(10.0);
     }
 
+
     @Test
     void testContainsSubstr_edgeCases() throws Exception {
         PegiFeatureExtractor extractor = new PegiFeatureExtractor();
-
-        // Caso 1: sottostringa vuota → deve tornare true
         Method m = PegiFeatureExtractor.class.getDeclaredMethod("containsSubstr", String.class, String.class);
         m.setAccessible(true);
+
+        // Caso 1: sottostringa vuota → deve tornare true
         boolean resultEmpty = (boolean) m.invoke(extractor, "abc", "");
         assertTrue(resultEmpty);
 
         // Caso 2: sottostringa più lunga del testo → deve tornare false
         boolean resultLong = (boolean) m.invoke(extractor, "hi", "hello");
         assertFalse(resultLong);
+
+        // Caso 3: sottostringa lunga quanto la stringa → deve tornare true se identica
+        boolean resultEqual = (boolean) m.invoke(extractor, "game", "game");
+        assertTrue(resultEqual);
+
+        // Caso 4: sottostringa lunga quanto la stringa ma diversa → deve tornare false
+        boolean resultEqualDifferent = (boolean) m.invoke(extractor, "game", "gama");
+        assertFalse(resultEqualDifferent);
     }
 
 }
