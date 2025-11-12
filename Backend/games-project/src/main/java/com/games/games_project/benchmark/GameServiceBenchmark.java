@@ -1,9 +1,6 @@
 package com.games.games_project.benchmark;
 
-import com.games.games_project.dto.GamePreviewDto;
 import com.games.games_project.dto.GameDetailsDto;
-import com.games.games_project.dto.PagedGamesResponseDto;
-import com.games.games_project.dto.PlatformCountDto;
 import com.games.games_project.model.Game;
 import com.games.games_project.model.Review;
 import com.games.games_project.repositories.GameRepository;
@@ -11,8 +8,8 @@ import com.games.games_project.repositories.ReviewRepository;
 import com.games.games_project.service.impl.GameServiceImpl;
 import org.bson.types.ObjectId;
 import org.openjdk.jmh.annotations.*;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.*;
@@ -31,12 +28,10 @@ public class GameServiceBenchmark {
     private GameServiceImpl gameService;
     private GameRepository gameRepository;
     private ReviewRepository reviewRepository;
+    private String gameId;
 
     private Game sampleGame;
-    private Review sampleReview;
-    private GamePreviewDto samplePreview;
-    private PageImpl<Game> gamePage;
-    private PageImpl<Review> reviewPage;
+    private Page<Review> reviewPage;
 
     @Setup(Level.Trial)
     public void setup() {
@@ -44,55 +39,29 @@ public class GameServiceBenchmark {
         reviewRepository = mock(ReviewRepository.class);
         gameService = new GameServiceImpl(gameRepository, reviewRepository);
 
+        gameId = "6807a1905d04121deaab7dd5";
+
         sampleGame = new Game();
-        sampleGame.setId("507f1f77bcf86cd799439011");
-        sampleGame.setTitle("Mock Game");
-        sampleGame.setMetaScore(85.0);
-        sampleGame.setUserScore(8.5);
-        sampleGame.setCover("mock_cover.png");
-        sampleGame.setReviewCount(3);
-        sampleGame.setReleaseDate(new Date());
+        sampleGame.setId(gameId);
+        sampleGame.setTitle("Tom Clancy's Splinter Cell: Chaos Theory");
 
-        sampleReview = new Review();
-        sampleReview.setId("rev1");
-        sampleReview.setAuthor("Francesco");
-        sampleReview.setText("Excellent game!");
-        sampleReview.setScore(9);
-        sampleReview.setDate(new Date());
-        sampleReview.setGameId(new ObjectId(sampleGame.getId()));
+        // 8 recensioni simulate
+        List<Review> reviews = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            Review r = new Review();
+            r.setId("r" + i);
+            r.setAuthor("User" + i);
+            r.setText("Review " + i);
+            reviews.add(r);
+        }
+        reviewPage = new PageImpl<>(reviews);
 
-        samplePreview = new GamePreviewDto("507f1f77bcf86cd799439011", "Mock Game");
-        gamePage = new PageImpl<>(List.of(sampleGame));
-        reviewPage = new PageImpl<>(List.of(sampleReview));
-    }
-
-    @Benchmark
-    public Optional<GameDetailsDto> benchmarkGetGameDetailsById() {
-        when(gameRepository.findById(anyString())).thenReturn(Optional.of(sampleGame));
+        when(gameRepository.findById(gameId)).thenReturn(Optional.of(sampleGame));
         when(reviewRepository.findByGameId(any(ObjectId.class), any(Pageable.class))).thenReturn(reviewPage);
-        return gameService.getGameDetailsById(sampleGame.getId());
     }
 
     @Benchmark
-    public PagedGamesResponseDto<GamePreviewDto> benchmarkGetGamesPaginated() {
-        when(gameRepository.findAll(any(Pageable.class))).thenReturn(gamePage);
-        return gameService.getGamesPaginated(PageRequest.of(0, 10));
-    }
-
-    @Benchmark
-    public List<GamePreviewDto> benchmarkFindSuggestion() {
-        when(gameRepository.findSuggestions(anyString())).thenReturn(List.of(samplePreview));
-        return gameService.findSuggestion("Mock");
-    }
-
-    @Benchmark
-    public List<GamePreviewDto> benchmarkFindSuggestionEmpty() {
-        return gameService.findSuggestion("");
-    }
-
-    @Benchmark
-    public List<PlatformCountDto> benchmarkGetGameCountByPlatform() {
-        when(gameRepository.countGamesByPlatform()).thenReturn(List.of(new PlatformCountDto("PC", 5L)));
-        return gameService.getGameCountByPlatform();
+    public Optional<GameDetailsDto> benchmarkGetGameDetailsById_SplinterCell_WithMoreThan5Reviews() {
+        return gameService.getGameDetailsById(gameId);
     }
 }

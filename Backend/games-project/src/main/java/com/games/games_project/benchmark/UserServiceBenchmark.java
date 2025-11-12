@@ -1,20 +1,16 @@
 package com.games.games_project.benchmark;
 
-import com.games.games_project.dto.*;
-import com.games.games_project.model.Game;
-import com.games.games_project.model.Review;
+import com.games.games_project.dto.LoginRequestDto;
+import com.games.games_project.dto.LoginResponseDto;
+import com.games.games_project.dto.RegistrationRequestDto;
 import com.games.games_project.model.User;
-import com.games.games_project.repositories.GameRepository;
-import com.games.games_project.repositories.ReviewRepository;
 import com.games.games_project.repositories.UserRepository;
 import com.games.games_project.service.impl.UserServiceImpl;
-import org.bson.types.ObjectId;
 import org.openjdk.jmh.annotations.*;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
@@ -29,130 +25,86 @@ public class UserServiceBenchmark {
 
     private UserServiceImpl userService;
     private UserRepository userRepository;
-    private ReviewRepository reviewRepository;
-    private GameRepository gameRepository;
-
-    private User sampleUser;
-    private Review sampleReview;
-    private Game sampleGame;
-    private PageImpl<Review> reviewPage;
-    private RegistrationRequestDto registrationRequest;
-    private LoginRequestDto loginRequest;
     private BCryptPasswordEncoder encoder;
 
+    private User sampleUser;
+    private RegistrationRequestDto registrationRequest;
+    private LoginRequestDto loginRequest;
+    private String rawPassword;
+    private String encodedPassword;
+
     @Setup(Level.Trial)
-    public void setup() {
+    public void setup() throws Exception {
         userRepository = mock(UserRepository.class);
-        reviewRepository = mock(ReviewRepository.class);
-        gameRepository = mock(GameRepository.class);
         userService = new UserServiceImpl();
-        try {
-            var f1 = UserServiceImpl.class.getDeclaredField("userRepository");
-            var f2 = UserServiceImpl.class.getDeclaredField("reviewRepository");
-            var f3 = UserServiceImpl.class.getDeclaredField("gameRepository");
-            f1.setAccessible(true);
-            f2.setAccessible(true);
-            f3.setAccessible(true);
-            f1.set(userService, userRepository);
-            f2.set(userService, reviewRepository);
-            f3.set(userService, gameRepository);
-        } catch (Exception ignored) {}
+
+        // Inietta mock repository
+        var f1 = UserServiceImpl.class.getDeclaredField("userRepository");
+        f1.setAccessible(true);
+        f1.set(userService, userRepository);
 
         encoder = new BCryptPasswordEncoder();
 
-        String username = randomUsername();
-        String password = randomPassword();
+        rawPassword = "pwd_" + UUID.randomUUID().toString().substring(0, 6);
+        encodedPassword = encoder.encode(rawPassword);
 
         sampleUser = new User();
         sampleUser.setId("u1");
-        sampleUser.setUsername(username);
-        sampleUser.setPassword(encoder.encode(password));
-        sampleUser.setEmail(username + "@example.com");
+        sampleUser.setUsername("user_" + UUID.randomUUID().toString().substring(0, 6));
+        sampleUser.setPassword(encodedPassword);
+        sampleUser.setEmail("sample@example.com");
         sampleUser.setRole("USER");
 
-        sampleGame = new Game();
-        sampleGame.setId("g1");
-        sampleGame.setTitle("Mock Game");
-        sampleGame.setUserScore(8.0);
-        sampleGame.setReviewCount(2);
-
-        sampleReview = new Review();
-        sampleReview.setId("r1");
-        sampleReview.setAuthor(username);
-        sampleReview.setScore(7);
-        sampleReview.setText("Mock review");
-        sampleReview.setGameId(new ObjectId("6555abcd9876abcd1234abcd"));
-
-        reviewPage = new PageImpl<>(List.of(sampleReview));
-
         registrationRequest = new RegistrationRequestDto();
-        registrationRequest.setUsername(username);
-        registrationRequest.setPassword(password);
-        registrationRequest.setEmail(username + "@example.com");
-        registrationRequest.setName("Name");
-        registrationRequest.setSurname("Surname");
+        registrationRequest.setUsername(sampleUser.getUsername());
+        registrationRequest.setPassword(rawPassword);
+        registrationRequest.setEmail("sample@example.com");
+        registrationRequest.setName("Mario");
+        registrationRequest.setSurname("Rossi");
         registrationRequest.setGender("M");
 
         loginRequest = new LoginRequestDto();
-        loginRequest.setUsername(username);
-        loginRequest.setPassword(password);
+        loginRequest.setUsername(sampleUser.getUsername());
+        loginRequest.setPassword(rawPassword);
     }
 
-    private String randomUsername() {
-        return "user_" + UUID.randomUUID().toString().substring(0, 8);
-    }
-
-    private String randomPassword() {
-        return "pwd_" + UUID.randomUUID().toString().substring(0, 8);
-    }
-
+    // 1️⃣ login reale (incluso BCrypt.matches)
     @Benchmark
-    public LoginResponseDto benchmarkLoginSuccess() {
+    public LoginResponseDto benchmarkLogin() {
         when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.of(sampleUser));
         return userService.login(loginRequest);
     }
 
+    // 2️⃣ register reale (incluso BCrypt.encode + save)
     @Benchmark
-    public LoginResponseDto benchmarkLoginFail() {
-        when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.empty());
-        return userService.login(loginRequest);
-    }
-
-    @Benchmark
-    public Boolean benchmarkRegisterSuccess() {
+    public Boolean benchmarkRegister() {
         when(userRepository.findByEmailAndUsername(anyString(), anyString())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(sampleUser);
         return userService.register(registrationRequest);
     }
 
-    @Benchmark
-    public Boolean benchmarkRegisterDuplicate() {
-        when(userRepository.findByEmailAndUsername(anyString(), anyString())).thenReturn(Optional.of(sampleUser));
-        return userService.register(registrationRequest);
-    }
-
-    @Benchmark
-    public User benchmarkGetUserInfo() {
-        when(userRepository.findByUsername(sampleUser.getUsername())).thenReturn(Optional.of(sampleUser));
-        return userService.getUserInfo(sampleUser.getUsername());
-    }
-
-    @Benchmark
-    public Boolean benchmarkDeleteUser() {
-        when(reviewRepository.findByAuthor(anyString(), any(Pageable.class))).thenReturn(reviewPage);
-        when(gameRepository.findById(anyString())).thenReturn(Optional.of(sampleGame));
-        doNothing().when(userRepository).deleteByUsername(anyString());
-        return userService.deleteUser(sampleUser);
-    }
-
+    // 3️⃣ updateUser simulato (senza password encoder, serve come baseline)
     @Benchmark
     public Boolean benchmarkUpdateUser() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(sampleUser));
-        return userService.updateUser(sampleUser);
+        when(userRepository.save(any(User.class))).thenReturn(sampleUser);
+        User updated = new User();
+        updated.setUsername(sampleUser.getUsername());
+        updated.setEmail("newmail@example.com");
+        updated.setName("Giovanni");
+        updated.setSurname("Bianchi");
+        return userService.updateUser(updated);
     }
 
+    // 4️⃣ misura diretta del costo BCryptPasswordEncoder.matches()
     @Benchmark
-    public List<GenderCountDto> benchmarkGetUserCountByGender() {
-        when(userRepository.countUsersByGender()).thenReturn(List.of(new GenderCountDto("M", 10L)));
-        return userService.getUserCountByGender();
+    public boolean benchmarkPasswordMatch() {
+        return encoder.matches(rawPassword, encodedPassword);
+    }
+
+    // 5️⃣ misura diretta del costo BCryptPasswordEncoder.encode()
+    @Benchmark
+    public String benchmarkPasswordEncode() {
+        return encoder.encode(rawPassword);
     }
 }
