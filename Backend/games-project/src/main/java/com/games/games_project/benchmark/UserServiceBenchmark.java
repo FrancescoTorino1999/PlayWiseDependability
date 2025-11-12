@@ -43,7 +43,7 @@ public class UserServiceBenchmark {
         f1.setAccessible(true);
         f1.set(userService, userRepository);
 
-        encoder = new BCryptPasswordEncoder();
+        encoder = new BCryptPasswordEncoder(4);
 
         rawPassword = "pwd_" + UUID.randomUUID().toString().substring(0, 6);
         encodedPassword = encoder.encode(rawPassword);

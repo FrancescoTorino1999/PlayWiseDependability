@@ -28,7 +28,7 @@ class UserServiceImplTest {
     @Mock private GameRepository gameRepository;
     @InjectMocks private UserServiceImpl userService;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
 
     @BeforeEach
     void setUp() {

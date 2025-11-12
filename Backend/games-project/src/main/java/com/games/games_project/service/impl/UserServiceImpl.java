@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private GameRepository gameRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequest) {
