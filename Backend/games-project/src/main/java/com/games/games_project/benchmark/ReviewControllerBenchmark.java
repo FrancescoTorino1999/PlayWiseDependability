@@ -12,12 +12,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.All)
 @Warmup(iterations = 2)
 @Measurement(iterations = 3)
-@Fork(1)
+@Fork(2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
+@Threads(8)
 public class ReviewControllerBenchmark {
 
     private ReviewService reviewService;
@@ -34,7 +35,6 @@ public class ReviewControllerBenchmark {
         sortParam = "date,desc";
     }
 
-    // 1️⃣ parsing del parametro di sort
     @Benchmark
     public Sort benchmarkSortParsing() {
         String[] sortParts = sortParam.split(",");
@@ -43,14 +43,12 @@ public class ReviewControllerBenchmark {
         return Sort.by(direction, sortParts[0]);
     }
 
-    // 2️⃣ creazione del PageRequest (step logico principale del controller)
     @Benchmark
     public Pageable benchmarkPageRequestCreation() {
         Sort sortBy = benchmarkSortParsing();
         return PageRequest.of(Math.max(0, 0), 5, sortBy);
     }
 
-    // 3️⃣ chiamata al servizio (simulata)
     @Benchmark
     public PagedReviewsResponseDto<ReviewDetailsDto> benchmarkGetReviewsForGameCall() {
         Pageable pageable = benchmarkPageRequestCreation();

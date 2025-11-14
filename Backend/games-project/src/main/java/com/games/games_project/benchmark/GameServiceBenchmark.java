@@ -17,12 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.All)
 @Warmup(iterations = 2)
 @Measurement(iterations = 3)
-@Fork(1)
+@Fork(2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
+@Threads(8)
 public class GameServiceBenchmark {
 
     private GameServiceImpl gameService;
@@ -45,7 +46,6 @@ public class GameServiceBenchmark {
         sampleGame.setId(gameId);
         sampleGame.setTitle("Tom Clancy's Splinter Cell: Chaos Theory");
 
-        // 8 recensioni simulate
         List<Review> reviews = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
             Review r = new Review();

@@ -3,4 +3,4 @@ Lanciare nel terminale intellij:
 cd /Backend/games-project
 
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt -q
-java -cp "target/classes:$(cat cp.txt)" org.openjdk.jmh.Main -rf csv -rff target/jmh-results.csv -f 1
+java -cp "target/classes:$(cat cp.txt)" org.openjdk.jmh.Main -rf csv -rff target/jmh-results.csv -f 2

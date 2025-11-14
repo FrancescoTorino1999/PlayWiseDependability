@@ -15,12 +15,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.All)
 @Warmup(iterations = 2)
 @Measurement(iterations = 3)
-@Fork(1)
+@Fork(2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
+@Threads(8)
 public class UserServiceBenchmark {
 
     private UserServiceImpl userService;
@@ -35,10 +36,11 @@ public class UserServiceBenchmark {
 
     @Setup(Level.Trial)
     public void setup() throws Exception {
+
         userRepository = mock(UserRepository.class);
         userService = new UserServiceImpl();
 
-        // Inietta mock repository
+        // Inject mocked repository
         var f1 = UserServiceImpl.class.getDeclaredField("userRepository");
         f1.setAccessible(true);
         f1.set(userService, userRepository);
@@ -68,26 +70,40 @@ public class UserServiceBenchmark {
         loginRequest.setPassword(rawPassword);
     }
 
-    // 1️⃣ login reale (incluso BCrypt.matches)
+    @Setup(Level.Iteration)
+    public void resetStubs() {
+
+        reset(userRepository);
+
+        doReturn(Optional.of(sampleUser))
+                .when(userRepository)
+                .findByUsername(loginRequest.getUsername());
+
+        doReturn(Optional.empty())
+                .when(userRepository)
+                .findByEmailAndUsername(anyString(), anyString());
+
+        doReturn(sampleUser)
+                .when(userRepository)
+                .save(any(User.class));
+
+        doReturn(Optional.of(sampleUser))
+                .when(userRepository)
+                .findByUsername(sampleUser.getUsername());
+    }
+
     @Benchmark
     public LoginResponseDto benchmarkLogin() {
-        when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.of(sampleUser));
         return userService.login(loginRequest);
     }
 
-    // 2️⃣ register reale (incluso BCrypt.encode + save)
     @Benchmark
     public Boolean benchmarkRegister() {
-        when(userRepository.findByEmailAndUsername(anyString(), anyString())).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenReturn(sampleUser);
         return userService.register(registrationRequest);
     }
 
-    // 3️⃣ updateUser simulato (senza password encoder, serve come baseline)
     @Benchmark
     public Boolean benchmarkUpdateUser() {
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(sampleUser));
-        when(userRepository.save(any(User.class))).thenReturn(sampleUser);
         User updated = new User();
         updated.setUsername(sampleUser.getUsername());
         updated.setEmail("newmail@example.com");
@@ -96,13 +112,11 @@ public class UserServiceBenchmark {
         return userService.updateUser(updated);
     }
 
-    // 4️⃣ misura diretta del costo BCryptPasswordEncoder.matches()
     @Benchmark
     public boolean benchmarkPasswordMatch() {
         return encoder.matches(rawPassword, encodedPassword);
     }
 
-    // 5️⃣ misura diretta del costo BCryptPasswordEncoder.encode()
     @Benchmark
     public String benchmarkPasswordEncode() {
         return encoder.encode(rawPassword);
